@@ -105,6 +105,7 @@
       stateHeaders.push('tests');
       stateHeaders.push('pos test %');
       stateHeaders.push('tests/1M');
+      stateHeaders.push('tests/death');
 
       const stateRowsByDate = new Map();
       stateCases.forEach((line) => {
@@ -119,22 +120,31 @@
       Array.from(stateRowsByDate)[stateRowsByDate.size-1][1].forEach((state) => {
         const name = state[1];
         const fips = state[2];
+        const cases = state[3];
+        const deaths = state[4];
+
         if (fips !== '' && popsByFips.has(fips)) {
           const pop = popsByFips.get(fips);
           state.push(popsByFips.get(fips));
 
           const popPer1M = pop / 1000000;
-          state.push(Math.round(state[3] / popPer1M));
-          state.push(Math.round(state[4] / popPer1M));
+          state.push(Math.round(cases / popPer1M));
+          state.push(Math.round(deaths / popPer1M));
 
           statesLatestDay.push(state);
 
           if (testsByFips.has(fips)) {
             const positiveTests = testsByFips.get(fips).positive;
             const totalTests = testsByFips.get(fips).totalTestResults;
+
             state.push(totalTests);
             state.push(Math.round(100 * positiveTests / totalTests));
             state.push(Math.round(totalTests / popPer1M));
+            if (deaths != 0) {
+              state.push(Math.round(totalTests / deaths));
+            } else {
+              state.push(0);
+            }
           } else {
             console.warn('state fips not found in test data: ' + state);
           }
