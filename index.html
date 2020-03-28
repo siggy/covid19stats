@@ -103,55 +103,62 @@
       stateHeaders.push('cases/1M');
       stateHeaders.push('deaths/1M');
       stateHeaders.push('tests');
+      stateHeaders.push('pending tests');
       stateHeaders.push('pos test %');
       stateHeaders.push('tests/1M');
       stateHeaders.push('tests/death');
 
-      const stateRowsByDate = new Map();
+      const stateRowsByName = new Map();
+
+      // handle some states not having today's data in github.com/nytimes/covid-19-data
       stateCases.forEach((line) => {
         const row = line.split(',');
-        if (!stateRowsByDate.has(row[0])) {
-          stateRowsByDate.set(row[0], [])
+        const name = row[1];
+
+        if (!stateRowsByName.has(name)) {
+          stateRowsByName.set(name, []);
         }
-        stateRowsByDate.get(row[0]).push(row);
+        stateRowsByName.get(name).push(row);
       });
 
       const statesLatestDay = [];
-      Array.from(stateRowsByDate)[stateRowsByDate.size-1][1].forEach((state) => {
-        const name = state[1];
-        const fips = state[2];
-        const cases = state[3];
-        const deaths = state[4];
+      stateRowsByName.forEach((rows, name) => {
+        const latestDay = rows[rows.length-1];
+        const fips = latestDay[2];
+        const cases = latestDay[3];
+        const deaths = latestDay[4];
 
-        if (fips !== '' && popsByFips.has(fips)) {
-          const pop = popsByFips.get(fips);
-          state.push(popsByFips.get(fips));
+        if (fips === '' || !popsByFips.has(fips)) {
+          console.warn('state fips not found: ' + latestDay);
+          return;
+        }
 
-          const popPer1M = pop / 1000000;
-          state.push(Math.round(cases / popPer1M));
-          state.push(Math.round(deaths / popPer1M));
+        const pop = popsByFips.get(fips);
+        latestDay.push(popsByFips.get(fips));
 
-          statesLatestDay.push(state);
+        const popPer1M = pop / 1000000;
+        latestDay.push(Math.round(cases / popPer1M));
+        latestDay.push(Math.round(deaths / popPer1M));
 
-          if (testsByFips.has(fips)) {
-            const positiveTests = testsByFips.get(fips).positive;
-            const totalTests = testsByFips.get(fips).totalTestResults;
+        statesLatestDay.push(latestDay);
 
-            state.push(totalTests);
-            state.push(Math.round(100 * positiveTests / totalTests));
-            state.push(Math.round(totalTests / popPer1M));
-            if (deaths != 0) {
-              state.push(Math.round(totalTests / deaths));
-            } else {
-              state.push(0);
-            }
-          } else {
-            console.warn('state fips not found in test data: ' + state);
-          }
+        if (!testsByFips.has(fips)) {
+          console.warn('state fips not found in test data: ' + state);
+          return;
+        }
 
-          // TODO: Guam, Puerto Rico, Virgin Islands
+        const positiveTests = testsByFips.get(fips).positive;
+        const totalTests = testsByFips.get(fips).totalTestResults;
+        const pending = testsByFips.get(fips).pending;
+
+        latestDay.push(totalTests);
+        latestDay.push(pending);
+        latestDay.push(Math.round(100 * positiveTests / totalTests));
+        latestDay.push(Math.round(totalTests / popPer1M));
+        if (deaths != 0) {
+          latestDay.push(Math.round(totalTests / deaths));
         } else {
-          console.warn('state fips not found: ' + state);
+          latestDay.push(0);
         }
       });
 

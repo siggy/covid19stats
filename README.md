@@ -18,22 +18,22 @@ Browse to: http://0.0.0.0:8000/
 ### Pull Census data
 
 ```bash
-curl https://www2.census.gov/programs-surveys/popest/datasets/2010-2019/counties/totals/co-est2019-alldata.csv |
-  cut -d, -f4-7,19 |
-  sed -e 's/ County//g' |
-  sed 's/,//1' |
-  sed 's/STATECOUNTY/FIPS/1' |
-  sed 's/000,/,/1' > co-est2019-alldata-min.csv
+(
+  curl https://www2.census.gov/programs-surveys/popest/datasets/2010-2019/counties/totals/co-est2019-alldata.csv |
+    cut -d, -f4-7,19 |
+    sed -e 's/ County//g' |
+    sed 's/,//1' |
+    sed 's/STATECOUNTY/FIPS/1' |
+    sed 's/000,/,/1' &&
+    echo '66,Guam,Guam,164229' &&
+    echo '72,Puerto Rico,Puerto Rico,3195000' &&
+    echo '78,Virgin Islands,Virgin Islands,107268'
+) > co-est2019-alldata-min.csv
 ```
 
 ## TODO
 
-- pending tests
 - filter out very small counties (or low case counts) for /1M stats
 - hospitals+beds / 1M
-- State-level data for:
-  - Guam
-  - Puerto Rico
-  - Virgin Islands
 - Design
 - Charts
