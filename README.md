@@ -1,0 +1,35 @@
+# COVID-19 Stats
+
+Display daily stats for COVID-19 across all US counties.
+
+Data courtesy of:
+- https://github.com/nytimes/covid-19-data
+- https://www2.census.gov/programs-surveys/popest/datasets/2010-2019/counties/totals/
+
+## Local dev
+
+```bash
+python3 -m http.server
+```
+
+Browse to: http://0.0.0.0:8000/
+
+### Pull Census data
+
+```bash
+curl https://www2.census.gov/programs-surveys/popest/datasets/2010-2019/counties/totals/co-est2019-alldata.csv |
+  cut -d, -f4-7,19 |
+  sed -e 's/ County//g' |
+  sed 's/,//1' |
+  sed 's/STATECOUNTY/FIPS/1' |
+  sed 's/000,/,/1' > co-est2019-alldata-min.csv
+```
+
+## TODO
+
+- State-level data for:
+  - Guam
+  - Puerto Rico
+  - Virgin Islands
+- Design
+- Charts
