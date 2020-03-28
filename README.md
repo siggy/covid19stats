@@ -5,6 +5,7 @@ Display daily stats for COVID-19 across all US counties.
 Data courtesy of:
 - https://github.com/nytimes/covid-19-data
 - https://www2.census.gov/programs-surveys/popest/datasets/2010-2019/counties/totals/
+- https://covidtracking.com/
 
 ## Local dev
 
@@ -27,6 +28,8 @@ curl https://www2.census.gov/programs-surveys/popest/datasets/2010-2019/counties
 
 ## TODO
 
+- filter out very small counties (or low case counts) for /1M stats
+- hospitals+beds / 1M
 - State-level data for:
   - Guam
   - Puerto Rico

@@ -52,8 +52,9 @@
   </a>
 
   Based on:
-  <a href='https://github.com/nytimes/covid-19-data'>https://github.com/nytimes/covid-19-data</a>
-  https://www2.census.gov/programs-surveys/popest/datasets/2010-2019/counties/totals/
+  <a href='https://github.com/nytimes/covid-19-data'>github.com/nytimes/covid-19-data</a>
+  <a href='https://www2.census.gov/programs-surveys/popest/datasets/2010-2019/counties/totals/'>www2.census.gov/programs-surveys/popest/datasets/2010-2019/counties/totals/</a>
+  <a href='https://covidtracking.com'>covidtracking.com</a>
 
   <script>
 
@@ -70,17 +71,28 @@
         .then((response) => {
           return response.ok ? response.text() : Promise.reject(response.status);
         }),
+      fetch('https://covidtracking.com/api/states')
+        .then((response) => {
+          return response.ok ? response.json() : Promise.reject(response.status);
+        }),
     ])
     .then(responses => {
       const countyCases = responses[0].split('\n');
       const stateCases = responses[1].split('\n');
       const pops = responses[2].split('\n');
+      const tests = responses[3];
+
       pops.shift();
 
       const popsByFips = new Map();
       pops.forEach((pop) => {
         const p = pop.split(',');
         popsByFips.set(p[0], parseInt(p[3]));
+      });
+
+      const testsByFips = new Map();
+      tests.forEach((test) => {
+        testsByFips.set(test.fips, test);
       });
 
       // states
@@ -90,6 +102,9 @@
       stateHeaders.push('population');
       stateHeaders.push('cases/1M');
       stateHeaders.push('deaths/1M');
+      stateHeaders.push('tests');
+      stateHeaders.push('pos test %');
+      stateHeaders.push('tests/1M');
 
       const stateRowsByDate = new Map();
       stateCases.forEach((line) => {
@@ -113,9 +128,20 @@
           state.push(Math.round(state[4] / popPer1M));
 
           statesLatestDay.push(state);
+
+          if (testsByFips.has(fips)) {
+            const positiveTests = testsByFips.get(fips).positive;
+            const totalTests = testsByFips.get(fips).totalTestResults;
+            state.push(totalTests);
+            state.push(Math.round(100 * positiveTests / totalTests));
+            state.push(Math.round(totalTests / popPer1M));
+          } else {
+            console.warn('state fips not found in test data: ' + state);
+          }
+
           // TODO: Guam, Puerto Rico, Virgin Islands
         } else {
-          console.warn('not found: ' + state);
+          console.warn('state fips not found: ' + state);
         }
       });
 
@@ -190,20 +216,7 @@
         },
         licenseKey: 'non-commercial-and-evaluation'
       });
-
-    })
-
-    // let results = await Promise.all([
-    //   fetch('https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv')
-    //     .then((response) => {
-    //       return response.ok ? response.text() : Promise.reject(response.status);
-    //     }),
-    //   fetch('co-est2019-alldata.csv')
-    //     .then((response) => {
-    //       return response.ok ? response.text() : Promise.reject(response.status);
-    //     }),
-    // ]);
-    // console.log(results);
+    });
 
   </script>
 </body>
