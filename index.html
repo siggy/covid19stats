@@ -187,25 +187,40 @@
       Array.from(rowsByDate)[rowsByDate.size-1][1].forEach((county) => {
         const name = county[1];
         const fips = county[3];
-        if (name !== 'Unknown' && fips !== '' && popsByFips.has(fips)) {
-          const pop = popsByFips.get(fips);
-          county.push(popsByFips.get(fips));
+        if (name === 'Unknown')  {
+          return;
+        }
 
+        if (fips !== '' && popsByFips.has(fips)) {
+          const pop = popsByFips.get(fips);
           const popPer1M = pop / 1000000;
+
+          county.push(popsByFips.get(fips));
           county.push(Math.round(county[4] / popPer1M));
           county.push(Math.round(county[5] / popPer1M));
 
           latestDay.push(county);
         } else if (name === 'New York City') {
+          // https://github.com/nytimes/covid-19-data#geographic-exceptions
           const pop =
             popsByFips.get('36005') + // Bronx
             popsByFips.get('36047') + // Kings
             popsByFips.get('36061') + // New York
             popsByFips.get('36081') + // Queens
             popsByFips.get('36085');  // Richmond
+          const popPer1M = pop / 1000000;
 
           county.push(pop);
+          county.push(Math.round(county[4] / popPer1M));
+          county.push(Math.round(county[5] / popPer1M));
+
+          latestDay.push(county);
+        } else if (name === 'Kansas City') {
+          // https://github.com/nytimes/covid-19-data#geographic-exceptions
+          const pop = 488943;
           const popPer1M = pop / 1000000;
+
+          county.push(pop);
           county.push(Math.round(county[4] / popPer1M));
           county.push(Math.round(county[5] / popPer1M));
 

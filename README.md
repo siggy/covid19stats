@@ -28,6 +28,7 @@ curl https://www2.census.gov/programs-surveys/popest/datasets/2010-2019/counties
 
 ## TODO
 
+- pending tests
 - filter out very small counties (or low case counts) for /1M stats
 - hospitals+beds / 1M
 - State-level data for:
