@@ -35,7 +35,6 @@ Browse to: http://0.0.0.0:8000/
 
 - switch between log and linear chart
 - move js/css into separate files
-- fix top of chart cut-off
 - filter out very small counties (or low case counts) for /1M stats
 - hospitals+beds / 1M
 - design

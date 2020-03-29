@@ -4,11 +4,14 @@ let chart;
 // TODO: also render initial dataset?
 function initChart(chartId) {
   chart = c3.generate({
+    padding: {
+      top: 10,
+    },
     bindto: '#' + chartId,
     axis: {
       x: {
         // TODO: control start date dynamically, don't process earlier data
-        min: '2020-03-01',
+        // min: '2020-03-01',
         type: 'timeseries',
         tick: {
           format: '%Y-%m-%d',
@@ -56,21 +59,21 @@ function initChart(chartId) {
   });
 }
 
-function updateChart(statesToDates, allDates, field) {
+function updateChart(statesToDates, xAxisDates, field) {
   // TODO: make this not possible
   if (chart === undefined) {
     return;
   }
 
   columns = [
-    ['x'].concat(Array.from(allDates))
+    ['x'].concat(Array.from(xAxisDates))
   ];
 
   const statesToDatesSorted = new Map([...statesToDates.entries()].sort());
   statesToDatesSorted.forEach((dates, state) => {
     column = [state];
 
-    allDates.forEach((date) => {
+    xAxisDates.forEach((date) => {
       cases = (dates.has(date)) ?
         dates.get(date)[field] :
         null

@@ -111,6 +111,8 @@
   <script>
     // complete, unique set of dates
     const allDates = new Set();
+    // process and display data starting here
+    const startDate = '2020-03-01';
 
     // State => Date => "date,state,fips,cases,deaths"
     const statesToDates = new Map();
@@ -173,6 +175,9 @@
           deaths: row[4],
         }
 
+        if (state.date < startDate) {
+          return;
+        }
         allDates.add(state.date);
 
         if (!statesToDates.has(state.name)) {
