@@ -61,7 +61,11 @@
     </li>
   </ul>
 
-  <div id="c3-chart"></div>
+  <h3>Cases</h3>
+  <div id="c3-chart-cases"></div>
+
+  <h3>Deaths</h3>
+  <div id="c3-chart-deaths"></div>
 
   <div id="states"></div>
   <div id="counties"></div>
@@ -196,7 +200,8 @@
 
       makeTables(statesLatestDay, stateHeaders, popsByFips, countyCases);
 
-      makeChart(statesToDates, allDates);
+      makeChart(statesToDates, allDates, 'cases', 'c3-chart-cases');
+      makeChart(statesToDates, allDates, 'deaths', 'c3-chart-deaths');
     });
   </script>
 </body>

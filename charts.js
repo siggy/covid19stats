@@ -1,4 +1,4 @@
-function makeChart(statesToDates, allDates) {
+function makeChart(statesToDates, allDates, field, chartId) {
   columns = [
     ['x'].concat(Array.from(allDates))
   ];
@@ -9,7 +9,7 @@ function makeChart(statesToDates, allDates) {
 
     allDates.forEach((date) => {
       cases = (dates.has(date)) ?
-        dates.get(date).cases : // TODO: switch this out for other fields
+        dates.get(date)[field] :
         null
       column.push(cases);
     })
@@ -18,6 +18,7 @@ function makeChart(statesToDates, allDates) {
   });
 
   const chart = c3.generate({
+    bindto: '#' + chartId,
     axis: {
       x: {
         type: 'timeseries',
@@ -40,7 +41,6 @@ function makeChart(statesToDates, allDates) {
         }
       },
     },
-    bindto: '#c3-chart',
     data: {
       x: 'x',
       columns: columns,
