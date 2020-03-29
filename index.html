@@ -28,8 +28,8 @@
 
   <link rel="canonical" href="http://sig.gy/covid19stats/" />
 
-  <script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/c3@0.7.15/c3.min.css" rel="stylesheet">
 
   <style>
     body {
@@ -40,10 +40,13 @@
       margin: 0;
     }
 
+
     .github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}
   </style>
 </head>
 <body>
+  <div id="c3-chart"></div>
+
   <div id="states"></div>
   <div id="counties"></div>
 
@@ -56,8 +59,14 @@
   <a href='https://www2.census.gov/programs-surveys/popest/datasets/2010-2019/counties/totals/'>www2.census.gov/programs-surveys/popest/datasets/2010-2019/counties/totals/</a>
   <a href='https://covidtracking.com'>covidtracking.com</a>
 
-  <script>
+  <script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+  <script src="tables.js"></script>
 
+  <script src="https://cdn.jsdelivr.net/npm/d3@5.15.0/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/c3@0.7.15/c3.min.js"></script>
+  <script src="c3-chart.js"></script>
+
+  <script>
     Promise.all([
       fetch('https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv')
         .then((response) => {
@@ -94,8 +103,6 @@
       tests.forEach((test) => {
         testsByFips.set(test.fips, test);
       });
-
-      // states
 
       // TODO: refactor this with county data processing
       const stateHeaders = stateCases.shift().split(',');
@@ -162,94 +169,10 @@
         }
       });
 
-      const hotStates = new Handsontable(document.getElementById('states'), {
-        data: statesLatestDay,
-        colHeaders: stateHeaders,
-        autoColumnSize: {
-          samplingRatio: 23
-        },
-        multiColumnSorting: {
-          indicator: true
-        },
-        licenseKey: 'non-commercial-and-evaluation'
-      });
+      makeTables(statesLatestDay, stateHeaders, popsByFips, countyCases);
 
-      // counties
-
-      const colHeaders = countyCases.shift().split(',');
-      colHeaders.push('population');
-      colHeaders.push('cases/1M');
-      colHeaders.push('deaths/1M');
-
-      const rowsByDate = new Map();
-      countyCases.forEach((line) => {
-        const row = line.split(',');
-        if (!rowsByDate.has(row[0])) {
-          rowsByDate.set(row[0], [])
-        }
-        rowsByDate.get(row[0]).push(row);
-      });
-
-      const latestDay = [];
-      Array.from(rowsByDate)[rowsByDate.size-1][1].forEach((county) => {
-        const name = county[1];
-        const fips = county[3];
-        if (name === 'Unknown')  {
-          return;
-        }
-
-        if (fips !== '' && popsByFips.has(fips)) {
-          const pop = popsByFips.get(fips);
-          const popPer1M = pop / 1000000;
-
-          county.push(popsByFips.get(fips));
-          county.push(Math.round(county[4] / popPer1M));
-          county.push(Math.round(county[5] / popPer1M));
-
-          latestDay.push(county);
-        } else if (name === 'New York City') {
-          // https://github.com/nytimes/covid-19-data#geographic-exceptions
-          const pop =
-            popsByFips.get('36005') + // Bronx
-            popsByFips.get('36047') + // Kings
-            popsByFips.get('36061') + // New York
-            popsByFips.get('36081') + // Queens
-            popsByFips.get('36085');  // Richmond
-          const popPer1M = pop / 1000000;
-
-          county.push(pop);
-          county.push(Math.round(county[4] / popPer1M));
-          county.push(Math.round(county[5] / popPer1M));
-
-          latestDay.push(county);
-        } else if (name === 'Kansas City') {
-          // https://github.com/nytimes/covid-19-data#geographic-exceptions
-          const pop = 488943;
-          const popPer1M = pop / 1000000;
-
-          county.push(pop);
-          county.push(Math.round(county[4] / popPer1M));
-          county.push(Math.round(county[5] / popPer1M));
-
-          latestDay.push(county);
-        } else {
-          console.warn('not found: ' + county);
-        }
-      });
-
-      const hotCounties = new Handsontable(document.getElementById('counties'), {
-        data: latestDay,
-        colHeaders: colHeaders,
-        autoColumnSize: {
-          samplingRatio: 23
-        },
-        multiColumnSorting: {
-          indicator: true
-        },
-        licenseKey: 'non-commercial-and-evaluation'
-      });
+      makeChart(stateCases);
     });
-
   </script>
 </body>
 </html>
