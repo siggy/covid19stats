@@ -40,8 +40,29 @@
       margin: 0;
     }
 
-
     .github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}
+
+    .tab {
+      overflow: hidden;
+      border: 1px solid #ccc;
+      background-color: #f1f1f1;
+    }
+    .tab button {
+      background-color: inherit;
+      float: left;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      transition: 0.3s;
+    }
+    .tab button:hover {
+      background-color: #ddd;
+    }
+    .tab button.active {
+      background-color: #ccc;
+    }
+
   </style>
 </head>
 <body>
@@ -61,11 +82,14 @@
     </li>
   </ul>
 
-  <h3>Cases</h3>
-  <div id="c3-chart-cases"></div>
+  <!-- Tab links -->
+  <div class="tab">
+    <button class="tablinks" onclick="showChart(event, 'cases')" id="defaultOpen">Cases</button>
+    <button class="tablinks" onclick="showChart(event, 'deaths')">Deaths</button>
+    <button class="tablinks" onclick="showChart(event, 'deathsPer1M')">Deaths/1M</button>
+  </div>
 
-  <h3>Deaths</h3>
-  <div id="c3-chart-deaths"></div>
+  <div id="c3-chart"></div>
 
   <div id="states"></div>
   <div id="counties"></div>
@@ -82,6 +106,12 @@
   <script src="charts.js"></script>
 
   <script>
+    // complete, unique set of dates
+    const allDates = new Set();
+
+    // State => Date => "date,state,fips,cases,deaths"
+    const statesToDates = new Map();
+
     Promise.all([
       fetch('https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv')
         .then((response) => {
@@ -130,13 +160,6 @@
       stateHeaders.push('tests/1M');
       stateHeaders.push('tests/death');
 
-      // complete, unique set of dates
-      const allDates = new Set();
-
-      // State => Date => "date,state,fips,cases,deaths"
-      const statesToDates = new Map();
-
-      // handle some states not having today's data in github.com/nytimes/covid-19-data
       stateCases.forEach((line) => {
         const row = line.split(',');
         const state = {
@@ -200,9 +223,20 @@
 
       makeTables(statesLatestDay, stateHeaders, popsByFips, countyCases);
 
-      makeChart(statesToDates, allDates, 'cases', 'c3-chart-cases');
-      makeChart(statesToDates, allDates, 'deaths', 'c3-chart-deaths');
+      makeChart(statesToDates, allDates, 'cases', 'c3-chart');
     });
+
+    function showChart(evt, chart) {
+      const tablinks = document.getElementsByClassName("tablinks");
+      for (let i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+      evt.currentTarget.className += " active";
+
+      // TODO: first time this fires, the data is not ready yet
+      makeChart(statesToDates, allDates, chart, 'c3-chart');
+    }
+    document.getElementById("defaultOpen").click();
   </script>
 </body>
 </html>

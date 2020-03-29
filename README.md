@@ -33,8 +33,10 @@ Browse to: http://0.0.0.0:8000/
 
 ## TODO
 
+- put y-axis labels on right side
+- mobile
 - charts for deaths, cases/1M
 - switch between log and linear chart
 - filter out very small counties (or low case counts) for /1M stats
 - hospitals+beds / 1M
-- Design
+- design
