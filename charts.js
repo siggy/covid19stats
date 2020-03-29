@@ -1,9 +1,6 @@
-// TODO: init at startup?
-let chart;
-
 // TODO: also render initial dataset?
-function initChart(chartId) {
-  chart = c3.generate({
+function initChart(statesToDates, xAxisDates, chartId) {
+  const chart = c3.generate({
     padding: {
       top: 10,
     },
@@ -48,44 +45,35 @@ function initChart(chartId) {
       rescale: true,
     },
   });
-}
 
-function updateChart(statesToDates, xAxisDates, field) {
-  // TODO: make this not possible
-  if (chart === undefined) {
-    return;
-  }
+  return {
+    setField: function(field) {
+      columns = [
+        ['x'].concat(Array.from(xAxisDates))
+      ];
 
-  columns = [
-    ['x'].concat(Array.from(xAxisDates))
-  ];
+      const statesToDatesSorted = new Map([...statesToDates.entries()].sort());
+      statesToDatesSorted.forEach((dates, state) => {
+        column = [state];
 
-  const statesToDatesSorted = new Map([...statesToDates.entries()].sort());
-  statesToDatesSorted.forEach((dates, state) => {
-    column = [state];
+        xAxisDates.forEach((date) => {
+          cases = (dates.has(date)) ?
+            dates.get(date)[field] :
+            null
+          column.push(cases);
+        })
 
-    xAxisDates.forEach((date) => {
-      cases = (dates.has(date)) ?
-        dates.get(date)[field] :
-        null
-      column.push(cases);
-    })
+        columns.push(column);
+      });
 
-    columns.push(column);
-  });
-
-  chart.load({
-    columns: columns,
-  });
-}
-
-function updateYAxis(yAxis) {
-  // TODO: make this not possible
-  if (chart === undefined) {
-    return;
-  }
-
-  chart.axis.types({
-    y: yAxis,
-  });
+      chart.load({
+        columns: columns,
+      });
+    },
+    setAxis: function(yAxis) {
+      chart.axis.types({
+        y: yAxis,
+      });
+    }
+  };
 }

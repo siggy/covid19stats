@@ -33,6 +33,7 @@ Browse to: http://0.0.0.0:8000/
 
 ## TODO
 
+- better handling scrolling over chart without stealing focus and zooming
 - include countries
 - new cases / day chart
 - move js/css into separate files
