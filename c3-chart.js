@@ -1,30 +1,4 @@
-function makeChart(stateCases) {
-  // complete, unique set of dates
-  const allDates = new Set();
-
-  // State => Date => "date,state,fips,cases,deaths"
-  const statesToDates = new Map();
-
-  // handle some states not having today's data in github.com/nytimes/covid-19-data
-  stateCases.forEach((line) => {
-    const row = line.split(',');
-    const date = row[0];
-    const name = row[1];
-    const fips = row[2];
-    const cases = row[3];
-    const deaths = row[4];
-
-    allDates.add(date);
-
-    if (!statesToDates.has(name)) {
-      statesToDates.set(name, new Map());
-    }
-    if (statesToDates.get(name).has(date)) {
-      console.warn('duplicate date found for state: ' + name + ' => ' + date);
-    }
-    statesToDates.get(name).set(date, row);
-  });
-
+function makeChart(statesToDates, allDates) {
   columns = [
     ['x'].concat(Array.from(allDates))
   ];
@@ -35,7 +9,7 @@ function makeChart(stateCases) {
 
     allDates.forEach((date) => {
       cases = (dates.has(date)) ?
-        dates.get(date)[3] : // TODO: switch this out for other fields
+        dates.get(date).cases : // TODO: switch this out for other fields
         null
       column.push(cases);
     })
