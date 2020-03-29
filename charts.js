@@ -22,14 +22,7 @@ function initChart(chartId) {
         type: 'log',
         padding: 0,
         tick: {
-          values: [
-            1, 2, 5,
-            10, 20, 50,
-            100, 200, 500,
-            1000, 2000, 5000,
-            10000, 20000, 50000,
-            100000, 200000, 500000,
-          ]
+          format: function (d) { return d.toFixed(0); }
         }
       },
     },
@@ -50,12 +43,10 @@ function initChart(chartId) {
     transition: {
       duration: 0,
     },
-    // TODO: https://github.com/c3js/c3/issues/2501#issuecomment-506654992
-    // zoom: {
-    //   enabled: true,
-    //   rescale: true,
-    //   type: 'drag',
-    // }
+    zoom: {
+      enabled: true,
+      rescale: true,
+    },
   });
 }
 
@@ -85,5 +76,16 @@ function updateChart(statesToDates, xAxisDates, field) {
 
   chart.load({
     columns: columns,
+  });
+}
+
+function updateYAxis(yAxis) {
+  // TODO: make this not possible
+  if (chart === undefined) {
+    return;
+  }
+
+  chart.axis.types({
+    y: yAxis,
   });
 }

@@ -87,9 +87,14 @@
   </ul>
 
   <div class="tab">
-    <button class="tablinks" onclick="showChart(event, 'cases')" id="defaultOpen">Cases</button>
-    <button class="tablinks" onclick="showChart(event, 'deaths')">Deaths</button>
-    <button class="tablinks" onclick="showChart(event, 'deathsPer1M')">Deaths/1M</button>
+    <button class="tabfields defaultOpen" onclick="setField(event, 'cases')">Cases</button>
+    <button class="tabfields" onclick="setField(event, 'deaths')">Deaths</button>
+    <button class="tabfields" onclick="setField(event, 'deathsPer1M')">Deaths/1M</button>
+  </div>
+
+  <div class="tab">
+    <button class="tabaxes defaultOpen" onclick="setAxis(event, 'log')">Log</button>
+    <button class="tabaxes" onclick="setAxis(event, 'linear')">Linear</button>
   </div>
 
   <div id="c3-chart"></div>
@@ -234,23 +239,36 @@
       makeTables(statesLatestDay, stateHeaders, popsByFips, countyCasesResponse);
 
       initChart('c3-chart');
-      updateChart(statesToDates, allDates, 'cases');
+      updateChart(statesToDates, allDates, 'cases', 'log');
     });
 
     // Based on: https://codepen.io/markcaron/pen/MvGRYV
-    function showChart(evt, chart) {
-      const tablinks = document.getElementsByClassName("tablinks");
-      for (let i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    function setField(evt, chart) {
+      const tabfields = document.getElementsByClassName("tabfields");
+      for (let i = 0; i < tabfields.length; i++) {
+        tabfields[i].className = tabfields[i].className.replace(" active", "");
       }
       evt.currentTarget.className += " active";
 
       // TODO: first time this fires, the data is not ready yet
       // initChart(statesToDates, allDates, chart, 'c3-chart');
 
-      updateChart(statesToDates, allDates, chart);
+      updateChart(statesToDates, allDates, chart, 'linear');
     }
-    document.getElementById("defaultOpen").click();
+
+    function setAxis(evt, yAxis) {
+      const tabaxes = document.getElementsByClassName("tabaxes");
+      for (let i = 0; i < tabaxes.length; i++) {
+        tabaxes[i].className = tabaxes[i].className.replace(" active", "");
+      }
+      evt.currentTarget.className += " active";
+
+      updateYAxis(yAxis);
+    }
+
+    document.getElementsByClassName("defaultOpen").forEach(( e => {
+      e.click();
+    }));
   </script>
 </body>
 </html>

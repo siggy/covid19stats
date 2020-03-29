@@ -33,7 +33,8 @@ Browse to: http://0.0.0.0:8000/
 
 ## TODO
 
-- switch between log and linear chart
+- include countries
+- new cases / day chart
 - move js/css into separate files
 - filter out very small counties (or low case counts) for /1M stats
 - hospitals+beds / 1M
