@@ -35,7 +35,7 @@ function makeChart(stateCases) {
 
     allDates.forEach((date) => {
       cases = (dates.has(date)) ?
-        dates.get(date)[3] :
+        dates.get(date)[3] : // TODO: switch this out for other fields
         null
       column.push(cases);
     })
@@ -44,11 +44,6 @@ function makeChart(stateCases) {
   });
 
   const chart = c3.generate({
-    bindto: '#c3-chart',
-    data: {
-      x: 'x',
-      columns: columns,
-    },
     axis: {
       x: {
         type: 'timeseries',
@@ -61,26 +56,31 @@ function makeChart(stateCases) {
         type: 'log',
         padding: 0,
         tick: {
-          values: [10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000, 200000, 500000]
+          values: [
+            10, 20, 50,
+            100, 200, 500,
+            1000, 2000, 5000,
+            10000, 20000, 50000,
+            100000, 200000, 500000,
+          ]
         }
       },
+    },
+    bindto: '#c3-chart',
+    data: {
+      x: 'x',
+      columns: columns,
     },
     grid: {
       y: {
         show: true,
       }
     },
-    interaction: {
-      enabled: true
-    },
-    legend: {
-      hide: false
+    tooltip: {
+      grouped: false,
     },
     transition: {
-      duration: 0
-    },
-    tooltip: {
-      grouped: false
+      duration: 0,
     },
     // TODO: https://github.com/c3js/c3/issues/2501#issuecomment-506654992
     // zoom: {
