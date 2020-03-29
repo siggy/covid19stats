@@ -36,4 +36,3 @@ Browse to: http://0.0.0.0:8000/
 - filter out very small counties (or low case counts) for /1M stats
 - hospitals+beds / 1M
 - Design
-- Charts
