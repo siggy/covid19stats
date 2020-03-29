@@ -1,26 +1,14 @@
-function makeChart(statesToDates, allDates, field, chartId) {
-  columns = [
-    ['x'].concat(Array.from(allDates))
-  ];
+// TODO: init at startup?
+let chart;
 
-  const statesToDatesSorted = new Map([...statesToDates.entries()].sort());
-  statesToDatesSorted.forEach((dates, state) => {
-    column = [state];
-
-    allDates.forEach((date) => {
-      cases = (dates.has(date)) ?
-        dates.get(date)[field] :
-        null
-      column.push(cases);
-    })
-
-    columns.push(column);
-  });
-
-  const chart = c3.generate({
+// TODO: also render initial dataset?
+function initChart(chartId) {
+  chart = c3.generate({
     bindto: '#' + chartId,
     axis: {
       x: {
+        // TODO: control start date dynamically, don't process earlier data
+        min: '2020-03-01',
         type: 'timeseries',
         tick: {
           format: '%Y-%m-%d',
@@ -43,7 +31,9 @@ function makeChart(statesToDates, allDates, field, chartId) {
     },
     data: {
       x: 'x',
-      columns: columns,
+      columns:  [
+        ['x'],
+      ],
     },
     grid: {
       y: {
@@ -62,5 +52,33 @@ function makeChart(statesToDates, allDates, field, chartId) {
     //   rescale: true,
     //   type: 'drag',
     // }
+  });
+}
+
+function updateChart(statesToDates, allDates, field) {
+  if (chart === undefined) {
+    return;
+  }
+
+  columns = [
+    ['x'].concat(Array.from(allDates))
+  ];
+
+  const statesToDatesSorted = new Map([...statesToDates.entries()].sort());
+  statesToDatesSorted.forEach((dates, state) => {
+    column = [state];
+
+    allDates.forEach((date) => {
+      cases = (dates.has(date)) ?
+        dates.get(date)[field] :
+        null
+      column.push(cases);
+    })
+
+    columns.push(column);
+  });
+
+  chart.load({
+    columns: columns,
   });
 }
