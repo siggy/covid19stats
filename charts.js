@@ -20,6 +20,7 @@ function initChart(chartId) {
         padding: 0,
         tick: {
           values: [
+            1, 2, 5,
             10, 20, 50,
             100, 200, 500,
             1000, 2000, 5000,
@@ -56,6 +57,7 @@ function initChart(chartId) {
 }
 
 function updateChart(statesToDates, allDates, field) {
+  // TODO: make this not possible
   if (chart === undefined) {
     return;
   }

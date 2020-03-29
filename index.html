@@ -134,26 +134,26 @@
         }),
     ])
     .then(responses => {
-      const countyCases = responses[0].split('\n');
-      const stateCases = responses[1].split('\n');
-      const pops = responses[2].split('\n');
-      const tests = responses[3];
+      const countyCasesResponse = responses[0].split('\n');
+      const stateCasesResponse = responses[1].split('\n');
+      const popsResponse = responses[2].split('\n');
+      const testsResponse = responses[3];
 
-      pops.shift();
+      popsResponse.shift();
 
       const popsByFips = new Map();
-      pops.forEach((pop) => {
+      popsResponse.forEach((pop) => {
         const p = pop.split(',');
         popsByFips.set(p[0], parseInt(p[3]));
       });
 
       const testsByFips = new Map();
-      tests.forEach((test) => {
+      testsResponse.forEach((test) => {
         testsByFips.set(test.fips, test);
       });
 
       // TODO: refactor this with county data processing
-      const stateHeaders = stateCases.shift().split(',');
+      const stateHeaders = stateCasesResponse.shift().split(',');
       stateHeaders.push('population');
       stateHeaders.push('cases/1M');
       stateHeaders.push('deaths/1M');
@@ -163,7 +163,7 @@
       stateHeaders.push('tests/1M');
       stateHeaders.push('tests/death');
 
-      stateCases.forEach((line) => {
+      stateCasesResponse.forEach((line) => {
         const row = line.split(',');
         const state = {
           date: row[0],
@@ -185,49 +185,50 @@
       });
 
       const statesLatestDay = [];
-      statesToDates.forEach((dateMap, name) => {
-        const latestDay = Array.from(dateMap)[dateMap.size-1][1]
-        const fips = latestDay.fips;
-        const cases = latestDay.cases;
-        const deaths = latestDay.deaths;
+      statesToDates.forEach((dateMap, _) => {
+        const latestDay = Array.from(dateMap)[dateMap.size-1][1];
+        statesLatestDay.push(latestDay);
 
+        const fips = latestDay.fips;
         if (fips === '' || !popsByFips.has(fips)) {
-          console.warn('state fips not found: ' + latestDay);
+          console.warn('state fips not found: ' + row);
           return;
         }
-
-        // TODO: ordering of object keys must match stateHeaders
         const pop = popsByFips.get(fips);
-        latestDay.population = popsByFips.get(fips);
-
         const popPer1M = pop / 1000000;
-        latestDay.casesPer1M = Math.round(cases / popPer1M);
-        latestDay.deathsPer1M = Math.round(deaths / popPer1M);
-
-        statesLatestDay.push(latestDay);
 
         if (!testsByFips.has(fips)) {
           console.warn('state fips not found in test data: ' + state);
           return;
         }
+        const tests = testsByFips.get(fips);
 
-        const positiveTests = testsByFips.get(fips).positive;
-        const totalTests = testsByFips.get(fips).totalTestResults;
-        const pending = testsByFips.get(fips).pending;
+        dateMap.forEach((row, date) => {
+          const cases = row.cases;
+          const deaths = row.deaths;
 
-        latestDay.tests = totalTests;
-        latestDay.pending = pending;
-        latestDay.positiveTestPercent = Math.round(100 * positiveTests / totalTests);
-        latestDay.testPer1M = Math.round(totalTests / popPer1M);
-        latestDay.testPerDeaths = (deaths != 0) ?
-          Math.round(totalTests / deaths) :
-          0;
+          // TODO: ordering of object keys must match stateHeaders
+          row.population = pop;
+          row.casesPer1M = Math.round(cases / popPer1M);
+          row.deathsPer1M = Math.round(deaths / popPer1M);
+
+          const positiveTests = tests.positive;
+          const totalTests = tests.totalTestResults;
+          const pending = tests.pending;
+
+          row.tests = totalTests;
+          row.pending = pending;
+          row.positiveTestPercent = Math.round(100 * positiveTests / totalTests);
+          row.testPer1M = Math.round(totalTests / popPer1M);
+          row.testPerDeaths = (deaths != 0) ?
+            Math.round(totalTests / deaths) :
+            0;
+        });
       });
 
-      makeTables(statesLatestDay, stateHeaders, popsByFips, countyCases);
+      makeTables(statesLatestDay, stateHeaders, popsByFips, countyCasesResponse);
 
       initChart('c3-chart');
-
       updateChart(statesToDates, allDates, 'cases');
     });
 
