@@ -14,9 +14,9 @@ Promise.all([
       return response.ok ? response.text() : Promise.reject(response.status);
     }),
   fetch('https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv')
-  .then((response) => {
-    return response.ok ? response.text() : Promise.reject(response.status);
-  }),
+    .then((response) => {
+        return response.ok ? response.text() : Promise.reject(response.status);
+    }),
   fetch('co-est2019-alldata-min.csv')
     .then((response) => {
       return response.ok ? response.text() : Promise.reject(response.status);
@@ -25,12 +25,23 @@ Promise.all([
     .then((response) => {
       return response.ok ? response.json() : Promise.reject(response.status);
     }),
+// TODO: countries
+//   fetch('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv')
+//     .then((response) => {
+//       return response.ok ? response.text() : Promise.reject(response.status);
+//     }),
+//   fetch('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv')
+//     .then((response) => {
+//       return response.ok ? response.text() : Promise.reject(response.status);
+//     }),
 ])
 .then(responses => {
   const countyCasesResponse = responses[0].split('\n');
   const stateCasesResponse = responses[1].split('\n');
   const popsResponse = responses[2].split('\n');
   const testsResponse = responses[3];
+  // const jhuGlobalCasesResponse = responses[4].split('\n');
+  // const jhuGlobalDeathsResponse = responses[5].split('\n');
 
   popsResponse.shift();
 
@@ -47,6 +58,8 @@ Promise.all([
 
   // TODO: refactor this with county data processing
   const stateHeaders = stateCasesResponse.shift().split(',');
+  stateHeaders.push('new cases');
+  stateHeaders.push('new deaths');
   stateHeaders.push('population');
   stateHeaders.push('cases/1M');
   stateHeaders.push('deaths/1M');
@@ -99,11 +112,19 @@ Promise.all([
     }
     const tests = testsByFips.get(fips);
 
-    dateMap.forEach((row, date) => {
+    let lastCaseCount = 0;
+    let lastDeathCount = 0;
+    dateMap.forEach((row, _) => {
       const cases = row.cases;
       const deaths = row.deaths;
 
       // TODO: ordering of object keys must match stateHeaders
+      row.newCases = cases - lastCaseCount;
+      lastCaseCount = cases;
+
+      row.newDeaths = deaths - lastDeathCount;
+      lastDeathCount = deaths;
+
       row.population = pop;
       row.casesPer1M = Math.round(cases / popPer1M);
       row.deathsPer1M = Math.round(deaths / popPer1M);

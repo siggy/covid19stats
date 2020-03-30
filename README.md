@@ -6,6 +6,7 @@ Data courtesy of:
 - https://github.com/nytimes/covid-19-data
 - https://www2.census.gov/programs-surveys/popest/datasets/2010-2019/counties/totals/
 - https://covidtracking.com/
+- https://systems.jhu.edu/research/public-health/ncov/
 
 ## Local dev
 
@@ -33,12 +34,13 @@ Browse to: http://0.0.0.0:8000/
 
 ## TODO
 
+- downloadable table data
+- toggle countries + states
 - user-editable start date
 - vary start date by 10th/100th case+death
 - better handling scrolling over chart without stealing focus and zooming
 - include countries
 - new cases / day chart
-- move js/css into separate files
 - filter out very small counties (or low case counts) for /1M stats
 - hospitals+beds / 1M
 - design
