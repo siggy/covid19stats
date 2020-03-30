@@ -60,13 +60,15 @@
       padding: 14px 16px;
       transition: 0.3s;
     }
+    .tab button.tabaxes {
+      float: right;
+    }
     .tab button:hover {
       background-color: #ddd;
     }
     .tab button.active {
       background-color: #ccc;
     }
-
   </style>
 </head>
 <body>
@@ -90,9 +92,7 @@
     <button class="tabfields active" onclick="setField(event, 'cases')">Cases</button>
     <button class="tabfields" onclick="setField(event, 'deaths')">Deaths</button>
     <button class="tabfields" onclick="setField(event, 'deathsPer1M')">Deaths/1M</button>
-  </div>
 
-  <div class="tab">
     <button class="tabaxes active" onclick="setAxis(event, 'log')">Log</button>
     <button class="tabaxes" onclick="setAxis(event, 'linear')">Linear</button>
   </div>

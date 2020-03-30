@@ -33,6 +33,8 @@ Browse to: http://0.0.0.0:8000/
 
 ## TODO
 
+- user-editable start date
+- vary start date by 10th/100th case+death
 - better handling scrolling over chart without stealing focus and zooming
 - include countries
 - new cases / day chart
