@@ -6,14 +6,14 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge" />
   <meta name="description" itemprop="description" content="COVID-19 Stats" />
   <meta itemprop="name" content="COVID-19 Stats" />
-  <meta itemprop="image" content="http://sig.gy/covid19stats/thumbnail.png" />
+  <meta itemprop="image" content="https://sig.gy/covid19stats/thumbnail.png" />
 
   <!-- Facebook Open Graph -->
   <meta property="og:title" content="COVID-19 Stats" />
   <meta property="og:description" content="COVID-19 Stats" />
-  <meta property="og:url" content="http://sig.gy/covid19stats/" />
+  <meta property="og:url" content="https://sig.gy/covid19stats/" />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="http://sig.gy/covid19stats/thumbnail.png" />
+  <meta property="og:image" content="https://sig.gy/covid19stats/thumbnail.png" />
   <meta property="og:site_name" content="COVID-19 Stats" />
 
   <!-- Twitter Card -->
@@ -21,55 +21,19 @@
   <meta name="twitter:site" content="COVID-19 Stats" />
   <meta name="twitter:title" content="COVID-19 Stats" />
   <meta name="twitter:description" content="COVID-19 Stats" />
-  <meta name="twitter:image:src" content="http://sig.gy/covid19stats/thumbnail.png" />
-  <meta name="twitter:url" content="http://sig.gy/covid19stats/" />
+  <meta name="twitter:image:src" content="https://sig.gy/covid19stats/thumbnail.png" />
+  <meta name="twitter:url" content="https://sig.gy/covid19stats/" />
 
   <title>COVID-19 Stats</title>
 
-  <link rel="canonical" href="http://sig.gy/covid19stats/" />
+  <link rel="canonical" href="https://sig.gy/covid19stats/" />
+
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
 
   <link href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/c3@0.7.15/c3.min.css" rel="stylesheet">
-
-  <style>
-    body {
-      background-color: white;
-    }
-
-    p {
-      margin: 0;
-    }
-
-    .github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}
-
-    #c3-chart {
-      height:80vh;
-    }
-
-    .tab {
-      overflow: hidden;
-      border: 1px solid #ccc;
-      background-color: #f1f1f1;
-    }
-    .tab button {
-      background-color: inherit;
-      float: left;
-      border: none;
-      outline: none;
-      cursor: pointer;
-      padding: 14px 16px;
-      transition: 0.3s;
-    }
-    .tab button.tabaxes {
-      float: right;
-    }
-    .tab button:hover {
-      background-color: #ddd;
-    }
-    .tab button.active {
-      background-color: #ccc;
-    }
-  </style>
+  <link href="covid19stats.css" rel="stylesheet">
 </head>
 <body>
 
@@ -106,165 +70,13 @@
     <svg width="80" height="80" viewBox="0 0 250 250" style="fill:#fff; color:#151513; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg>
   </a>
 
-  <script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
-  <script src="tables.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+  <script defer src="tables.js"></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/d3@5.15.0/dist/d3.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/c3@0.7.15/c3.min.js"></script>
-  <script src="charts.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/d3@5.15.0/dist/d3.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/c3@0.7.15/c3.min.js"></script>
+  <script defer src="charts.js"></script>
 
-  <script>
-    let chart;
-
-    // complete, unique set of dates
-    const allDates = new Set();
-    // process and display data starting here
-    const startDate = '2020-03-01';
-
-    // State => Date => "date,state,fips,cases,deaths"
-    const statesToDates = new Map();
-
-    Promise.all([
-      fetch('https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv')
-        .then((response) => {
-          return response.ok ? response.text() : Promise.reject(response.status);
-        }),
-      fetch('https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv')
-      .then((response) => {
-        return response.ok ? response.text() : Promise.reject(response.status);
-      }),
-      fetch('co-est2019-alldata-min.csv')
-        .then((response) => {
-          return response.ok ? response.text() : Promise.reject(response.status);
-        }),
-      fetch('https://covidtracking.com/api/states')
-        .then((response) => {
-          return response.ok ? response.json() : Promise.reject(response.status);
-        }),
-    ])
-    .then(responses => {
-      const countyCasesResponse = responses[0].split('\n');
-      const stateCasesResponse = responses[1].split('\n');
-      const popsResponse = responses[2].split('\n');
-      const testsResponse = responses[3];
-
-      popsResponse.shift();
-
-      const popsByFips = new Map();
-      popsResponse.forEach((pop) => {
-        const p = pop.split(',');
-        popsByFips.set(p[0], parseInt(p[3]));
-      });
-
-      const testsByFips = new Map();
-      testsResponse.forEach((test) => {
-        testsByFips.set(test.fips, test);
-      });
-
-      // TODO: refactor this with county data processing
-      const stateHeaders = stateCasesResponse.shift().split(',');
-      stateHeaders.push('population');
-      stateHeaders.push('cases/1M');
-      stateHeaders.push('deaths/1M');
-      stateHeaders.push('tests');
-      stateHeaders.push('pending tests');
-      stateHeaders.push('pos test %');
-      stateHeaders.push('tests/1M');
-      stateHeaders.push('tests/death');
-
-      stateCasesResponse.forEach((line) => {
-        const row = line.split(',');
-        const state = {
-          date: row[0],
-          name: row[1],
-          fips: row[2],
-          cases: row[3],
-          deaths: row[4],
-        }
-
-        if (state.date < startDate) {
-          return;
-        }
-        allDates.add(state.date);
-
-        if (!statesToDates.has(state.name)) {
-          statesToDates.set(state.name, new Map());
-        }
-        if (statesToDates.get(state.name).has(state.date)) {
-          console.warn('duplicate date found for state: ' + name + ' => ' + state.date);
-        }
-        statesToDates.get(state.name).set(state.date, state);
-      });
-
-      const statesLatestDay = [];
-      statesToDates.forEach((dateMap, _) => {
-        const latestDay = Array.from(dateMap)[dateMap.size-1][1];
-        statesLatestDay.push(latestDay);
-
-        const fips = latestDay.fips;
-        if (fips === '' || !popsByFips.has(fips)) {
-          console.warn('state fips not found: ' + row);
-          return;
-        }
-        const pop = popsByFips.get(fips);
-        const popPer1M = pop / 1000000;
-
-        if (!testsByFips.has(fips)) {
-          console.warn('state fips not found in test data: ' + state);
-          return;
-        }
-        const tests = testsByFips.get(fips);
-
-        dateMap.forEach((row, date) => {
-          const cases = row.cases;
-          const deaths = row.deaths;
-
-          // TODO: ordering of object keys must match stateHeaders
-          row.population = pop;
-          row.casesPer1M = Math.round(cases / popPer1M);
-          row.deathsPer1M = Math.round(deaths / popPer1M);
-
-          const positiveTests = tests.positive;
-          const totalTests = tests.totalTestResults;
-          const pending = tests.pending;
-
-          row.tests = totalTests;
-          row.pending = pending;
-          row.positiveTestPercent = Math.round(100 * positiveTests / totalTests);
-          row.testPer1M = Math.round(totalTests / popPer1M);
-          row.testPerDeaths = (deaths != 0) ?
-            Math.round(totalTests / deaths) :
-            0;
-        });
-      });
-
-      makeTables(statesLatestDay, stateHeaders, popsByFips, countyCasesResponse);
-
-      chart = initChart(statesToDates, allDates, 'c3-chart');
-
-      // defaults. these must match the tabs marked as "active".
-      chart.setField('cases');
-      chart.setAxis('log');
-    });
-
-    function activateTab(evt, className) {
-      const tabs = document.getElementsByClassName(className);
-      for (let i = 0; i < tabs.length; i++) {
-        tabs[i].className = tabs[i].className.replace(" active", "");
-      }
-      evt.currentTarget.className += " active";
-    }
-
-    // Based on: https://codepen.io/markcaron/pen/MvGRYV
-    function setField(evt, field) {
-      activateTab(evt, "tabfields");
-      chart.setField(field);
-    }
-
-    function setAxis(evt, yAxis) {
-      activateTab(evt, "tabaxes");
-      chart.setAxis(yAxis);
-    }
-  </script>
+  <script defer src="covid19stats.js"></script>
 </body>
 </html>
