@@ -1,7 +1,7 @@
 function makeTables(statesLatestDay, stateHeaders, popsByFips, countyCases) {
   // states
 
-  const hotStates = new Handsontable(document.getElementById('states'), {
+  const hotStates = new Handsontable(document.getElementById('states-table'), {
     data: statesLatestDay,
     colHeaders: stateHeaders,
     autoColumnSize: {
@@ -11,6 +11,16 @@ function makeTables(statesLatestDay, stateHeaders, popsByFips, countyCases) {
       indicator: true
     },
     licenseKey: 'non-commercial-and-evaluation'
+  });
+  const statesExportBtn = document.getElementById('states-export');
+  const statesExportPlugin = hotStates.getPlugin('exportFile');
+  statesExportBtn.addEventListener('click', function() {
+    statesExportPlugin.downloadFile('csv', {
+      columnHeaders: true,
+      exportHiddenColumns: true,
+      exportHiddenRows: true,
+      filename: 'covid19stats-states-[YYYY]-[MM]-[DD]',
+    });
   });
 
   // counties
@@ -76,7 +86,7 @@ function makeTables(statesLatestDay, stateHeaders, popsByFips, countyCases) {
     }
   });
 
-  const hotCounties = new Handsontable(document.getElementById('counties'), {
+  const hotCounties = new Handsontable(document.getElementById('counties-table'), {
     data: latestDay,
     colHeaders: colHeaders,
     autoColumnSize: {
@@ -86,5 +96,15 @@ function makeTables(statesLatestDay, stateHeaders, popsByFips, countyCases) {
       indicator: true
     },
     licenseKey: 'non-commercial-and-evaluation'
+  });
+  const countiesExportBtn = document.getElementById('counties-export');
+  const countiesExportPlugin = hotCounties.getPlugin('exportFile');
+  countiesExportBtn.addEventListener('click', function() {
+    countiesExportPlugin.downloadFile('csv', {
+      columnHeaders: true,
+      exportHiddenColumns: true,
+      exportHiddenRows: true,
+      filename: 'covid19stats-counties-[YYYY]-[MM]-[DD]',
+    });
   });
 }
