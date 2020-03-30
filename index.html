@@ -247,24 +247,22 @@
       chart.setAxis('log');
     });
 
-    // Based on: https://codepen.io/markcaron/pen/MvGRYV
-    function setField(evt, field) {
-      const tabfields = document.getElementsByClassName("tabfields");
-      for (let i = 0; i < tabfields.length; i++) {
-        tabfields[i].className = tabfields[i].className.replace(" active", "");
+    function activateTab(evt, className) {
+      const tabs = document.getElementsByClassName(className);
+      for (let i = 0; i < tabs.length; i++) {
+        tabs[i].className = tabs[i].className.replace(" active", "");
       }
       evt.currentTarget.className += " active";
+    }
 
+    // Based on: https://codepen.io/markcaron/pen/MvGRYV
+    function setField(evt, field) {
+      activateTab(evt, "tabfields");
       chart.setField(field);
     }
 
     function setAxis(evt, yAxis) {
-      const tabaxes = document.getElementsByClassName("tabaxes");
-      for (let i = 0; i < tabaxes.length; i++) {
-        tabaxes[i].className = tabaxes[i].className.replace(" active", "");
-      }
-      evt.currentTarget.className += " active";
-
+      activateTab(evt, "tabaxes");
       chart.setAxis(yAxis);
     }
   </script>
