@@ -58,16 +58,18 @@ Promise.all([
 
   // TODO: refactor this with county data processing
   const stateHeaders = stateCasesResponse.shift().split(',');
-  stateHeaders.push('new cases');
-  stateHeaders.push('new deaths');
+
+  // TODO: must match nestedHeaders in tables.js
+  stateHeaders.push('cases');      // new cases
+  stateHeaders.push('deaths');     // new deaths
   stateHeaders.push('population');
-  stateHeaders.push('cases/1M');
-  stateHeaders.push('deaths/1M');
-  stateHeaders.push('tests');
-  stateHeaders.push('pending tests');
-  stateHeaders.push('pos test %');
-  stateHeaders.push('tests/1M');
-  stateHeaders.push('tests/death');
+  stateHeaders.push('cases');      // cases/1M
+  stateHeaders.push('deaths');     // deaths/1M
+  stateHeaders.push('total');      // total tests
+  stateHeaders.push('pending');    // pending tests
+  stateHeaders.push('positive');   // positive test %
+  stateHeaders.push('/1M');        // tests/1M
+  stateHeaders.push('/death');     // tests/death
 
   stateCasesResponse.forEach((line) => {
     const row = line.split(',');
@@ -135,9 +137,9 @@ Promise.all([
 
       row.tests = totalTests;
       row.pending = pending;
-      row.positiveTestPercent = Math.round(100 * positiveTests / totalTests);
-      row.testPer1M = Math.round(totalTests / popPer1M);
-      row.testPerDeaths = (deaths != 0) ?
+      row.positiveTestPercent = positiveTests / totalTests;
+      row.testsPer1M = Math.round(totalTests / popPer1M);
+      row.testsPerDeath = (deaths != 0) ?
         Math.round(totalTests / deaths) :
         0;
     });
