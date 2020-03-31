@@ -28,7 +28,8 @@ Browse to: http://0.0.0.0:8000/
     sed 's/000,/,/1' &&
     echo '66,Guam,Guam,164229' &&
     echo '72,Puerto Rico,Puerto Rico,3195000' &&
-    echo '78,Virgin Islands,Virgin Islands,107268'
+    echo '78,Virgin Islands,Virgin Islands,107268' &&
+    echo '69,Northern Mariana Islands,55,144'
 ) > co-est2019-alldata-min.csv
 ```
 
