@@ -100,7 +100,7 @@ Promise.all([
 
     const fips = latestDay.fips;
     if (fips === '' || !popsByFips.has(fips)) {
-      console.warn('state fips not found: ' + row);
+      console.warn('state fips not found: ' + JSON.stringify(latestDay));
       return;
     }
     const pop = popsByFips.get(fips);
