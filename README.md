@@ -35,7 +35,7 @@ Browse to: http://0.0.0.0:8000/
 
 ## TODO
 
-- toggle states in cart by lockdown date / policy
+- toggle states in chart by lockdown date / policy
 - toggle countries + states
 - user-editable start date
 - vary start date by 10th/100th case+death
