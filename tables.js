@@ -4,6 +4,9 @@ function makeTables(statesLatestDay, stateHeaders, popsByFips, countyCases) {
 
   const hotStates = new Handsontable(document.getElementById('states-table'), {
     data: statesLatestDay,
+    // TODO: this exports column headers as "A","B","C"...
+    // https://forum.handsontable.com/t/how-to-export-nested-header-table/1690
+    colHeaders: true,
     // TODO: must match stateHeaders
     columns: [
       { data: 'date', type: 'date'},
@@ -148,6 +151,9 @@ function makeTables(statesLatestDay, stateHeaders, popsByFips, countyCases) {
 
   const hotCounties = new Handsontable(document.getElementById('counties-table'), {
     data: countiesLatestDay,
+    // TODO: this exports column headers as "A","B","C"...
+    // https://forum.handsontable.com/t/how-to-export-nested-header-table/1690
+    colHeaders: true,
     // TODO: must match countyHeaders
     columns: [
       { data: 'date', type: 'date'},
