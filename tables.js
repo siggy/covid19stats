@@ -64,92 +64,116 @@ function makeTables(statesLatestDay, stateHeaders, popsByFips, countyCases) {
 
   // counties
 
-  const colHeaders = countyCases.shift().split(',');
-  colHeaders.push('population');
-  colHeaders.push('cases/1M');
-  colHeaders.push('deaths/1M');
+  const countyHeaders = countyCases.shift().split(',');
+  countyHeaders.push('new cases');  // new cases
+  countyHeaders.push('new deaths'); // new deaths
+  countyHeaders.push('population');
+  countyHeaders.push('cases/1M');
+  countyHeaders.push('deaths/1M');
 
-  const rowsByDate = new Map();
+  const countiesToDates = new Map();
   countyCases.forEach((line) => {
+    // date,county,state,fips,cases,deaths
     const row = line.split(',');
-    if (!rowsByDate.has(row[0])) {
-      rowsByDate.set(row[0], [])
+    const county = {
+      date: row[0],
+      county: row[1],
+      state: row[2],
+      fips: row[3],
+      cases: row[4],
+      deaths: row[5],
     }
-    rowsByDate.get(row[0]).push(row);
-  });
 
-  const latestDay = [];
-  Array.from(rowsByDate)[rowsByDate.size-1][1].forEach((county) => {
-    const name = county[1];
-    const fips = county[3];
-    if (name === 'Unknown')  {
+    if (county.county === 'Unknown')  {
       return;
     }
 
+    const key = county.county + "-" + county.state;
+
+    if (!countiesToDates.has(key)) {
+      countiesToDates.set(key, new Map());
+    }
+    if (countiesToDates.get(key).has(county.date)) {
+      console.warn('duplicate date found for county: ' + key + ' => ' + county.date);
+    }
+    countiesToDates.get(key).set(county.date, county);
+  });
+
+  const countiesLatestDay = [];
+  countiesToDates.forEach((dateMap, _) => {
+    const latestDay = Array.from(dateMap)[dateMap.size-1][1];
+    countiesLatestDay.push(latestDay);
+
+    const fips = latestDay.fips;
+    let pop = 0;
+
     if (fips !== '' && popsByFips.has(fips)) {
-      const pop = popsByFips.get(fips);
-      const popPer1M = pop / 1000000;
-
-      county.push(popsByFips.get(fips));
-      county.push(Math.round(county[4] / popPer1M));
-      county.push(Math.round(county[5] / popPer1M));
-
-      latestDay.push(county);
-    } else if (name === 'New York City') {
+      pop = popsByFips.get(fips);
+    } else if (latestDay.county === 'New York City') {
       // https://github.com/nytimes/covid-19-data#geographic-exceptions
-      const pop =
+      pop =
         popsByFips.get('36005') + // Bronx
         popsByFips.get('36047') + // Kings
         popsByFips.get('36061') + // New York
         popsByFips.get('36081') + // Queens
         popsByFips.get('36085');  // Richmond
-      const popPer1M = pop / 1000000;
-
-      county.push(pop);
-      county.push(Math.round(county[4] / popPer1M));
-      county.push(Math.round(county[5] / popPer1M));
-
-      latestDay.push(county);
-    } else if (name === 'Kansas City') {
+    } else if (latestDay.county === 'Kansas City') {
       // https://github.com/nytimes/covid-19-data#geographic-exceptions
-      const pop = 488943;
-      const popPer1M = pop / 1000000;
-
-      county.push(pop);
-      county.push(Math.round(county[4] / popPer1M));
-      county.push(Math.round(county[5] / popPer1M));
-
-      latestDay.push(county);
+      pop = 488943;
     } else {
-      console.warn('not found: ' + county);
+      console.warn('county fips not found: ' + JSON.stringify(latestDay));
+      return;
     }
+
+    const popPer1M = pop / 1000000;
+
+    let lastCaseCount = 0;
+    let lastDeathCount = 0;
+    dateMap.forEach((row, _) => {
+      const cases = row.cases;
+      const deaths = row.deaths;
+
+      // TODO: ordering of object keys must match countyHeaders
+      row.newCases = cases - lastCaseCount;
+      lastCaseCount = cases;
+
+      row.newDeaths = deaths - lastDeathCount;
+      lastDeathCount = deaths;
+
+      row.population = pop;
+      row.casesPer1M = Math.round(cases / popPer1M);
+      row.deathsPer1M = Math.round(deaths / popPer1M);
+    });
   });
 
   const hotCounties = new Handsontable(document.getElementById('counties-table'), {
-    data: latestDay,
-    // TODO: must match colHeaders
+    data: countiesLatestDay,
+    // TODO: must match countyHeaders
     columns: [
-      { type: 'date'},    // date
-      { type: 'text'},    // county
-      { type: 'text'},    // state
-      { type: 'numeric'}, // fips
-      { type: 'numeric'}, // cases
-      { type: 'numeric'}, // deaths
-      { type: 'numeric'}, // population
-      { type: 'numeric'}, // casesPer1M
-      { type: 'numeric'}, // deathsPer1M
+      { data: 'date', type: 'date'},
+      { data: 'county', type: 'text'},
+      { data: 'state', type: 'text'},
+      { data: 'fips', type: 'numeric'},
+      { data: 'cases', type: 'numeric'},
+      { data: 'deaths', type: 'numeric'},
+      { data: 'newCases', type: 'numeric'},
+      { data: 'newDeaths', type: 'numeric'},
+      { data: 'population', type: 'numeric'},
+      { data: 'casesPer1M', type: 'numeric'},
+      { data: 'deathsPer1M', type: 'numeric'},
     ],
     nestedHeaders: [
       [
         {label: '', colspan: 4},
         {label: 'total', colspan: 2},
+        {label: 'new', colspan: 2},
         {label: '', colspan: 1},
         {label: '/1M', colspan: 2},
       ],
-      colHeaders,
+      countyHeaders,
     ],
     hiddenColumns: {
-      // columns: [0, 3], // date, fips
+      columns: [0, 3], // date, fips
     },
     dropdownMenu: true,
     filters: true,

@@ -41,6 +41,5 @@ Browse to: http://0.0.0.0:8000/
 - vary start date by 10th/100th case+death
 - better handling scrolling over chart without stealing focus and zooming
 - include countries
-- filter out very small counties (or low case counts) for /1M stats
 - hospitals+beds / 1M
 - design
