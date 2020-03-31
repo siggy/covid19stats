@@ -29,7 +29,7 @@ Browse to: http://0.0.0.0:8000/
     echo '66,Guam,Guam,164229' &&
     echo '72,Puerto Rico,Puerto Rico,3195000' &&
     echo '78,Virgin Islands,Virgin Islands,107268' &&
-    echo '69,Northern Mariana Islands,55144'
+    echo '69,Northern Mariana Islands,Northern Mariana Islands,55144'
 ) > co-est2019-alldata-min.csv
 ```
 
