@@ -1,21 +1,19 @@
-function makeTables(statesLatestDay, stateHeaders, popsByFips, countyCases) {
-  const defaultTableOptions = {
-    // TODO: this exports column headers as "A","B","C"...
-    // https://forum.handsontable.com/t/how-to-export-nested-header-table/1690
-    colHeaders: true,
-    dropdownMenu: true,
-    filters: true,
-    height: '90vh',
-    width: '90vw',
-    stretchH: 'all',
-    licenseKey: 'non-commercial-and-evaluation',
-    multiColumnSorting: {
-      indicator: true,
-    },
-  }
+const defaultTableOptions = {
+  // TODO: this exports column headers as "A","B","C"...
+  // https://forum.handsontable.com/t/how-to-export-nested-header-table/1690
+  colHeaders: true,
+  dropdownMenu: true,
+  filters: true,
+  height: '90vh',
+  width: '90vw',
+  stretchH: 'all',
+  licenseKey: 'non-commercial-and-evaluation',
+  multiColumnSorting: {
+    indicator: true,
+  },
+}
 
-  // states
-
+function makeStateTable(statesLatestDay, stateHeaders) {
   const stateTableOptions = {
     data: statesLatestDay,
     // TODO: must match stateHeaders
@@ -64,9 +62,9 @@ function makeTables(statesLatestDay, stateHeaders, popsByFips, countyCases) {
   );
 
   addExportButton(hotStates, 'states');
+}
 
-  // counties
-
+function makeCountyTable(countyCases, popsByFips) {
   const countyHeaders = countyCases.shift().split(',');
   countyHeaders.push('cases');      // new cases
   countyHeaders.push('deaths');     // new deaths

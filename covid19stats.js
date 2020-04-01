@@ -145,7 +145,8 @@ Promise.all([
     });
   });
 
-  makeTables(statesLatestDay, stateHeaders, popsByFips, countyCasesResponse);
+  makeStateTable(statesLatestDay, stateHeaders);
+  makeCountyTable(countyCasesResponse, popsByFips)
 
   chart = initChart(statesToDates, allDates, 'c3-chart');
 
