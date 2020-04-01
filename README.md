@@ -4,9 +4,9 @@ Display daily stats for COVID-19 across all US counties.
 
 Data courtesy of:
 - https://github.com/nytimes/covid-19-data
-- https://www2.census.gov/programs-surveys/popest/datasets/2010-2019/counties/totals/
-- https://covidtracking.com/
-- https://systems.jhu.edu/research/public-health/ncov/
+- https://www2.census.gov/programs-surveys/popest/datasets/2010-2019/counties/totals
+- https://covidtracking.com
+- https://systems.jhu.edu/research/public-health/ncov
 
 ## Local dev
 

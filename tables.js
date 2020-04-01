@@ -1,12 +1,23 @@
 function makeTables(statesLatestDay, stateHeaders, popsByFips, countyCases) {
-
-  // states
-
-  const hotStates = new Handsontable(document.getElementById('states-table'), {
-    data: statesLatestDay,
+  const defaultTableOptions = {
     // TODO: this exports column headers as "A","B","C"...
     // https://forum.handsontable.com/t/how-to-export-nested-header-table/1690
     colHeaders: true,
+    dropdownMenu: true,
+    filters: true,
+    height: '90vh',
+    width: '90vw',
+    stretchH: 'all',
+    licenseKey: 'non-commercial-and-evaluation',
+    multiColumnSorting: {
+      indicator: true,
+    },
+  }
+
+  // states
+
+  const stateTableOptions = {
+    data: statesLatestDay,
     // TODO: must match stateHeaders
     columns: [
       { data: 'date', type: 'date'},
@@ -45,35 +56,23 @@ function makeTables(statesLatestDay, stateHeaders, popsByFips, countyCases) {
     hiddenColumns: {
       columns: [0, 2], // date, fips
     },
-    dropdownMenu: true,
-    filters: true,
-    height: '90vh',
-    width: '90vw',
-    stretchH: 'all',
-    licenseKey: 'non-commercial-and-evaluation',
-    multiColumnSorting: {
-      indicator: true,
-    },
-  });
-  const statesExportBtn = document.getElementById('states-export');
-  const statesExportPlugin = hotStates.getPlugin('exportFile');
-  statesExportBtn.addEventListener('click', function() {
-    statesExportPlugin.downloadFile('csv', {
-      columnHeaders: true,
-      exportHiddenColumns: true,
-      exportHiddenRows: true,
-      filename: 'covid19stats-states-[YYYY]-[MM]-[DD]',
-    });
-  });
+  }
+
+  const hotStates = new Handsontable(
+    document.getElementById('states-table'),
+    {...stateTableOptions, ...defaultTableOptions}
+  );
+
+  addExportButton(hotStates, 'states');
 
   // counties
 
   const countyHeaders = countyCases.shift().split(',');
-  countyHeaders.push('new cases');  // new cases
-  countyHeaders.push('new deaths'); // new deaths
+  countyHeaders.push('cases');      // new cases
+  countyHeaders.push('deaths');     // new deaths
   countyHeaders.push('population');
-  countyHeaders.push('cases/1M');
-  countyHeaders.push('deaths/1M');
+  countyHeaders.push('cases');      // cases/1M
+  countyHeaders.push('deaths');     // deaths/1M
 
   const countiesToDates = new Map();
   countyCases.forEach((line) => {
@@ -150,11 +149,8 @@ function makeTables(statesLatestDay, stateHeaders, popsByFips, countyCases) {
     });
   });
 
-  const hotCounties = new Handsontable(document.getElementById('counties-table'), {
+  const countyTableOptions = {
     data: countiesLatestDay,
-    // TODO: this exports column headers as "A","B","C"...
-    // https://forum.handsontable.com/t/how-to-export-nested-header-table/1690
-    colHeaders: true,
     // TODO: must match countyHeaders
     columns: [
       { data: 'date', type: 'date'},
@@ -182,24 +178,25 @@ function makeTables(statesLatestDay, stateHeaders, popsByFips, countyCases) {
     hiddenColumns: {
       columns: [0, 3], // date, fips
     },
-    dropdownMenu: true,
-    filters: true,
-    height: '90vh',
-    width: '90vw',
-    stretchH: 'all',
-    licenseKey: 'non-commercial-and-evaluation',
-    multiColumnSorting: {
-      indicator: true,
-    },
-  });
-  const countiesExportBtn = document.getElementById('counties-export');
-  const countiesExportPlugin = hotCounties.getPlugin('exportFile');
+  }
+
+  const hotCounties = new Handsontable(
+    document.getElementById('counties-table'),
+    {...countyTableOptions, ...defaultTableOptions}
+  );
+
+  addExportButton(hotCounties, 'counties');
+}
+
+function addExportButton(table, name) {
+  const countiesExportBtn = document.getElementById(name+'-export');
+  const countiesExportPlugin = table.getPlugin('exportFile');
   countiesExportBtn.addEventListener('click', function() {
     countiesExportPlugin.downloadFile('csv', {
       columnHeaders: true,
       exportHiddenColumns: true,
       exportHiddenRows: true,
-      filename: 'covid19stats-counties-[YYYY]-[MM]-[DD]',
+      filename: 'covid19stats-'+ name + '-[YYYY]-[MM]-[DD]',
     });
   });
 }
