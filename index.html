@@ -52,24 +52,32 @@
     </li>
   </ul>
 
-  <div class="tab">
-    <button class="tabfields active" onclick="setField(event, 'cases')">Cases</button>
-    <button class="tabfields" onclick="setField(event, 'deaths')">Deaths</button>
-    <button class="tabfields" onclick="setField(event, 'newCases')">New Cases</button>
-    <button class="tabfields" onclick="setField(event, 'newDeaths')">New Deaths</button>
-    <button class="tabfields" onclick="setField(event, 'casesPer1M')">Cases/1M</button>
-    <button class="tabfields" onclick="setField(event, 'deathsPer1M')">Deaths/1M</button>
+  <h2>US States</h2>
 
-    <button class="tabaxes active" onclick="setAxis(event, 'log')">Log</button>
-    <button class="tabaxes" onclick="setAxis(event, 'linear')">Linear</button>
+  <div class="data">
+    <div class="tab">
+      <button class="tabfields active" onclick="setField(event, 'cases')">Cases</button>
+      <button class="tabfields" onclick="setField(event, 'deaths')">Deaths</button>
+      <button class="tabfields" onclick="setField(event, 'newCases')">New Cases</button>
+      <button class="tabfields" onclick="setField(event, 'newDeaths')">New Deaths</button>
+      <button class="tabfields" onclick="setField(event, 'casesPer1M')">Cases/1M</button>
+      <button class="tabfields" onclick="setField(event, 'deathsPer1M')">Deaths/1M</button>
+
+      <button class="tabaxes active" onclick="setAxis(event, 'log')">Log</button>
+      <button class="tabaxes" onclick="setAxis(event, 'linear')">Linear</button>
+    </div>
+
+    <div id="c3-chart"></div>
   </div>
 
-  <div id="c3-chart"></div>
+  <h2>US States Table</h2>
 
-  <div id="states-table"></div>
+  <div id="states-table" class="data"></div>
   <button id="states-export" class="intext-btn">Download States CSV</button>
 
-  <div id="counties-table"></div>
+  <h2>US Counties Table</h2>
+
+  <div id="counties-table" class="data"></div>
   <button id="counties-export" class="intext-btn">Download Counties CSV</button>
 
   <a href="https://github.com/siggy/covid19stats" class="github-corner" aria-label="Fork me on Github" title="Fork me on Github">

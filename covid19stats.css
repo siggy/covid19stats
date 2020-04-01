@@ -35,3 +35,9 @@ p {
 .tab button.active {
   background-color: #ccc;
 }
+
+.data {
+  border: 2px solid rgb(111,189,220);
+  border-radius: 4px;
+  margin: 4px;
+}

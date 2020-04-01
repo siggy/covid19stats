@@ -49,6 +49,7 @@ function makeTables(statesLatestDay, stateHeaders, popsByFips, countyCases) {
     filters: true,
     height: '90vh',
     width: '90vw',
+    stretchH: 'all',
     licenseKey: 'non-commercial-and-evaluation',
     multiColumnSorting: {
       indicator: true,
@@ -185,6 +186,7 @@ function makeTables(statesLatestDay, stateHeaders, popsByFips, countyCases) {
     filters: true,
     height: '90vh',
     width: '90vw',
+    stretchH: 'all',
     licenseKey: 'non-commercial-and-evaluation',
     multiColumnSorting: {
       indicator: true,
