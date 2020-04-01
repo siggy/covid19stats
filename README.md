@@ -35,11 +35,11 @@ Browse to: http://0.0.0.0:8000/
 
 ## TODO
 
+- country chart
 - toggle states in chart by lockdown date / policy
 - toggle countries + states
 - user-editable start date
 - vary start date by 10th/100th case+death
 - better handling scrolling over chart without stealing focus and zooming
-- include countries
 - hospitals+beds / 1M
 - design

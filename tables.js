@@ -14,7 +14,7 @@ const defaultTableOptions = {
 }
 
 function makeStateTable(statesLatestDay, stateHeaders) {
-  const stateTableOptions = {
+  const tableOptions = {
     data: statesLatestDay,
     // TODO: must match stateHeaders
     columns: [
@@ -56,12 +56,12 @@ function makeStateTable(statesLatestDay, stateHeaders) {
     },
   }
 
-  const hotStates = new Handsontable(
+  const hot = new Handsontable(
     document.getElementById('states-table'),
-    {...stateTableOptions, ...defaultTableOptions}
+    {...tableOptions, ...defaultTableOptions}
   );
 
-  addExportButton(hotStates, 'states');
+  addExportButton(hot, 'states');
 }
 
 function makeCountyTable(countyCases, popsByFips) {
@@ -147,7 +147,7 @@ function makeCountyTable(countyCases, popsByFips) {
     });
   });
 
-  const countyTableOptions = {
+  const tableOptions = {
     data: countiesLatestDay,
     // TODO: must match countyHeaders
     columns: [
@@ -178,12 +178,41 @@ function makeCountyTable(countyCases, popsByFips) {
     },
   }
 
-  const hotCounties = new Handsontable(
+  const hot = new Handsontable(
     document.getElementById('counties-table'),
-    {...countyTableOptions, ...defaultTableOptions}
+    {...tableOptions, ...defaultTableOptions}
   );
 
-  addExportButton(hotCounties, 'counties');
+  addExportButton(hot, 'counties');
+}
+
+function makeCountryTable(countriesLatestDay) {
+  const tableOptions = {
+    data: countriesLatestDay,
+    columns: [
+      { data: 'country', type: 'text'},
+      { data: 'cases', type: 'numeric'},
+      { data: 'deaths', type: 'numeric'},
+    ],
+    nestedHeaders: [
+      // [
+      //   // {label: '', colspan: 3},
+      //   // {label: 'total', colspan: 2},
+      //   // {label: 'new', colspan: 2},
+      //   // {label: '', colspan: 1},
+      //   // {label: '/1M', colspan: 2},
+      //   // {label: 'tests', colspan: 5},
+      // ],
+      ['province/country', 'cases', 'deaths'],
+    ],
+  }
+
+  const hot = new Handsontable(
+    document.getElementById('country-table'),
+    {...tableOptions, ...defaultTableOptions}
+  );
+
+  addExportButton(hot, 'country');
 }
 
 function addExportButton(table, name) {

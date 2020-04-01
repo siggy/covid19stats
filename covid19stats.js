@@ -1,12 +1,5 @@
-let chart;
-
-// complete, unique set of dates
-const allDates = new Set();
-// process and display data starting here
-const startDate = '2020-03-01';
-
-// State => Date => "date,state,fips,cases,deaths"
-const statesToDates = new Map();
+let stateChart;
+let countryChart;
 
 Promise.all([
   fetch('https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv')
@@ -25,23 +18,22 @@ Promise.all([
     .then((response) => {
       return response.ok ? response.json() : Promise.reject(response.status);
     }),
-// TODO: countries
-//   fetch('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv')
-//     .then((response) => {
-//       return response.ok ? response.text() : Promise.reject(response.status);
-//     }),
-//   fetch('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv')
-//     .then((response) => {
-//       return response.ok ? response.text() : Promise.reject(response.status);
-//     }),
+  fetch('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv')
+    .then((response) => {
+      return response.ok ? response.text() : Promise.reject(response.status);
+    }),
+  fetch('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv')
+    .then((response) => {
+      return response.ok ? response.text() : Promise.reject(response.status);
+    }),
 ])
 .then(responses => {
   const countyCasesResponse = responses[0].split('\n');
   const stateCasesResponse = responses[1].split('\n');
   const popsResponse = responses[2].split('\n');
   const testsResponse = responses[3];
-  // const jhuGlobalCasesResponse = responses[4].split('\n');
-  // const jhuGlobalDeathsResponse = responses[5].split('\n');
+  const jhuGlobalCasesResponse = responses[4].split('\n');
+  const jhuGlobalDeathsResponse = responses[5].split('\n');
 
   popsResponse.shift();
 
@@ -55,6 +47,8 @@ Promise.all([
   testsResponse.forEach((test) => {
     testsByFips.set(test.fips, test);
   });
+
+  // process states
 
   // TODO: refactor this with county data processing
   const stateHeaders = stateCasesResponse.shift().split(',');
@@ -71,6 +65,15 @@ Promise.all([
   stateHeaders.push('/1M');        // tests/1M
   stateHeaders.push('/death');     // tests/death
 
+  // process and display data starting here
+  const startDate = '2020-03-01';
+
+  // complete, unique set of dates
+  const allStateDates = new Set();
+
+  // State => Date => {date,state,fips,cases,deaths}
+  const statesToDates = new Map();
+
   stateCasesResponse.forEach((line) => {
     const row = line.split(',');
     const state = {
@@ -79,12 +82,12 @@ Promise.all([
       fips: row[2],
       cases: row[3],
       deaths: row[4],
-    }
+    };
 
     if (state.date < startDate) {
       return;
     }
-    allDates.add(state.date);
+    allStateDates.add(state.date);
 
     if (!statesToDates.has(state.name)) {
       statesToDates.set(state.name, new Map());
@@ -145,14 +148,138 @@ Promise.all([
     });
   });
 
+  // process countries
+  if (jhuGlobalCasesResponse.length != jhuGlobalDeathsResponse.length) {
+    console.warn('country cases ('+ jhuGlobalCasesResponse.length + ') does not equal country deaths ('+ jhuGlobalDeathsResponse.length + ')');
+  }
+
+  const countryHeaders = jhuGlobalCasesResponse.shift().split(',');
+  jhuGlobalDeathsResponse.shift();
+
+  // complete, unique set of dates
+  const allCountryDates = new Set();
+
+  // State => Date => {date,state,fips,cases,deaths}
+  const countriesToDates = new Map();
+
+  jhuGlobalCasesResponse.forEach((caseLine, i) => {
+    if (caseLine === "") {
+      // last line
+      return;
+    }
+
+    const caseRow = caseLine.split(',');
+    const deathRow = jhuGlobalDeathsResponse[i].split(',');
+    if (
+      caseRow.length !== deathRow.length ||
+      caseRow[0] !== deathRow[0] ||
+      caseRow[1] !== deathRow[1]
+    ) {
+      console.warn('case row does not equal death row');
+      console.warn(caseRow);
+      console.warn(deathRow);
+      return;
+    }
+
+    if (caseRow[1] === "\"Korea") {
+      // special case for:
+      // ,"Korea, South",36.0,128.0,
+      caseRow.shift();
+      deathRow.shift();
+
+      caseRow[0] = "";
+      deathRow[0] = "";
+
+      caseRow[1] = "Korea, South";
+      deathRow[1] = "Korea, South";
+    }
+
+    const name = caseRow[0] !== '' ? caseRow[0] + ', ' + caseRow[1] : caseRow[1];
+    if (!countriesToDates.has(name)) {
+      countriesToDates.set(name, new Map());
+    }
+
+    countryHeaders.forEach((header, i) => {
+      if (i < 4) {
+        // first 4 columns are: province/state, country/region, lat, long
+        return;
+      }
+
+      const country = {
+        date: formatDate(header),
+        name: name,
+        cases: caseRow[i],
+        deaths: deathRow[i],
+      };
+
+      allCountryDates.add(country.date);
+
+      if (countriesToDates.get(country.name).has(country.date)) {
+        console.warn('duplicate date found for country: ' + country.name + ' => ' + country.date);
+      }
+      countriesToDates.get(country.name).set(country.date, country);
+    });
+  });
+
+  // TODO: derice latest day from countriesToDates
+
+  // Province/Country => Date => {date,state,fips,cases,deaths}
+  const countriesLatestDay = [];
+  jhuGlobalCasesResponse.forEach((caseLine, i) => {
+    if (caseLine === "") {
+      // last line
+      return;
+    }
+
+    const caseRow = caseLine.split(',');
+    const deathRow = jhuGlobalDeathsResponse[i].split(',');
+
+    if (
+        caseRow.length !== deathRow.length ||
+        caseRow[0] !== deathRow[0] ||
+        caseRow[1] !== deathRow[1]
+      ) {
+      console.warn('case row does not equal death row');
+      console.warn(caseRow);
+      console.warn(deathRow);
+      return;
+    }
+
+    if (caseRow[1] === "\"Korea") {
+      // special case for:
+      // ,"Korea, South",36.0,128.0,
+      caseRow.shift();
+      deathRow.shift();
+
+      caseRow[0] = "";
+      deathRow[0] = "";
+
+      caseRow[1] = "Korea, South";
+      deathRow[1] = "Korea, South";
+    }
+
+    countriesLatestDay.push({
+      country: caseRow[0] !== '' ? caseRow[0] + ', ' + caseRow[1] : caseRow[1],
+      cases: caseRow[caseRow.length-1],
+      deaths: deathRow[deathRow.length-1],
+    });
+  })
+
+  // render tables and charts
+
   makeStateTable(statesLatestDay, stateHeaders);
-  makeCountyTable(countyCasesResponse, popsByFips)
+  makeCountyTable(countyCasesResponse, popsByFips);
+  makeCountryTable(countriesLatestDay);
 
-  chart = initChart(statesToDates, allDates, 'c3-chart');
-
+  stateChart = initChart(statesToDates, allStateDates, 'state-chart');
   // defaults. these must match the tabs marked as "active".
-  chart.setField('cases');
-  chart.setAxis('log');
+  stateChart.setField('cases');
+  stateChart.setAxis('log');
+
+  // countryChart = initChart(countriesToDates, allCountryDates, 'country-chart');
+  // // defaults. these must match the tabs marked as "active".
+  // countryChart.setField('cases');
+  // countryChart.setAxis('log');
 });
 
 function activateTab(evt, className) {
@@ -164,12 +291,36 @@ function activateTab(evt, className) {
 }
 
 // Based on: https://codepen.io/markcaron/pen/MvGRYV
-function setField(evt, field) {
-  activateTab(evt, "tabfields");
-  chart.setField(field);
+function setField(evt, chart, field) {
+  activateTab(evt, chart+"-field-tab");
+  if (chart === 'state') {
+    stateChart.setField(field);
+  } else if (chart === 'country') {
+    countryChart.setField(field);
+  }
 }
 
-function setAxis(evt, yAxis) {
-  activateTab(evt, "tabaxes");
-  chart.setAxis(yAxis);
+function setAxis(evt, chart, yAxis) {
+  activateTab(evt, chart+"-axes-tab");
+  if (chart === 'state') {
+    stateChart.setAxis(yAxis);
+  } else if (chart === 'country') {
+    countryChart.setAxis(yAxis);
+  }
+}
+
+function formatDate(date) {
+  const d = new Date(date);
+  let month = '' + (d.getMonth() + 1);
+  let day = '' + d.getDate();
+  const year = d.getFullYear();
+
+  if (month.length < 2) {
+      month = '0' + month;
+  }
+  if (day.length < 2) {
+      day = '0' + day;
+  }
+
+  return [year, month, day].join('-');
 }
