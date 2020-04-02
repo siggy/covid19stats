@@ -209,10 +209,15 @@ Promise.all([
 
     const name = caseRow[0] !== '' ? caseRow[0] + ', ' + caseRow[1] : caseRow[1];
 
+    let popsName = name;
     if (!popsByCountry.has(name)) {
-      console.warn("name not found in population map: " + name);
+      if (caseRow[0] !== '' && popsByCountry.has(caseRow[0])) {
+        popsName = caseRow[0];
+      } else {
+        console.warn("name not found in population map: " + popsName);
+      }
     }
-    const pop = popsByCountry.get(name);
+    const pop = popsByCountry.get(popsName);
     const popPer1M = pop / 1000000;
 
     if (!countriesToDates.has(name)) {
