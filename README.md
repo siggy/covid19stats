@@ -8,6 +8,7 @@ Data courtesy of:
 - https://covidtracking.com
 - https://systems.jhu.edu/research/public-health/ncov
 - https://data.worldbank.org
+- https://open.canada.ca
 
 ## Local dev
 
@@ -35,12 +36,19 @@ Browse to: http://0.0.0.0:8000/
 ```
 
 ```bash
-curl http://api.worldbank.org/v2/en/indicator/SP.POP.TOTL?downloadformat=csv |
-  bsdtar  --to-stdout -xvf - API_SP.POP.TOTL_DS2_en_csv_v2_887275.csv |
-  tail -n +6 |
-  grep -v "Not classified" |
-  sed -e 's/\("[^"]*",\).*"\(.*[0-9]\)","",/\1\2/' |
-  sed -e 's/"",//g' > pops-countries.csv
+(
+  curl http://api.worldbank.org/v2/en/indicator/SP.POP.TOTL?downloadformat=csv |
+    bsdtar  --to-stdout -xvf - API_SP.POP.TOTL_DS2_en_csv_v2_887275.csv |
+    tail -n +6 |
+    grep -v "Not classified" |
+    sed -e 's/\("[^"]*",\).*"\(.*[0-9]\)","",/\1\2/' |
+    sed -e 's/"",//g' \
+&&
+  curl https://www150.statcan.gc.ca/n1/en/tbl/csv/17100009-eng.zip?st=BvQiI4lH |
+    bsdtar  --to-stdout -xvf - 17100009.csv |
+    tail -n13 |
+    sed -e 's/"[^"]*","\([^"]*\).*"\(.*[0-9]\)","","","","0"/"\1, Canada",\2/' \
+) > pops-countries.csv
 ```
 
 ## TODO
