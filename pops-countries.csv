@@ -1,4 +1,4 @@
-"Aruba",105845
+"Aruba, Netherlands",105845
 "Afghanistan",37172386
 "Angola",30809762
 "Albania",2866376
@@ -19,7 +19,7 @@
 "Bangladesh",161356039
 "Bulgaria",7024216
 "Bahrain",1569439
-"Bahamas, The",385640
+"Bahamas",385640
 "Bosnia and Herzegovina",3323929
 "Belarus",9485386
 "Belize",383071
@@ -27,7 +27,7 @@
 "Bolivia",11353142
 "Brazil",209469333
 "Barbados",286641
-"Brunei Darussalam",428962
+"Brunei",428962
 "Bhutan",754394
 "Botswana",2254126
 "Central African Republic",4666377
@@ -39,18 +39,18 @@
 "China",1392730000
 "Cote d'Ivoire",25069229
 "Cameroon",25216237
-"Congo, Dem. Rep.",84068091
-"Congo, Rep.",5244363
+"Congo (Kinshasa)",84068091
+"Congo (Brazzaville)",5244363
 "Colombia",49648685
 "Comoros",832322
 "Cabo Verde",543767
 "Costa Rica",4999441
 "Caribbean small states",7358965
 "Cuba",11338138
-"Curacao",159849
+"Curacao, Netherlands",159849
 "Cayman Islands",64174
 "Cyprus",1189265
-"Czech Republic",10625695
+"Czechia",10625695
 "Germany",82927922
 "Djibouti",958920
 "Dominica",71625
@@ -63,7 +63,7 @@
 "Europe & Central Asia (excluding high income)",417797257
 "Europe & Central Asia",918793590
 "Ecuador",17084357
-"Egypt, Arab Rep.",98423595
+"Egypt",98423595
 "Euro area",341783171
 "Eritrea",3213972
 "Spain",46723749
@@ -74,7 +74,7 @@
 "Finland",5518050
 "Fiji",883483
 "France",66987244
-"Faroe Islands",48497
+"Faroe Islands, Denmark",48497
 "Micronesia, Fed. Sts.",112640
 "Gabon",2119275
 "United Kingdom",66488991
@@ -82,12 +82,12 @@
 "Ghana",29767108
 "Gibraltar",33718
 "Guinea",12414318
-"Gambia, The",2280102
+"Gambia",2280102
 "Guinea-Bissau",1874309
 "Equatorial Guinea",1308974
 "Greece",10727668
 "Grenada",111454
-"Greenland",56025
+"Greenland, Denmark",56025
 "Guatemala",17247807
 "Guam",165768
 "Guyana",779004
@@ -107,7 +107,7 @@
 "Isle of Man",84077
 "India",1352617328
 "Ireland",4853506
-"Iran, Islamic Rep.",81800269
+"Iran",81800269
 "Iraq",38433600
 "Iceland",353574
 "Israel",8883800
@@ -117,18 +117,18 @@
 "Japan",126529100
 "Kazakhstan",18276499
 "Kenya",51393010
-"Kyrgyz Republic",6315800
+"Kyrgyzstan",6315800
 "Cambodia",16249798
 "Kiribati",115847
-"St. Kitts and Nevis",52441
-"Korea, Rep.",51635256
+"Saint Kitts and Nevis",52441
+"Korea, South",51635256
 "Kuwait",4137309
 "Latin America & Caribbean (excluding high income)",609013934
-"Lao PDR",7061507
+"Laos",7061507
 "Lebanon",6848925
 "Liberia",4818977
 "Libya",6678567
-"St. Lucia",181889
+"Saint Lucia",181889
 "Latin America & Caribbean",641357515
 "Least developed countries: UN classification",1009662578
 "Low income",705417321
@@ -155,7 +155,7 @@
 "North Macedonia",2082958
 "Mali",19077690
 "Malta",483530
-"Myanmar",53708395
+"Burma",53708395
 "Middle East & North Africa (excluding high income)",382896715
 "Montenegro",622345
 "Mongolia",3170208
@@ -197,7 +197,7 @@
 "French Polynesia",277679
 "Qatar",2781677
 "Romania",19473936
-"Russian Federation",144478050
+"Russia",144478050
 "Rwanda",12301939
 "South Asia",1814388744
 "Saudi Arabia",33699947
@@ -216,13 +216,13 @@
 "Small states",40575321
 "Sao Tome and Principe",211028
 "Suriname",575991
-"Slovak Republic",5447011
+"Slovakia",5447011
 "Slovenia",2067372
 "Sweden",10183175
 "Eswatini",1136191
-"Sint Maarten (Dutch part)",40654
+"Sint Maarten, Netherlands",40654
 "Seychelles",96762
-"Syrian Arab Republic",16906283
+"Syria",16906283
 "Turks and Caicos Islands",37665
 "Chad",15477751
 "East Asia & Pacific (IDA & IBRD countries)",2056064424
@@ -246,10 +246,10 @@
 "Ukraine",44622516
 "Upper middle income",2655635719
 "Uruguay",3449299
-"United States",327167434
+"US",327167434
 "Uzbekistan",32955400
-"St. Vincent and the Grenadines",110210
-"Venezuela, RB",28870195
+"Saint Vincent and the Grenadines",110210
+"Venezuela",28870195
 "British Virgin Islands",29802
 "Virgin Islands (U.S.)",106977
 "Vietnam",95540395
@@ -261,6 +261,40 @@
 "South Africa",57779622
 "Zambia",17351822
 "Zimbabwe",14439018
+"Guangdong, China",111690000
+"Shandong, China",100060000
+"Henan, China",95590000
+"Sichuan, China",83020000
+"Jiangsu, China",80290000
+"Hebei, China",75200000
+"Hunan, China",68600000
+"Anhui, China",62550000
+"Hubei, China",59020000
+"Zhejiang, China",56570000
+"Guangxi, China",48850000
+"Yunnan, China",48010000
+"Jiangxi, China",46220000
+"Liaoning, China",43690000
+"Fujian, China",39110000
+"Shaanxi, China",38350000
+"Heilongjiang, China",37890000
+"Shanxi, China",36820000
+"Guizhou, China",35550000
+"Chongqing, China",30750000
+"Jilin, China",27170000
+"Gansu, China",26260000
+"Inner Mongolia, China",25290000
+"Xinjiang, China",24450000
+"Shanghai, China",24180000
+"Beijing, China",21710000
+"Tianjin, China",15570000
+"Hainan, China",9170000
+"Hong Kong, China",7335384
+"Ningxia, China",6820000
+"Qinghai, China",5980000
+"Tibet, China",3370000
+"Macau, China",644900
+"Taiwan*",23562318
 "Newfoundland and Labrador, Canada",521365
 "Prince Edward Island, Canada",158158
 "Nova Scotia, Canada",977457

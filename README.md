@@ -42,8 +42,66 @@ Browse to: http://0.0.0.0:8000/
     tail -n +6 |
     grep -v "Not classified" |
     sed -e 's/\("[^"]*",\).*"\(.*[0-9]\)","",/\1\2/' |
-    sed -e 's/"",//g' \
-&&
+    sed -e 's/"",//g' |
+    sed -e 's/St. Kitts and Nevis/Saint Kitts and Nevis/g' |
+    sed -e 's/Myanmar/Burma/g' |
+    sed -e 's/Kyrgyz Republic/Kyrgyzstan/g' |
+    sed -e 's/St. Vincent and the Grenadines/Saint Vincent and the Grenadines/g' |
+    sed -e 's/Bahamas, The/Bahamas/g' |
+    sed -e 's/Lao PDR/Laos/g' |
+    sed -e 's/Congo, Dem. Rep./Congo (Kinshasa)/g' |
+    sed -e 's/Congo, Rep./Congo (Brazzaville)/g' |
+    sed -e 's/Czech Republic/Czechia/g' |
+    sed -e 's/Syrian Arab Republic/Syria/g' |
+    sed -e 's/Venezuela, RB/Venezuela/g' |
+    sed -e 's/United States/US/g' |
+    sed -e 's/Slovak Republic/Slovakia/g' |
+    sed -e 's/Russian Federation/Russia/g' |
+    sed -e 's/Iran, Islamic Rep./Iran/g' |
+    sed -e 's/Brunei Darussalam/Brunei/g' |
+    sed -e 's/Faroe Islands/Faroe Islands, Denmark/g' |
+    sed -e 's/Greenland/Greenland, Denmark/g' |
+    sed -e 's/Gambia, The/Gambia/g' |
+    sed -e 's/Korea, Rep./Korea, South/g' |
+    sed -e 's/Aruba/Aruba, Netherlands/g' |
+    sed -e 's/Curacao/Curacao, Netherlands/g' |
+    sed -e 's/Sint Maarten (Dutch part)/Sint Maarten, Netherlands/g' |
+    sed -e 's/St. Lucia/Saint Lucia/g' |
+    sed -e 's/Egypt, Arab Rep./Egypt/g' &&
+  echo '"Guangdong, China",111690000' &&
+  echo '"Shandong, China",100060000' &&
+  echo '"Henan, China",95590000' &&
+  echo '"Sichuan, China",83020000' &&
+  echo '"Jiangsu, China",80290000' &&
+  echo '"Hebei, China",75200000' &&
+  echo '"Hunan, China",68600000' &&
+  echo '"Anhui, China",62550000' &&
+  echo '"Hubei, China",59020000' &&
+  echo '"Zhejiang, China",56570000' &&
+  echo '"Guangxi, China",48850000' &&
+  echo '"Yunnan, China",48010000' &&
+  echo '"Jiangxi, China",46220000' &&
+  echo '"Liaoning, China",43690000' &&
+  echo '"Fujian, China",39110000' &&
+  echo '"Shaanxi, China",38350000' &&
+  echo '"Heilongjiang, China",37890000' &&
+  echo '"Shanxi, China",36820000' &&
+  echo '"Guizhou, China",35550000' &&
+  echo '"Chongqing, China",30750000' &&
+  echo '"Jilin, China",27170000' &&
+  echo '"Gansu, China",26260000' &&
+  echo '"Inner Mongolia, China",25290000' &&
+  echo '"Xinjiang, China",24450000' &&
+  echo '"Shanghai, China",24180000' &&
+  echo '"Beijing, China",21710000' &&
+  echo '"Tianjin, China",15570000' &&
+  echo '"Hainan, China",9170000' &&
+  echo '"Hong Kong, China",7335384' &&
+  echo '"Ningxia, China",6820000' &&
+  echo '"Qinghai, China",5980000' &&
+  echo '"Tibet, China",3370000' &&
+  echo '"Macau, China",644900' &&
+  echo '"Taiwan*",23562318' &&
   curl https://www150.statcan.gc.ca/n1/en/tbl/csv/17100009-eng.zip?st=BvQiI4lH |
     bsdtar  --to-stdout -xvf - 17100009.csv |
     tail -n13 |
@@ -53,7 +111,9 @@ Browse to: http://0.0.0.0:8000/
 
 ## TODO
 
+- fix political province names
 - fix incomplete country populations
+- fix `^M` chars on `pops-countries.csv`
 - large numbers at top
 - default counties/states/counties visible on chart
 - refactor 'new' and /1M hydration
