@@ -8,9 +8,6 @@ const defaultTableOptions = {
   width: '90vw',
   stretchH: 'all',
   licenseKey: 'non-commercial-and-evaluation',
-  multiColumnSorting: {
-    indicator: true,
-  },
 }
 
 function makeStateTable(statesLatestDay, stateHeaders) {
@@ -21,15 +18,15 @@ function makeStateTable(statesLatestDay, stateHeaders) {
       { data: 'date', type: 'date'},
       { data: 'name', type: 'text'},
       { data: 'fips', type: 'numeric'},
-      { data: 'cases', type: 'numeric'},
-      { data: 'deaths', type: 'numeric'},
-      { data: 'newCases', type: 'numeric'},
-      { data: 'newDeaths', type: 'numeric'},
-      { data: 'population', type: 'numeric'},
-      { data: 'casesPer1M', type: 'numeric'},
-      { data: 'deathsPer1M', type: 'numeric'},
-      { data: 'tests', type: 'numeric'},
-      { data: 'pending', type: 'numeric'},
+      { numericFormat: {pattern: '0,000'}, data: 'cases', type: 'numeric'},
+      { numericFormat: {pattern: '0,000'}, data: 'deaths', type: 'numeric'},
+      { numericFormat: {pattern: '0,000'}, data: 'newCases', type: 'numeric'},
+      { numericFormat: {pattern: '0,000'}, data: 'newDeaths', type: 'numeric'},
+      { numericFormat: {pattern: '0,000'}, data: 'population', type: 'numeric'},
+      { numericFormat: {pattern: '0,000'}, data: 'casesPer1M', type: 'numeric'},
+      { numericFormat: {pattern: '0,000'}, data: 'deathsPer1M', type: 'numeric'},
+      { numericFormat: {pattern: '0,000'}, data: 'tests', type: 'numeric'},
+      { numericFormat: {pattern: '0,000'}, data: 'pending', type: 'numeric'},
       {
         data: 'positiveTestPercent',
         type: 'numeric',
@@ -37,8 +34,8 @@ function makeStateTable(statesLatestDay, stateHeaders) {
           pattern: '0.00%'
         }
       },
-      { data: 'testsPer1M', type: 'numeric'},
-      { data: 'testsPerDeath', type: 'numeric'},
+      { numericFormat: {pattern: '0,000'}, data: 'testsPer1M', type: 'numeric'},
+      { numericFormat: {pattern: '0,000'}, data: 'testsPerDeath', type: 'numeric'},
     ],
     nestedHeaders: [
       [
@@ -53,6 +50,13 @@ function makeStateTable(statesLatestDay, stateHeaders) {
     ],
     hiddenColumns: {
       columns: [0, 2], // date, fips
+    },
+    columnSorting: {
+      sortEmptyCells: true,
+      initialConfig: {
+        column: 3, // cases
+        sortOrder: 'desc',
+      }
     },
   }
 
@@ -154,14 +158,14 @@ function makeCountyTable(countyCases, popsByFips) {
       { data: 'date', type: 'date'},
       { data: 'county', type: 'text'},
       { data: 'state', type: 'text'},
-      { data: 'fips', type: 'numeric'},
-      { data: 'cases', type: 'numeric'},
-      { data: 'deaths', type: 'numeric'},
-      { data: 'newCases', type: 'numeric'},
-      { data: 'newDeaths', type: 'numeric'},
-      { data: 'population', type: 'numeric'},
-      { data: 'casesPer1M', type: 'numeric'},
-      { data: 'deathsPer1M', type: 'numeric'},
+      { numericFormat: {pattern: '0,000'}, data: 'fips', type: 'numeric'},
+      { numericFormat: {pattern: '0,000'}, data: 'cases', type: 'numeric'},
+      { numericFormat: {pattern: '0,000'}, data: 'deaths', type: 'numeric'},
+      { numericFormat: {pattern: '0,000'}, data: 'newCases', type: 'numeric'},
+      { numericFormat: {pattern: '0,000'}, data: 'newDeaths', type: 'numeric'},
+      { numericFormat: {pattern: '0,000'}, data: 'population', type: 'numeric'},
+      { numericFormat: {pattern: '0,000'}, data: 'casesPer1M', type: 'numeric'},
+      { numericFormat: {pattern: '0,000'}, data: 'deathsPer1M', type: 'numeric'},
     ],
     nestedHeaders: [
       [
@@ -175,6 +179,13 @@ function makeCountyTable(countyCases, popsByFips) {
     ],
     hiddenColumns: {
       columns: [0, 3], // date, fips
+    },
+    columnSorting: {
+      sortEmptyCells: true,
+      initialConfig: {
+        column: 4, // cases
+        sortOrder: 'desc',
+      }
     },
   }
 
@@ -191,8 +202,8 @@ function makeCountryTable(countriesLatestDay) {
     data: countriesLatestDay,
     columns: [
       { data: 'country', type: 'text'},
-      { data: 'cases', type: 'numeric'},
-      { data: 'deaths', type: 'numeric'},
+      { numericFormat: {pattern: '0,000'}, data: 'cases', type: 'numeric'},
+      { numericFormat: {pattern: '0,000'}, data: 'deaths', type: 'numeric'},
     ],
     nestedHeaders: [
       // [
@@ -205,6 +216,13 @@ function makeCountryTable(countriesLatestDay) {
       // ],
       ['province/country', 'cases', 'deaths'],
     ],
+    columnSorting: {
+      sortEmptyCells: true,
+      initialConfig: {
+        column: 1, // cases
+        sortOrder: 'desc',
+      }
+    },
   }
 
   const hot = new Handsontable(

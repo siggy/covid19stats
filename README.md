@@ -35,6 +35,10 @@ Browse to: http://0.0.0.0:8000/
 
 ## TODO
 
+- default counties/states/counties visible on chart
+- default sort order on tables
+- refactor 'new' and /1M hydration
+- county chart
 - country chart
 - toggle states in chart by lockdown date / policy
 - toggle countries + states
