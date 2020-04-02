@@ -219,7 +219,7 @@ function makeCountryTable(countriesLatestDay) {
         {label: '', colspan: 1},
         {label: '/1M', colspan: 2},
       ],
-      ['province/country', 'cases', 'deaths', 'newCases', 'newDeaths', 'population', 'casesPer1M', 'deathsPer1M'],
+      ['province/country', 'cases', 'deaths', 'cases', 'deaths', 'population', 'cases', 'deaths'],
     ],
     columnSorting: {
       sortEmptyCells: true,
