@@ -10,7 +10,7 @@ Promise.all([
     .then((response) => {
         return response.ok ? response.text() : Promise.reject(response.status);
     }),
-  fetch('co-est2019-alldata-min.csv')
+  fetch('pops-us-states-counties.csv')
     .then((response) => {
       return response.ok ? response.text() : Promise.reject(response.status);
     }),
@@ -26,19 +26,24 @@ Promise.all([
     .then((response) => {
       return response.ok ? response.text() : Promise.reject(response.status);
     }),
+  fetch('pops-countries.csv')
+    .then((response) => {
+      return response.ok ? response.text() : Promise.reject(response.status);
+    }),
 ])
 .then(responses => {
   const countyCasesResponse = responses[0].split('\n');
   const stateCasesResponse = responses[1].split('\n');
-  const popsResponse = responses[2].split('\n');
+  const usPopsResponse = responses[2].split('\n');
   const testsResponse = responses[3];
   const jhuGlobalCasesResponse = responses[4].split('\n');
   const jhuGlobalDeathsResponse = responses[5].split('\n');
+  const globalPopsResponse = responses[6].split('\n');
 
-  popsResponse.shift();
+  usPopsResponse.shift();
 
   const popsByFips = new Map();
-  popsResponse.forEach((pop) => {
+  usPopsResponse.forEach((pop) => {
     const p = pop.split(',');
     popsByFips.set(p[0], parseInt(p[3]));
   });
@@ -46,6 +51,14 @@ Promise.all([
   const testsByFips = new Map();
   testsResponse.forEach((test) => {
     testsByFips.set(test.fips, test);
+  });
+
+  const popsByCountry = new Map();
+  globalPopsResponse.forEach((pop) => {
+    const split = pop.lastIndexOf('"');
+    const name = pop.substring(1, split);
+    const value = pop.substring(split+2, pop.length);
+    popsByCountry.set(name, value);
   });
 
   // process states
@@ -195,10 +208,19 @@ Promise.all([
     }
 
     const name = caseRow[0] !== '' ? caseRow[0] + ', ' + caseRow[1] : caseRow[1];
+
+    if (!popsByCountry.has(name)) {
+      console.warn("name not found in population map: " + name);
+    }
+    const pop = popsByCountry.get(name);
+    const popPer1M = pop / 1000000;
+
     if (!countriesToDates.has(name)) {
       countriesToDates.set(name, new Map());
     }
 
+    let lastCaseCount = 0;
+    let lastDeathCount = 0;
     countryHeaders.forEach((header, i) => {
       if (i < 4) {
         // first 4 columns are: province/state, country/region, lat, long
@@ -210,7 +232,15 @@ Promise.all([
         name: name,
         cases: caseRow[i],
         deaths: deathRow[i],
+        newCases: caseRow[i] - lastCaseCount,
+        newDeaths: deathRow[i] - lastDeathCount,
+        population: pop !== undefined ? pop : "",
+        casesPer1M: pop !== undefined ? Math.round(caseRow[i] / popPer1M) : "",
+        deathsPer1M: pop !== undefined ? Math.round(deathRow[i] / popPer1M) : "",
       };
+
+      lastCaseCount = country.newCases;
+      lastDeathCount = country.newDeaths;
 
       allCountryDates.add(country.date);
 
@@ -221,49 +251,11 @@ Promise.all([
     });
   });
 
-  // TODO: derice latest day from countriesToDates
-
-  // Province/Country => Date => {date,state,fips,cases,deaths}
   const countriesLatestDay = [];
-  jhuGlobalCasesResponse.forEach((caseLine, i) => {
-    if (caseLine === "") {
-      // last line
-      return;
-    }
-
-    const caseRow = caseLine.split(',');
-    const deathRow = jhuGlobalDeathsResponse[i].split(',');
-
-    if (
-        caseRow.length !== deathRow.length ||
-        caseRow[0] !== deathRow[0] ||
-        caseRow[1] !== deathRow[1]
-      ) {
-      console.warn('case row does not equal death row');
-      console.warn(caseRow);
-      console.warn(deathRow);
-      return;
-    }
-
-    if (caseRow[1] === "\"Korea") {
-      // special case for:
-      // ,"Korea, South",36.0,128.0,
-      caseRow.shift();
-      deathRow.shift();
-
-      caseRow[0] = "";
-      deathRow[0] = "";
-
-      caseRow[1] = "Korea, South";
-      deathRow[1] = "Korea, South";
-    }
-
-    countriesLatestDay.push({
-      country: caseRow[0] !== '' ? caseRow[0] + ', ' + caseRow[1] : caseRow[1],
-      cases: caseRow[caseRow.length-1],
-      deaths: deathRow[deathRow.length-1],
-    });
-  })
+  countriesToDates.forEach((dateMap, _) => {
+    const latestDay = Array.from(dateMap)[dateMap.size-1][1];
+    countriesLatestDay.push(latestDay);
+  });
 
   // render tables and charts
 

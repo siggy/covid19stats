@@ -201,20 +201,25 @@ function makeCountryTable(countriesLatestDay) {
   const tableOptions = {
     data: countriesLatestDay,
     columns: [
-      { data: 'country', type: 'text'},
+      { data: 'name', type: 'text'},
       { numericFormat: {pattern: '0,000'}, data: 'cases', type: 'numeric'},
       { numericFormat: {pattern: '0,000'}, data: 'deaths', type: 'numeric'},
+      { numericFormat: {pattern: '0,000'}, data: 'newCases', type: 'numeric'},
+      { numericFormat: {pattern: '0,000'}, data: 'newDeaths', type: 'numeric'},
+      { numericFormat: {pattern: '0,000'}, data: 'population', type: 'numeric'},
+      { numericFormat: {pattern: '0,000'}, data: 'casesPer1M', type: 'numeric'},
+      { numericFormat: {pattern: '0,000'}, data: 'deathsPer1M', type: 'numeric'},
     ],
+
     nestedHeaders: [
-      // [
-      //   // {label: '', colspan: 3},
-      //   // {label: 'total', colspan: 2},
-      //   // {label: 'new', colspan: 2},
-      //   // {label: '', colspan: 1},
-      //   // {label: '/1M', colspan: 2},
-      //   // {label: 'tests', colspan: 5},
-      // ],
-      ['province/country', 'cases', 'deaths'],
+      [
+        {label: '', colspan: 1},
+        {label: 'total', colspan: 2},
+        {label: 'new', colspan: 2},
+        {label: '', colspan: 1},
+        {label: '/1M', colspan: 2},
+      ],
+      ['province/country', 'cases', 'deaths', 'newCases', 'newDeaths', 'population', 'casesPer1M', 'deathsPer1M'],
     ],
     columnSorting: {
       sortEmptyCells: true,

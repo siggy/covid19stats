@@ -7,6 +7,7 @@ Data courtesy of:
 - https://www2.census.gov/programs-surveys/popest/datasets/2010-2019/counties/totals
 - https://covidtracking.com
 - https://systems.jhu.edu/research/public-health/ncov
+- https://data.worldbank.org
 
 ## Local dev
 
@@ -16,7 +17,7 @@ python3 -m http.server
 
 Browse to: http://0.0.0.0:8000/
 
-### Pull Census data
+### Pull Population data
 
 ```bash
 (
@@ -30,13 +31,23 @@ Browse to: http://0.0.0.0:8000/
     echo '72,Puerto Rico,Puerto Rico,3195000' &&
     echo '78,Virgin Islands,Virgin Islands,107268' &&
     echo '69,Northern Mariana Islands,Northern Mariana Islands,55144'
-) > co-est2019-alldata-min.csv
+) > pops-us-states-counties.csv
+```
+
+```bash
+curl http://api.worldbank.org/v2/en/indicator/SP.POP.TOTL?downloadformat=csv |
+  bsdtar  --to-stdout -xvf - API_SP.POP.TOTL_DS2_en_csv_v2_887275.csv |
+  tail -n +6 |
+  grep -v "Not classified" |
+  sed -e 's/\("[^"]*",\).*"\(.*[0-9]\)","",/\1\2/' |
+  sed -e 's/"",//g' > pops-countries.csv
 ```
 
 ## TODO
 
+- fix incomplete country populations
+- large numbers at top
 - default counties/states/counties visible on chart
-- default sort order on tables
 - refactor 'new' and /1M hydration
 - county chart
 - country chart
