@@ -39,9 +39,10 @@ Browse to: http://0.0.0.0:8000/
 ```bash
 (
   curl http://api.worldbank.org/v2/en/indicator/SP.POP.TOTL?downloadformat=csv |
-    bsdtar  --to-stdout -xvf - API_SP.POP.TOTL_DS2_en_csv_v2_887275.csv |
+    bsdtar --to-stdout -xvf - API_SP.POP.TOTL_DS2_en_csv_v2_887275.csv |
     tail -n +6 |
     grep -v "Not classified" |
+    sed -e $'s/\r$//' |
     sed -e 's/\("[^"]*",\).*"\(.*[0-9]\)","",/\1\2/' |
     sed -e 's/"",//g' |
     sed -e 's/St. Kitts and Nevis/Saint Kitts and Nevis/g' |
@@ -121,8 +122,6 @@ Browse to: http://0.0.0.0:8000/
 ## TODO
 
 - fix political province names
-- fix incomplete country populations
-- fix `^M` chars on `pops-countries.csv`
 - large numbers at top
 - default counties/states/counties visible on chart
 - refactor 'new' and /1M hydration
