@@ -9,6 +9,7 @@ Data courtesy of:
 - https://systems.jhu.edu/research/public-health/ncov
 - https://data.worldbank.org
 - https://open.canada.ca
+- http://www.population.net.au/states
 
 ## Local dev
 
@@ -102,6 +103,14 @@ Browse to: http://0.0.0.0:8000/
   echo '"Tibet, China",3370000' &&
   echo '"Macau, China",644900' &&
   echo '"Taiwan*",23562318' &&
+  echo '"Western Australia, Australia",2720000' &&
+  echo '"New South Wales, Australia",7992000' &&
+  echo '"Victoria, Australia",6280000' &&
+  echo '"Queensland, Australia",5046000' &&
+  echo '"Australian Capital Territory, Australia",412576' &&
+  echo '"Northern Territory, Australia",247940' &&
+  echo '"South Australia, Australia",1731000' &&
+  echo '"Tasmania, Australia",522327' &&
   curl https://www150.statcan.gc.ca/n1/en/tbl/csv/17100009-eng.zip?st=BvQiI4lH |
     bsdtar  --to-stdout -xvf - 17100009.csv |
     tail -n13 |
