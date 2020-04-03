@@ -226,26 +226,29 @@ Promise.all([
 
     let lastCaseCount = 0;
     let lastDeathCount = 0;
-    countryHeaders.forEach((header, i) => {
-      if (i < 4) {
+    countryHeaders.forEach((header, j) => {
+      if (j < 4) {
         // first 4 columns are: province/state, country/region, lat, long
         return;
       }
 
+      const cases = caseRow[j];
+      const deaths = deathRow[j];
+
       const country = {
         date: formatDate(header),
         name: name,
-        cases: caseRow[i],
-        deaths: deathRow[i],
-        newCases: caseRow[i] - lastCaseCount,
-        newDeaths: deathRow[i] - lastDeathCount,
+        cases: cases,
+        deaths: deaths,
+        newCases: cases - lastCaseCount,
+        newDeaths: deaths - lastDeathCount,
         population: pop !== undefined ? pop : "",
-        casesPer1M: pop !== undefined ? Math.round(caseRow[i] / popPer1M) : "",
-        deathsPer1M: pop !== undefined ? Math.round(deathRow[i] / popPer1M) : "",
+        casesPer1M: pop !== undefined ? Math.round(cases / popPer1M) : "",
+        deathsPer1M: pop !== undefined ? Math.round(deaths / popPer1M) : "",
       };
 
-      lastCaseCount = country.newCases;
-      lastDeathCount = country.newDeaths;
+      lastCaseCount = cases;
+      lastDeathCount = deaths;
 
       allCountryDates.add(country.date);
 
