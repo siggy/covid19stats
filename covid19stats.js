@@ -1,8 +1,9 @@
 let stateChart;
+let countyChart;
 let countryChart;
 
 // limit number of countries in chart
-const countryLimit = 30;
+const chartLimit = 30;
 
 Promise.all([
   fetch('https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv')
@@ -64,7 +65,12 @@ Promise.all([
     popsByCountry.set(name, value);
   });
 
+  // process and display data starting here
+  const startDate = '2020-03-01';
+
+  //
   // process states
+  //
 
   // TODO: refactor this with county data processing
   const stateHeaders = stateCasesResponse.shift().split(',');
@@ -80,9 +86,6 @@ Promise.all([
   stateHeaders.push('positive');   // positive test %
   stateHeaders.push('/1M');        // tests/1M
   stateHeaders.push('/death');     // tests/death
-
-  // process and display data starting here
-  const startDate = '2020-03-01';
 
   // complete, unique set of dates
   const allStateDates = new Set();
@@ -109,7 +112,7 @@ Promise.all([
       statesToDates.set(state.name, new Map());
     }
     if (statesToDates.get(state.name).has(state.date)) {
-      console.warn('duplicate date found for state: ' + name + ' => ' + state.date);
+      console.warn('duplicate date found for state: ' + state.name + ' => ' + state.date);
     }
     statesToDates.get(state.name).set(state.date, state);
   });
@@ -164,7 +167,104 @@ Promise.all([
     });
   });
 
+  //
+  // process counties
+  //
+
+  const countyHeaders = countyCasesResponse.shift().split(',');
+
+  // TODO: must match nestedHeaders in tables.js
+  countyHeaders.push('cases');      // new cases
+  countyHeaders.push('deaths');     // new deaths
+  countyHeaders.push('population');
+  countyHeaders.push('cases');      // cases/1M
+  countyHeaders.push('deaths');     // deaths/1M
+
+  // complete, unique set of dates
+  const allCountyDates = new Set();
+
+  // County => Date => {date,county,fips,cases,deaths}
+  const countiesToDates = new Map();
+
+  countyCasesResponse.forEach((line) => {
+    const row = line.split(',');
+    if (row[1] === 'Unknown') {
+      return;
+    }
+
+    const county = {
+      date: row[0],
+      name: row[1] + ', ' + row[2],
+      fips: row[3],
+      cases: row[4],
+      deaths: row[5],
+    };
+
+    if (county.date < startDate) {
+      return;
+    }
+    allCountyDates.add(county.date);
+
+    if (!countiesToDates.has(county.name)) {
+      countiesToDates.set(county.name, new Map());
+    }
+    if (countiesToDates.get(county.name).has(county.date)) {
+      console.warn('duplicate date found for county: ' + county.name + ' => ' + county.date);
+    }
+    countiesToDates.get(county.name).set(county.date, county);
+  });
+
+  const countiesLatestDay = [];
+  countiesToDates.forEach((dateMap, _) => {
+    const latestDay = Array.from(dateMap)[dateMap.size-1][1];
+    countiesLatestDay.push(latestDay);
+
+    const fips = latestDay.fips;
+    let pop = 0;
+
+    if (fips !== '' && popsByFips.has(fips)) {
+      pop = popsByFips.get(fips);
+    } else if (latestDay.name === 'New York City, New York') {
+      // https://github.com/nytimes/covid-19-data#geographic-exceptions
+      pop =
+        popsByFips.get('36005') + // Bronx
+        popsByFips.get('36047') + // Kings
+        popsByFips.get('36061') + // New York
+        popsByFips.get('36081') + // Queens
+        popsByFips.get('36085');  // Richmond
+    } else if (latestDay.name === 'Kansas City, Missouri') {
+      // https://github.com/nytimes/covid-19-data#geographic-exceptions
+      pop = 488943;
+    } else {
+      console.warn('county fips not found: ' + JSON.stringify(latestDay));
+      return;
+    }
+
+    const popPer1M = pop / 1000000;
+
+    let lastCaseCount = 0;
+    let lastDeathCount = 0;
+    dateMap.forEach((row, _) => {
+      const cases = row.cases;
+      const deaths = row.deaths;
+
+      // TODO: ordering of object keys must match countyHeaders
+      row.newCases = cases - lastCaseCount;
+      lastCaseCount = cases;
+
+      row.newDeaths = deaths - lastDeathCount;
+      lastDeathCount = deaths;
+
+      row.population = pop;
+      row.casesPer1M = Math.round(cases / popPer1M);
+      row.deathsPer1M = Math.round(deaths / popPer1M);
+    });
+  });
+
+  //
   // process countries
+  //
+
   if (jhuGlobalCasesResponse.length !== jhuGlobalDeathsResponse.length) {
     console.warn('country cases ('+ jhuGlobalCasesResponse.length + ') does not equal country deaths ('+ jhuGlobalDeathsResponse.length + ')');
   }
@@ -175,7 +275,7 @@ Promise.all([
   // complete, unique set of dates
   const allCountryDates = new Set();
 
-  // State => Date => {date,state,fips,cases,deaths}
+  // Country => Date => {date,country,fips,cases,deaths}
   const countriesToDates = new Map();
 
   jhuGlobalCasesResponse.forEach((caseLine, i) => {
@@ -279,9 +379,14 @@ Promise.all([
   stateChart.setField('cases', 0);
   stateChart.setAxis('log');
 
+  countyChart = initChart(countiesToDates, allCountyDates, 'county-chart');
+  // defaults. these must match the tabs marked as "active".
+  countyChart.setField('cases', chartLimit);
+  countyChart.setAxis('log');
+
   countryChart = initChart(countriesToDates, allCountryDates, 'country-chart');
   // defaults. these must match the tabs marked as "active".
-  countryChart.setField('cases', countryLimit);
+  countryChart.setField('cases', chartLimit);
   countryChart.setAxis('log');
 });
 
@@ -298,8 +403,10 @@ function setField(evt, chart, field) {
   activateTab(evt, chart+"-field-tab");
   if (chart === 'state') {
     stateChart.setField(field, 0);
+  } else if (chart === 'county') {
+    countyChart.setField(field, chartLimit);
   } else if (chart === 'country') {
-    countryChart.setField(field, countryLimit);
+    countryChart.setField(field, chartLimit);
   }
 }
 
@@ -307,6 +414,8 @@ function setAxis(evt, chart, yAxis) {
   activateTab(evt, chart+"-axes-tab");
   if (chart === 'state') {
     stateChart.setAxis(yAxis);
+  } else if (chart === 'county') {
+    countyChart.setAxis(yAxis);
   } else if (chart === 'country') {
     countryChart.setAxis(yAxis);
   }

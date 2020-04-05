@@ -78,6 +78,21 @@
     <div id="state-chart" class="chart"></div>
   </div>
 
+  <h2>US Counties</h2>
+  <div class="data">
+    <div class="tab">
+      <button class="county-field-tab active" onclick="setField(event, 'county', 'cases')">Cases</button>
+      <button class="county-field-tab" onclick="setField(event, 'county', 'deaths')">Deaths</button>
+      <button class="county-field-tab" onclick="setField(event, 'county', 'newCases')">New Cases</button>
+      <button class="county-field-tab" onclick="setField(event, 'county', 'newDeaths')">New Deaths</button>
+      <button class="county-field-tab" onclick="setField(event, 'county', 'casesPer1M')">Cases/1M</button>
+      <button class="county-field-tab" onclick="setField(event, 'county', 'deathsPer1M')">Deaths/1M</button>
+      <button class="county-axes-tab axes active" onclick="setAxis(event, 'county', 'log')">Log</button>
+      <button class="county-axes-tab axes" onclick="setAxis(event, 'county', 'linear')">Linear</button>
+    </div>
+    <div id="county-chart" class="chart"></div>
+  </div>
+
   <h2>Countries</h2>
   <div class="data">
     <div class="tab">

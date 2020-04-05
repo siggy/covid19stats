@@ -125,11 +125,14 @@ Browse to: http://0.0.0.0:8000/
 - large numbers at top
 - default counties/states/counties visible on chart, or top ~10
 - refactor 'new' and /1M hydration
-- county chart
+- refactor county chart+table processing
+- refactor county+state processing
+- 2-letter state abbrevs
 - toggle states in chart by lockdown date / policy
 - toggle countries + states
 - limit country chart to `startDate`
 - user-editable start date
+- dynamic chartLimit
 - vary start date by 10th/100th case+death
 - better handling scrolling over chart without stealing focus and zooming
 - hospitals+beds / 1M
