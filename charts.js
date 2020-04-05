@@ -91,45 +91,7 @@ function initChart(dataMap, xAxisDates, chartId) {
       yAxisType = chart.axis.types().y;
     }
 
-    const values = [];
-    if (yAxisType === 'log') {
-      let mag = 1;
-      let done = false;
-      while (true) {
-        [1,2,5].forEach((i=> {
-          if (done) {
-            return;
-          }
-          const yVal = i*mag;
-          values.push(yVal);
-          if (yVal > yMax) {
-            done = true;
-          }
-        }));
-        if (done) {
-          break;
-        }
-        mag *= 10;
-      }
-      yAxisTickValues = values.slice(Math.max(values.length - 10, 0));
-    } else if (yAxisType === 'linear') {
-      // start with the exact interval: (max / 10) = i
-      // find intervalMultiplier bucket: i => 5 or 50 or 500...
-      // select an interval within that bucket: 50 => 50 or 100 or 150...
-      // 0   <= i < 5    // 1,   2,    3,    4...
-      // 5   <= i < 50   // 5,   10,   15,   20,   25,   30,   35,   40,   45...
-      // 50  <= i < 500  // 50,  100,  150,  200,  250,  300,  350,  400,  450...
-      // 500 <= i < 5000 // 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500...
-      const exactInterval = yMax/10;
-      const intervalMultiplier = 10**Math.floor(Math.log10(exactInterval * 2)) / 2;
-      const interval = intervalMultiplier*Math.ceil(exactInterval/intervalMultiplier);
-      for (let i = interval; i < yMax+interval; i += interval) {
-        values.push(i);
-      }
-      yAxisTickValues = values;
-    } else {
-      console.warn('Unknown yAxis type: ' + yAxisType);
-    }
+    yAxisTickValues = calculateYAxisLabels(yMax, yAxisType);
 
     // force re-render
     if (dataMap !== null) {
@@ -221,4 +183,47 @@ function initChart(dataMap, xAxisDates, chartId) {
       updateChart(chart, null, null, 0, yAxis);
     }
   };
+}
+
+function calculateYAxisLabels(yMax, yAxisType) {
+  const values = [];
+  if (yAxisType === 'log') {
+    let mag = 1;
+    let done = false;
+    while (true) {
+      [1,2,5].forEach((i=> {
+        if (done) {
+          return;
+        }
+        const yVal = i*mag;
+        values.push(yVal);
+        if (yVal > yMax) {
+          done = true;
+        }
+      }));
+      if (done) {
+        break;
+      }
+      mag *= 10;
+    }
+    return values.slice(Math.max(values.length - 10, 0));
+  } else if (yAxisType === 'linear') {
+    // start with the exact interval: (max / 10) = i
+    // find intervalMultiplier bucket: i => 5 or 50 or 500...
+    // select an interval within that bucket: 50 => 50 or 100 or 150...
+    // 0   <= i < 5    // 1,   2,    3,    4...
+    // 5   <= i < 50   // 5,   10,   15,   20,   25,   30,   35,   40,   45...
+    // 50  <= i < 500  // 50,  100,  150,  200,  250,  300,  350,  400,  450...
+    // 500 <= i < 5000 // 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500...
+    const exactInterval = yMax/10;
+    const intervalMultiplier = 10**Math.floor(Math.log10(exactInterval * 2)) / 2;
+    const interval = intervalMultiplier*Math.ceil(exactInterval/intervalMultiplier);
+    for (let i = interval; i < yMax+interval; i += interval) {
+      values.push(i);
+    }
+    return values;
+  }
+
+  console.warn('Unknown yAxis type: ' + yAxisType);
+  return [];
 }
