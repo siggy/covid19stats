@@ -183,7 +183,7 @@ Promise.all([
   // complete, unique set of dates
   const allCountyDates = new Set();
 
-  // County => Date => {date,county,fips,cases,deaths}
+  // "County, State" => Date => {date,county,state,fips,cases,deaths}
   const countiesToDates = new Map();
 
   countyCasesResponse.forEach((line) => {
@@ -194,7 +194,9 @@ Promise.all([
 
     const county = {
       date: row[0],
-      name: row[1] + ', ' + row[2],
+      name: row[1],
+      state: row[2],
+      fullName: row[1] + ', ' + stateAbbreviations[row[2]],
       fips: row[3],
       cases: row[4],
       deaths: row[5],
@@ -205,13 +207,13 @@ Promise.all([
     }
     allCountyDates.add(county.date);
 
-    if (!countiesToDates.has(county.name)) {
-      countiesToDates.set(county.name, new Map());
+    if (!countiesToDates.has(county.fullName)) {
+      countiesToDates.set(county.fullName, new Map());
     }
-    if (countiesToDates.get(county.name).has(county.date)) {
-      console.warn('duplicate date found for county: ' + county.name + ' => ' + county.date);
+    if (countiesToDates.get(county.fullName).has(county.date)) {
+      console.warn('duplicate date found for county: ' + county.fullName + ' => ' + county.date);
     }
-    countiesToDates.get(county.name).set(county.date, county);
+    countiesToDates.get(county.fullName).set(county.date, county);
   });
 
   const countiesLatestDay = [];
@@ -224,7 +226,7 @@ Promise.all([
 
     if (fips !== '' && popsByFips.has(fips)) {
       pop = popsByFips.get(fips);
-    } else if (latestDay.name === 'New York City, New York') {
+    } else if (latestDay.name === 'New York City') {
       // https://github.com/nytimes/covid-19-data#geographic-exceptions
       pop =
         popsByFips.get('36005') + // Bronx
@@ -232,7 +234,7 @@ Promise.all([
         popsByFips.get('36061') + // New York
         popsByFips.get('36081') + // Queens
         popsByFips.get('36085');  // Richmond
-    } else if (latestDay.name === 'Kansas City, Missouri') {
+    } else if (latestDay.name === 'Kansas City') {
       // https://github.com/nytimes/covid-19-data#geographic-exceptions
       pop = 488943;
     } else {
@@ -371,7 +373,7 @@ Promise.all([
   // render tables and charts
 
   makeStateTable(statesLatestDay, stateHeaders);
-  makeCountyTable(countyCasesResponse, popsByFips);
+  makeCountyTable(countiesLatestDay, countyHeaders);
   makeCountryTable(countriesLatestDay);
 
   stateChart = initChart(statesToDates, allStateDates, 'state-chart');

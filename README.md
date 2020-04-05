@@ -121,6 +121,8 @@ Browse to: http://0.0.0.0:8000/
 
 ## TODO
 
+- tests in state chart
+- integrate tables into chart component
 - fix political province names
 - large numbers at top
 - default counties/states/counties visible on chart, or top ~10
