@@ -1,6 +1,9 @@
 let stateChart;
 let countryChart;
 
+// limit number of countries in chart
+const countryLimit = 30;
+
 Promise.all([
   fetch('https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv')
     .then((response) => {
@@ -273,13 +276,13 @@ Promise.all([
 
   stateChart = initChart(statesToDates, allStateDates, 'state-chart');
   // defaults. these must match the tabs marked as "active".
-  stateChart.setField('cases');
+  stateChart.setField('cases', 0);
   stateChart.setAxis('log');
 
-  // countryChart = initChart(countriesToDates, allCountryDates, 'country-chart');
-  // // defaults. these must match the tabs marked as "active".
-  // countryChart.setField('cases');
-  // countryChart.setAxis('log');
+  countryChart = initChart(countriesToDates, allCountryDates, 'country-chart');
+  // defaults. these must match the tabs marked as "active".
+  countryChart.setField('cases', countryLimit);
+  countryChart.setAxis('log');
 });
 
 function activateTab(evt, className) {
@@ -294,9 +297,9 @@ function activateTab(evt, className) {
 function setField(evt, chart, field) {
   activateTab(evt, chart+"-field-tab");
   if (chart === 'state') {
-    stateChart.setField(field);
+    stateChart.setField(field, 0);
   } else if (chart === 'country') {
-    countryChart.setField(field);
+    countryChart.setField(field, countryLimit);
   }
 }
 

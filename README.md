@@ -126,9 +126,9 @@ Browse to: http://0.0.0.0:8000/
 - default counties/states/counties visible on chart, or top ~10
 - refactor 'new' and /1M hydration
 - county chart
-- country chart
 - toggle states in chart by lockdown date / policy
 - toggle countries + states
+- limit country chart to `startDate`
 - user-editable start date
 - vary start date by 10th/100th case+death
 - better handling scrolling over chart without stealing focus and zooming
