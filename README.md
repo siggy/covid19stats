@@ -123,7 +123,7 @@ Browse to: http://0.0.0.0:8000/
 
 - fix political province names
 - large numbers at top
-- default counties/states/counties visible on chart
+- default counties/states/counties visible on chart, or top ~10
 - refactor 'new' and /1M hydration
 - county chart
 - country chart

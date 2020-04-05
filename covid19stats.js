@@ -155,14 +155,14 @@ Promise.all([
       row.pending = pending;
       row.positiveTestPercent = positiveTests / totalTests;
       row.testsPer1M = Math.round(totalTests / popPer1M);
-      row.testsPerDeath = (deaths != 0) ?
+      row.testsPerDeath = (deaths !== 0) ?
         Math.round(totalTests / deaths) :
         0;
     });
   });
 
   // process countries
-  if (jhuGlobalCasesResponse.length != jhuGlobalDeathsResponse.length) {
+  if (jhuGlobalCasesResponse.length !== jhuGlobalDeathsResponse.length) {
     console.warn('country cases ('+ jhuGlobalCasesResponse.length + ') does not equal country deaths ('+ jhuGlobalDeathsResponse.length + ')');
   }
 
