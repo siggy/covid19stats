@@ -142,7 +142,6 @@ Promise.all([
       const cases = row.cases;
       const deaths = row.deaths;
 
-      // TODO: ordering of object keys must match stateHeaders
       row.newCases = cases - lastCaseCount;
       lastCaseCount = cases;
 
@@ -250,7 +249,6 @@ Promise.all([
       const cases = row.cases;
       const deaths = row.deaths;
 
-      // TODO: ordering of object keys must match countyHeaders
       row.newCases = cases - lastCaseCount;
       lastCaseCount = cases;
 

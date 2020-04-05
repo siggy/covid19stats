@@ -1,15 +1,3 @@
-const defaultTableOptions = {
-  // TODO: this exports column headers as "A","B","C"...
-  // https://forum.handsontable.com/t/how-to-export-nested-header-table/1690
-  colHeaders: true,
-  dropdownMenu: true,
-  filters: true,
-  height: '90vh',
-  width: '90vw',
-  stretchH: 'all',
-  licenseKey: 'non-commercial-and-evaluation',
-}
-
 function makeStateTable(statesLatestDay, stateHeaders) {
   const tableOptions = {
     data: statesLatestDay,
@@ -60,12 +48,7 @@ function makeStateTable(statesLatestDay, stateHeaders) {
     },
   }
 
-  const hot = new Handsontable(
-    document.getElementById('states-table'),
-    {...tableOptions, ...defaultTableOptions}
-  );
-
-  addExportButton(hot, 'states');
+  makeTable(tableOptions, 'state');
 }
 
 function makeCountyTable(countiesLatestDay, countyHeaders) {
@@ -107,12 +90,7 @@ function makeCountyTable(countiesLatestDay, countyHeaders) {
     },
   }
 
-  const hot = new Handsontable(
-    document.getElementById('counties-table'),
-    {...tableOptions, ...defaultTableOptions}
-  );
-
-  addExportButton(hot, 'counties');
+  makeTable(tableOptions, 'county');
 }
 
 function makeCountryTable(countriesLatestDay) {
@@ -128,7 +106,6 @@ function makeCountryTable(countriesLatestDay) {
       { numericFormat: {pattern: '0,000'}, data: 'casesPer1M', type: 'numeric'},
       { numericFormat: {pattern: '0,000'}, data: 'deathsPer1M', type: 'numeric'},
     ],
-
     nestedHeaders: [
       [
         {label: '', colspan: 1},
@@ -148,17 +125,29 @@ function makeCountryTable(countriesLatestDay) {
     },
   }
 
-  const hot = new Handsontable(
-    document.getElementById('country-table'),
-    {...tableOptions, ...defaultTableOptions}
-  );
-
-  addExportButton(hot, 'country');
+  makeTable(tableOptions, 'country');
 }
 
-function addExportButton(table, name) {
+function makeTable(options, name) {
+  const defaultTableOptions = {
+    // TODO: this exports column headers as "A","B","C"...
+    // https://forum.handsontable.com/t/how-to-export-nested-header-table/1690
+    colHeaders: true,
+    dropdownMenu: true,
+    filters: true,
+    height: '90vh',
+    width: '90vw',
+    stretchH: 'all',
+    licenseKey: 'non-commercial-and-evaluation',
+  }
+
+  const hot = new Handsontable(
+    document.getElementById(name+'-table'),
+    {...options, ...defaultTableOptions}
+  );
+
   const countiesExportBtn = document.getElementById(name+'-export');
-  const countiesExportPlugin = table.getPlugin('exportFile');
+  const countiesExportPlugin = hot.getPlugin('exportFile');
   countiesExportBtn.addEventListener('click', function() {
     countiesExportPlugin.downloadFile('csv', {
       columnHeaders: true,

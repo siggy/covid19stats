@@ -129,7 +129,6 @@ Browse to: http://0.0.0.0:8000/
 - refactor 'new' and /1M hydration
 - refactor county chart+table processing
 - refactor county+state processing
-- 2-letter state abbrevs
 - toggle states in chart by lockdown date / policy
 - toggle countries + states
 - limit country chart to `startDate`
