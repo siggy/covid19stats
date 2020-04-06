@@ -48,7 +48,7 @@ function makeStateTable(statesLatestDay, stateHeaders) {
     },
   }
 
-  makeTable(tableOptions, 'state');
+  return makeTable(tableOptions, 'state');
 }
 
 function makeCountyTable(countiesLatestDay, countyHeaders) {
@@ -90,7 +90,7 @@ function makeCountyTable(countiesLatestDay, countyHeaders) {
     },
   }
 
-  makeTable(tableOptions, 'county');
+  return makeTable(tableOptions, 'county');
 }
 
 function makeCountryTable(countriesLatestDay) {
@@ -125,7 +125,7 @@ function makeCountryTable(countriesLatestDay) {
     },
   }
 
-  makeTable(tableOptions, 'country');
+  return makeTable(tableOptions, 'country');
 }
 
 function makeTable(options, name) {
@@ -156,4 +156,6 @@ function makeTable(options, name) {
       filename: 'covid19stats-'+ name + '-[YYYY]-[MM]-[DD]',
     });
   });
+
+  return hot;
 }

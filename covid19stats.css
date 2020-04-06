@@ -9,9 +9,35 @@ p {
 
 .github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}
 
+/*
+ * Charts
+ */
+
+.data {
+  border: 2px solid rgb(111,189,220);
+  border-radius: 4px;
+  margin: 4px;
+ }
+
 .chart {
   height:80vh;
 }
+
+/*
+ * Tables
+ */
+
+.table {
+  border: 1px solid rgb(204,204,204);
+ }
+
+.export-btn {
+  margin: 6px;
+}
+
+/*
+ * Tabs
+ */
 
 .tab {
   overflow: hidden;
@@ -24,7 +50,7 @@ p {
   border: none;
   outline: none;
   cursor: pointer;
-  padding: 14px 16px;
+  padding: 10px 16px;
   transition: 0.3s;
 }
 .tab button.axes {
@@ -37,8 +63,49 @@ p {
   background-color: #ccc;
 }
 
-.data {
-  border: 2px solid rgb(111,189,220);
-  border-radius: 4px;
-  margin: 4px;
+/*
+ * Collapsibles
+ */
+
+.collapsible {
+  /* copied from tab */
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+  margin: 0;
+}
+.collapsible:hover {
+  /* copied from .tab:hover */
+  background-color: #ddd;
+}
+.collapsible button {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.5em 0;
+
+  /* copied from .tab button */
+  background-color: inherit;
+  border: none;
+  cursor: pointer;
+  padding: 10px 16px;
+  transition: 0.3s;
+}
+.collapsible button:focus svg {
+  outline: 2px solid;
+}
+.collapsible button svg {
+  height: 1em;
+  margin-left: 0.5em;
+}
+[aria-expanded="true"] .vert {
+  display: none;
+}
+[aria-expanded] rect {
+  fill: currentColor;
+}
+.collapsible-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease-in-out;
 }

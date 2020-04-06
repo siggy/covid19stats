@@ -2,6 +2,10 @@ let stateChart;
 let countyChart;
 let countryChart;
 
+let stateTable;
+let countyTable;
+let countryTable;
+
 // limit number of countries in chart
 const chartLimit = 30;
 
@@ -368,11 +372,21 @@ Promise.all([
     countriesLatestDay.push(latestDay);
   });
 
-  // render tables and charts
+  //
+  // initialize tables
+  //
 
-  makeStateTable(statesLatestDay, stateHeaders);
-  makeCountyTable(countiesLatestDay, countyHeaders);
-  makeCountryTable(countriesLatestDay);
+  stateTable = makeStateTable(statesLatestDay, stateHeaders);
+  countyTable = makeCountyTable(countiesLatestDay, countyHeaders);
+  countryTable = makeCountryTable(countriesLatestDay);
+
+  initCollapsible('state-collapsible', stateTable);
+  initCollapsible('county-collapsible', countyTable);
+  initCollapsible('country-collapsible', countryTable);
+
+  //
+  // initialize charts
+  //
 
   stateChart = initChart(statesToDates, allStateDates, 'state-chart');
   // defaults. these must match the tabs marked as "active".
@@ -435,4 +449,23 @@ function formatDate(date) {
   }
 
   return [year, month, day].join('-');
+}
+
+function initCollapsible(id, table) {
+  const collapsible = document.getElementById(id);
+  const btn = collapsible.querySelector('button');
+  const target = collapsible.nextElementSibling;
+
+  btn.onclick = () => {
+    const expanded = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', !expanded);
+    target.hidden = expanded;
+    if (!expanded) {
+      target.style.maxHeight = target.scrollHeight + "px";
+      // https://github.com/handsontable/handsontable/issues/5322
+      table.render();
+    } else {
+      target.style.maxHeight = null;
+    }
+  }
 }
