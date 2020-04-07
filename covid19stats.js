@@ -7,7 +7,7 @@ let countyTable;
 let countryTable;
 
 // limit number of countries in chart
-const chartLimit = 30;
+const chartLimit = 50;
 
 Promise.all([
   fetch('https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv')
@@ -388,20 +388,13 @@ Promise.all([
   // initialize charts
   //
 
-  stateChart = initChart(statesToDates, allStateDates, 'state-chart');
-  // defaults. these must match the tabs marked as "active".
-  stateChart.setField('cases', 0);
-  stateChart.setAxis('log');
+  stateChart = initChart(statesToDates, allStateDates, 'state-chart', null, 'cases', 0);
 
-  countyChart = initChart(countiesToDates, allCountyDates, 'county-chart');
-  // defaults. these must match the tabs marked as "active".
-  countyChart.setField('cases', chartLimit);
-  countyChart.setAxis('log');
+  countyChart = initChart(countiesToDates, allCountyDates, 'county-chart',
+    new Map([['state', ['California', 'New York']]]), 'cases', chartLimit,
+  );
 
-  countryChart = initChart(countriesToDates, allCountryDates, 'country-chart');
-  // defaults. these must match the tabs marked as "active".
-  countryChart.setField('cases', chartLimit);
-  countryChart.setAxis('log');
+  countryChart = initChart(countriesToDates, allCountryDates, 'country-chart', null, 'cases', chartLimit);
 });
 
 function activateTab(evt, className) {

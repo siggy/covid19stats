@@ -1,112 +1,119 @@
 // dataMap: Name => Date => {date,state,fips,cases,deaths}
-// TODO: also render initial dataset?
-function initChart(dataMap, xAxisDates, chartId) {
+function initChart(dataMap, xAxisDates, chartId, filter, field, limit) {
   let yAxisTickValues = [100, 1000, 10000];
 
-  // dataMap, field, limit, and yAxisType are optional
-  // field required if dataMap provided
-  const updateChart = function(chart, dataMap, field, limit, yAxisType) {
-    let yMax = 0;
+  // side effecting
+  const updateYAxisLabels = function(yMax, yAxis) {
+    yAxisTickValues = calculateYAxisLabels(yMax, yAxis);
+  }
 
-    // TODO: push columns population down into `if (dataMap !== null) { ... chart.load`
-    // TODO calculate yMax while populating `columns`
+  const filterData = function(dataMap, filter) {
+    if (filter === null) {
+      return dataMap;
+    }
+    return new Map(
+      [...dataMap].filter(([k,v]) => {
+        return [...filter.entries()].some((filter) =>{
+          if (filter[1].indexOf(v.values().next().value[filter[0]]) !== -1) {
+            return true;
+          }
+        })
+      })
+    );
+  }
+
+  const sortData = function(dataMap, field) {
+    return new Map(
+      [...dataMap.entries()].sort(
+        (a, b) =>
+          Array.from(a[1])[a[1].size-1][1][field] - Array.from(b[1])[b[1].size-1][1][field]
+      )
+    );
+  }
+
+  const limitData = function(dataMap, limit) {
+    if (limit === 0) {
+      return new Map(
+        [...dataMap.entries()].sort()
+      );
+    }
+    return new Map(
+      [...dataMap.entries()].slice(Math.max(dataMap.size - limit, 0)).sort()
+    );
+  }
+
+  // dataMap should be filtered, sorted, and limited
+  const updateChart = function(dataMap, field, limited) {
+    // convert to columns
     const columns = [
       ['x'].concat(Array.from(xAxisDates))
     ];
+
+    dataMap.forEach((dates, row) => {
+      const column = [row];
+
+      xAxisDates.forEach((date) => {
+        const values = (dates.has(date)) ?
+          dates.get(date)[field] :
+          null
+        column.push(values);
+      })
+
+      columns.push(column);
+    });
+
+    // figure out what's changing, in service to chart.load and yMax
     const toUnload = [];
 
-    if (dataMap !== null) {
-      // updating data
-      const dataMapSorted = (limit !== 0) ?
-        new Map(
-          [...dataMap.entries()].sort(
-            (a, b) =>
-              Array.from(a[1])[a[1].size-1][1][field] - Array.from(b[1])[b[1].size-1][1][field]
-          ).slice(Math.max(dataMap.size - limit, 0)).sort()
-        ) :
-        new Map([...dataMap.entries()].sort());
+    const loadedSet = new Set();
+    c3Chart.data().forEach((row, _) => {
+      loadedSet.add(row.id);
+      if (limited && !dataMap.has(row.id)) {
+        toUnload.push(row.id);
+      }
+    });
 
-      dataMapSorted.forEach((dates, row) => {
-        const column = [row];
+    const shownSet = new Set();
+    c3Chart.data.shown().forEach((row, _) => {
+      shownSet.add(row.id);
+    });
 
-        xAxisDates.forEach((date) => {
-          const cases = (dates.has(date)) ?
-            dates.get(date)[field] :
-            null
-          column.push(cases);
-        })
+    let yMax = 0;
 
-        columns.push(column);
-      });
+    columns.slice(1).forEach((column, _) => {
+      if (limited) {
+        // TODO: we force-unload all data when we're limiting the number of
+        // rows. this is a workaround to ensure the legend stays sorted.
+        // figure out how to avoid this
+        toUnload.push(column[0]);
+      }
+      // skip items that are:
+      // loaded but hidden OR
+      // not loaded but previously hidden
+      if (
+        (loadedSet.has(column[0]) && !shownSet.has(column[0])) ||
+        (!loadedSet.has(column[0]) && c3Chart.internal.hiddenTargetIds.indexOf(column[0]) !== -1)
+      ) {
+        return;
+      }
 
-      const loadedSet = new Set();
-      chart.data().forEach((row, _) => {
-        loadedSet.add(row.id);
-        if (limit !== 0 && !dataMapSorted.has(row.id)) {
-          toUnload.push(row.id);
+      column.slice(1).forEach((value, _) => {
+        const i = parseInt(value);
+        if (i > yMax) {
+          yMax = i;
         }
       });
+    });
 
-      const shownSet = new Set();
-      chart.data.shown().forEach((row, _) => {
-        shownSet.add(row.id);
-      });
+    updateYAxisLabels(yMax, c3Chart.axis.types().y);
 
-      columns.slice(1).forEach((column, _) => {
-        if (limit !== 0) {
-          // TODO: we force-unload all data when we're limiting the number of
-          // rows. this is a workaround to ensure the legend stays sorted.
-          // figure out how to avoid this
-          toUnload.push(column[0]);
-        }
-        // skip items that are:
-        // loaded but hidden OR
-        // not loaded but previously hidden
-        if (
-          (loadedSet.has(column[0]) && !shownSet.has(column[0])) ||
-          (!loadedSet.has(column[0]) && chart.internal.hiddenTargetIds.indexOf(column[0]) !== -1)
-        ) {
-          return;
-        }
-
-        column.slice(1).forEach((value, _) => {
-          const i = parseInt(value);
-          if (i > yMax) {
-            yMax = i;
-          }
-        });
-      });
-    } else {
-      // updating axis
-      chart.data.shown().forEach((row, _) => {
-        row.values.forEach((value, _) => {
-          if (value.value > yMax) {
-            yMax = value.value;
-          }
-        });
-      });
-    }
-
-    if (yAxisType === null) {
-      yAxisType = chart.axis.types().y;
-    }
-
-    yAxisTickValues = calculateYAxisLabels(yMax, yAxisType);
-
-    // force re-render
-    if (dataMap !== null) {
-      chart.load({
-        columns: columns,
-        unload: toUnload,
-      });
-    } else {
-      chart.axis.types({
-        y: yAxisType,
-      });
-    }
+    c3Chart.load({
+      columns: columns,
+      unload: toUnload,
+    });
   }
 
-  const chart = c3.generate({
+  const c3Chart = c3.generate({
     padding: {
       top: 10,
     },
@@ -126,9 +133,7 @@ function initChart(dataMap, xAxisDates, chartId) {
         padding: 0,
         tick: {
           format: d3.format(",d"),
-          values: function () {
-            return yAxisTickValues;
-          }
+          values: () => yAxisTickValues,
         }
       },
     },
@@ -166,28 +171,57 @@ function initChart(dataMap, xAxisDates, chartId) {
     },
     legend: {
       item: {
-        onclick: function (id) {
-          chart.toggle(id);
-          updateChart(chart, null, null, 0, null);
+        onclick: function(id) {
+          c3Chart.toggle(id);
+          updateYAxisLabels(getYMax(c3Chart), c3Chart.axis.types().y);
+          c3Chart.flush();
         }
       }
     },
   });
 
-  return {
-    setField: function(field, limit) {
-      updateChart(chart, dataMap, field, limit, null);
+  const chart = {
+    field: field,
+    limit: limit,
+    dataMap: dataMap,
+    dataMapFiltered: null,
+    dataMapSorted: null,
+    dataMapLimited: null,
+
+    setFilter: function(filter) {
+      this.dataMapFiltered = filterData(this.dataMap, filter);
+      this.setField(this.field);
+    },
+
+    setField: function(field) {
+      this.field = field;
+      this.dataMapSorted = sortData(this.dataMapFiltered, this.field);
+      this.setLimit(this.limit);
+    },
+
+    setLimit: function(limit) {
+      this.limit = limit;
+      this.dataMapLimited = limitData(this.dataMapSorted, this.limit);
+      updateChart(this.dataMapLimited, this.field, this.limit !== 0);
     },
 
     setAxis: function(yAxis) {
-      updateChart(chart, null, null, 0, yAxis);
-    }
+      updateYAxisLabels(getYMax(c3Chart), yAxis);
+      c3Chart.axis.types({
+        y: yAxis,
+      });
+    },
   };
+
+  // initial render
+  chart.setFilter(filter);
+
+  return chart;
 }
 
-function calculateYAxisLabels(yMax, yAxisType) {
+function calculateYAxisLabels(yMax, yAxis) {
   const values = [];
-  if (yAxisType === 'log') {
+  if (yAxis === 'log') {
     let mag = 1;
     let done = false;
     while (true) {
@@ -207,7 +241,7 @@ function calculateYAxisLabels(yMax, yAxisType) {
       mag *= 10;
     }
     return values.slice(Math.max(values.length - 10, 0));
-  } else if (yAxisType === 'linear') {
+  } else if (yAxis === 'linear') {
     // start with the exact interval: (max / 10) = i
     // find intervalMultiplier bucket: i => 5 or 50 or 500...
     // select an interval within that bucket: 50 => 50 or 100 or 150...
@@ -224,6 +258,18 @@ function calculateYAxisLabels(yMax, yAxisType) {
     return values;
   }
 
-  console.warn('Unknown yAxis type: ' + yAxisType);
+  console.warn('Unknown yAxis type: ' + yAxis);
   return [];
+}
+
+function getYMax(c3Chart) {
+  let yMax = 0;
+  c3Chart.data.shown().forEach((row, _) => {
+    row.values.forEach((value, _) => {
+      if (value.value > yMax) {
+        yMax = value.value;
+      }
+    });
+  });
+  return yMax;
 }
