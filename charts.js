@@ -1,49 +1,38 @@
 // dataMap: Name => Date => {date,state,fips,cases,deaths}
-function initChart(dataMap, xAxisDates, chartId, filter, field, limit) {
+const initChart = (dataMap, xAxisDates, chartId, filter, field, limit) => {
   let yAxisTickValues = [100, 1000, 10000];
 
   // side effecting
-  const updateYAxisLabels = function(yMax, yAxis) {
+  const updateYAxisLabels = (yMax, yAxis) => {
     yAxisTickValues = calculateYAxisLabels(yMax, yAxis);
   }
 
-  const filterData = function(dataMap, filter) {
-    if (filter === null) {
-      return dataMap;
-    }
-    return new Map(
-      [...dataMap].filter(([k,v]) => {
-        return [...filter.entries()].some((filter) =>{
-          if (filter[1].indexOf(v.values().next().value[filter[0]]) !== -1) {
-            return true;
-          }
-        })
-      })
-    );
-  }
+  const filterData = (dataMap, filter) =>
+    (filter === null) ?
+      dataMap :
+      new Map(
+        [...dataMap].filter(([_,v]) =>
+          [...filter.entries()].some(filter =>
+            filter[1].indexOf(v.values().next().value[filter[0]]) !== -1
+          )
+        )
+      );
 
-  const sortData = function(dataMap, field) {
-    return new Map(
+  const sortData = (dataMap, field) =>
+    new Map(
       [...dataMap.entries()].sort(
         (a, b) =>
           Array.from(a[1])[a[1].size-1][1][field] - Array.from(b[1])[b[1].size-1][1][field]
       )
     );
-  }
 
-  const limitData = function(dataMap, limit) {
-    if (limit === 0) {
-      return new Map(
-        [...dataMap.entries()].sort()
-      );
-    }
-    return new Map(
-      [...dataMap.entries()].slice(Math.max(dataMap.size - limit, 0)).sort()
-    );
-  }
+  const limitData = (dataMap, limit) =>
+    (limit === 0) ?
+      new Map([...dataMap.entries()].sort()) :
+      new Map([...dataMap.entries()].slice(Math.max(dataMap.size - limit, 0)).sort());
 
   // dataMap should be filtered, sorted, and limited
-  const updateChart = function(dataMap, field, limited) {
+  const updateChart = (dataMap, field, limited) => {
     // convert to columns
     const columns = [
       ['x'].concat(Array.from(xAxisDates))
@@ -52,7 +41,7 @@ function initChart(dataMap, xAxisDates, chartId, filter, field, limit) {
     dataMap.forEach((dates, row) => {
       const column = [row];
 
-      xAxisDates.forEach((date) => {
+      xAxisDates.forEach(date => {
         const values = (dates.has(date)) ?
           dates.get(date)[field] :
           null
@@ -133,7 +122,7 @@ function initChart(dataMap, xAxisDates, chartId, filter, field, limit) {
         padding: 0,
         tick: {
           format: d3.format(",d"),
-          values: () => yAxisTickValues,
+          values: _ => yAxisTickValues,
         }
       },
     },
@@ -171,7 +160,7 @@ function initChart(dataMap, xAxisDates, chartId, filter, field, limit) {
     },
     legend: {
       item: {
-        onclick: function(id) {
+        onclick: id => {
           c3Chart.toggle(id);
           updateYAxisLabels(getYMax(c3Chart), c3Chart.axis.types().y);
           c3Chart.flush();
@@ -188,24 +177,24 @@ function initChart(dataMap, xAxisDates, chartId, filter, field, limit) {
     dataMapSorted: null,
     dataMapLimited: null,
 
-    setFilter: function(filter) {
+    setFilter(filter) {
       this.dataMapFiltered = filterData(this.dataMap, filter);
       this.setField(this.field);
     },
 
-    setField: function(field) {
+    setField(field) {
       this.field = field;
       this.dataMapSorted = sortData(this.dataMapFiltered, this.field);
       this.setLimit(this.limit);
     },
 
-    setLimit: function(limit) {
+    setLimit(limit) {
       this.limit = limit;
       this.dataMapLimited = limitData(this.dataMapSorted, this.limit);
       updateChart(this.dataMapLimited, this.field, this.limit !== 0);
     },
 
-    setAxis: function(yAxis) {
+    setAxis(yAxis) {
       updateYAxisLabels(getYMax(c3Chart), yAxis);
       c3Chart.axis.types({
         y: yAxis,
@@ -219,13 +208,13 @@ function initChart(dataMap, xAxisDates, chartId, filter, field, limit) {
   return chart;
 }
 
-function calculateYAxisLabels(yMax, yAxis) {
+const calculateYAxisLabels = (yMax, yAxis) => {
   const values = [];
   if (yAxis === 'log') {
     let mag = 1;
     let done = false;
     while (true) {
-      [1,2,5].forEach((i=> {
+      [1,2,5].forEach(i => {
         if (done) {
           return;
         }
@@ -234,7 +223,7 @@ function calculateYAxisLabels(yMax, yAxis) {
         if (yVal > yMax) {
           done = true;
         }
-      }));
+      });
       if (done) {
         break;
       }
@@ -262,7 +251,7 @@ function calculateYAxisLabels(yMax, yAxis) {
   return [];
 }
 
-function getYMax(c3Chart) {
+const getYMax = c3Chart => {
   let yMax = 0;
   c3Chart.data.shown().forEach((row, _) => {
     row.values.forEach((value, _) => {

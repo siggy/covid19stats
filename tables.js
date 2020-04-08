@@ -1,4 +1,4 @@
-function makeStateTable(statesLatestDay, stateHeaders) {
+const makeStateTable = (statesLatestDay, stateHeaders) => {
   const tableOptions = {
     data: statesLatestDay,
     // TODO: must match stateHeaders
@@ -51,7 +51,7 @@ function makeStateTable(statesLatestDay, stateHeaders) {
   return makeTable(tableOptions, 'state');
 }
 
-function makeCountyTable(countiesLatestDay, countyHeaders) {
+const makeCountyTable = (countiesLatestDay, countyHeaders) => {
   const tableOptions = {
     data: countiesLatestDay,
     // TODO: must match countyHeaders
@@ -93,7 +93,7 @@ function makeCountyTable(countiesLatestDay, countyHeaders) {
   return makeTable(tableOptions, 'county');
 }
 
-function makeCountryTable(countriesLatestDay) {
+const makeCountryTable = (countriesLatestDay) => {
   const tableOptions = {
     data: countriesLatestDay,
     columns: [
@@ -128,7 +128,7 @@ function makeCountryTable(countriesLatestDay) {
   return makeTable(tableOptions, 'country');
 }
 
-function makeTable(options, name) {
+const makeTable = (options, name) => {
   const defaultTableOptions = {
     // TODO: this exports column headers as "A","B","C"...
     // https://forum.handsontable.com/t/how-to-export-nested-header-table/1690
@@ -146,10 +146,10 @@ function makeTable(options, name) {
     {...options, ...defaultTableOptions}
   );
 
-  const countiesExportBtn = document.getElementById(name+'-export');
-  const countiesExportPlugin = hot.getPlugin('exportFile');
-  countiesExportBtn.addEventListener('click', function() {
-    countiesExportPlugin.downloadFile('csv', {
+  const exportBtn = document.getElementById(name+'-export');
+  const exportPlugin = hot.getPlugin('exportFile');
+  exportBtn.addEventListener('click', _ => {
+    exportPlugin.downloadFile('csv', {
       columnHeaders: true,
       exportHiddenColumns: true,
       exportHiddenRows: true,

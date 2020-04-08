@@ -11,33 +11,33 @@ const chartLimit = 50;
 
 Promise.all([
   fetch('https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv')
-    .then((response) => {
-      return response.ok ? response.text() : Promise.reject(response.status);
-    }),
+    .then(response =>
+      response.ok ? response.text() : Promise.reject(response.status)
+    ),
   fetch('https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv')
-    .then((response) => {
-        return response.ok ? response.text() : Promise.reject(response.status);
-    }),
+    .then(response =>
+      response.ok ? response.text() : Promise.reject(response.status)
+    ),
   fetch('pops-us-states-counties.csv')
-    .then((response) => {
-      return response.ok ? response.text() : Promise.reject(response.status);
-    }),
+    .then(response =>
+      response.ok ? response.text() : Promise.reject(response.status)
+    ),
   fetch('https://covidtracking.com/api/states')
-    .then((response) => {
-      return response.ok ? response.json() : Promise.reject(response.status);
-    }),
+    .then(response =>
+      response.ok ? response.json() : Promise.reject(response.status)
+    ),
   fetch('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv')
-    .then((response) => {
-      return response.ok ? response.text() : Promise.reject(response.status);
-    }),
+    .then(response =>
+      response.ok ? response.text() : Promise.reject(response.status)
+    ),
   fetch('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv')
-    .then((response) => {
-      return response.ok ? response.text() : Promise.reject(response.status);
-    }),
+    .then(response =>
+      response.ok ? response.text() : Promise.reject(response.status)
+    ),
   fetch('pops-countries.csv')
-    .then((response) => {
-      return response.ok ? response.text() : Promise.reject(response.status);
-    }),
+    .then(response =>
+      response.ok ? response.text() : Promise.reject(response.status)
+    ),
 ])
 .then(responses => {
   const countyCasesResponse = responses[0].split('\n');
@@ -51,18 +51,18 @@ Promise.all([
   usPopsResponse.shift();
 
   const popsByFips = new Map();
-  usPopsResponse.forEach((pop) => {
+  usPopsResponse.forEach(pop => {
     const p = pop.split(',');
     popsByFips.set(p[0], parseInt(p[3]));
   });
 
   const testsByFips = new Map();
-  testsResponse.forEach((test) => {
+  testsResponse.forEach(test => {
     testsByFips.set(test.fips, test);
   });
 
   const popsByCountry = new Map();
-  globalPopsResponse.forEach((pop) => {
+  globalPopsResponse.forEach(pop => {
     const split = pop.lastIndexOf('"');
     const name = pop.substring(1, split);
     const value = pop.substring(split+2, pop.length);
@@ -97,7 +97,7 @@ Promise.all([
   // State => Date => {date,state,fips,cases,deaths}
   const statesToDates = new Map();
 
-  stateCasesResponse.forEach((line) => {
+  stateCasesResponse.forEach(line => {
     const row = line.split(',');
     const state = {
       date: row[0],
@@ -189,7 +189,7 @@ Promise.all([
   // "County, State" => Date => {date,county,state,fips,cases,deaths}
   const countiesToDates = new Map();
 
-  countyCasesResponse.forEach((line) => {
+  countyCasesResponse.forEach(line => {
     const row = line.split(',');
     if (row[1] === 'Unknown') {
       return;
@@ -397,7 +397,7 @@ Promise.all([
   countryChart = initChart(countriesToDates, allCountryDates, 'country-chart', null, 'cases', chartLimit);
 });
 
-function activateTab(evt, className) {
+const activateTab = (evt, className) => {
   const tabs = document.getElementsByClassName(className);
   for (let i = 0; i < tabs.length; i++) {
     tabs[i].className = tabs[i].className.replace(" active", "");
@@ -406,7 +406,7 @@ function activateTab(evt, className) {
 }
 
 // Based on: https://codepen.io/markcaron/pen/MvGRYV
-function setField(evt, chart, field) {
+const setField = (evt, chart, field) => {
   activateTab(evt, chart+"-field-tab");
   if (chart === 'state') {
     stateChart.setField(field, 0);
@@ -417,7 +417,7 @@ function setField(evt, chart, field) {
   }
 }
 
-function setAxis(evt, chart, yAxis) {
+const setAxis = (evt, chart, yAxis) => {
   activateTab(evt, chart+"-axes-tab");
   if (chart === 'state') {
     stateChart.setAxis(yAxis);
@@ -428,7 +428,7 @@ function setAxis(evt, chart, yAxis) {
   }
 }
 
-function formatDate(date) {
+const formatDate = date => {
   const d = new Date(date);
   let month = '' + (d.getMonth() + 1);
   let day = '' + d.getDate();
@@ -444,12 +444,12 @@ function formatDate(date) {
   return [year, month, day].join('-');
 }
 
-function initCollapsible(id, table) {
+const initCollapsible = (id, table) => {
   const collapsible = document.getElementById(id);
   const btn = collapsible.querySelector('button');
   const target = collapsible.nextElementSibling;
 
-  btn.onclick = () => {
+  btn.onclick = _ => {
     const expanded = btn.getAttribute('aria-expanded') === 'true';
     btn.setAttribute('aria-expanded', !expanded);
     target.hidden = expanded;
