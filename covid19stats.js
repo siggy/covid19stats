@@ -6,8 +6,66 @@ let stateTable;
 let countyTable;
 let countryTable;
 
+const countyFilter = new Map(
+  [
+    [
+      'state', new Map(
+        [
+          ['California', true],
+          ['New York', true],
+        ]
+      )
+    ]
+  ]
+);
+
+// init state checkboxes for county chart
+
+const checks = document.getElementById('county-state-checks');
+
+Object.entries(stateAbbreviations).sort((a, b) => {
+  if (a[1] < b[1]) {
+    return -1;
+  }
+  if (a[1] > b[1]) {
+    return 1;
+  }
+  return 0;
+}).forEach(s => {
+  const input = document.createElement("input");
+  input.type = "checkbox";
+  input.id = s[0];
+  input.name = s[0];
+  input.value = s[0];
+
+  const label = document.createElement('label');
+  label.htmlFor = s[0];
+  label.appendChild(document.createTextNode(s[1]));
+
+  const li = document.createElement('li');
+  li.appendChild(input);
+  li.appendChild(label);
+
+  checks.appendChild(li);
+
+  if (countyFilter.get('state').has(s[0])) {
+    input.checked = true;
+  }
+
+  li.onclick = _ => {
+    if (input.checked) {
+      countyFilter.get('state').set(s[0], true);
+    } else {
+      countyFilter.get('state').delete(s[0]);
+    }
+    countyChart.setFilter(countyFilter);
+  }
+});
+
 // limit number of countries in chart
 const chartLimit = 50;
+
+// retrieve all remote data
 
 Promise.all([
   fetch('https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv')
@@ -389,11 +447,7 @@ Promise.all([
   //
 
   stateChart = initChart(statesToDates, allStateDates, 'state-chart', null, 'cases', 0);
-
-  countyChart = initChart(countiesToDates, allCountyDates, 'county-chart',
-    new Map([['state', ['California', 'New York']]]), 'cases', chartLimit,
-  );
-
+  countyChart = initChart(countiesToDates, allCountyDates, 'county-chart', countyFilter, 'cases', chartLimit);
   countryChart = initChart(countriesToDates, allCountryDates, 'country-chart', null, 'cases', chartLimit);
 });
 

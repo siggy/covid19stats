@@ -13,7 +13,7 @@ const initChart = (dataMap, xAxisDates, chartId, filter, field, limit) => {
       new Map(
         [...dataMap].filter(([_,v]) =>
           [...filter.entries()].some(filter =>
-            filter[1].indexOf(v.values().next().value[filter[0]]) !== -1
+            filter[1].has(v.values().next().value[filter[0]])
           )
         )
       );
