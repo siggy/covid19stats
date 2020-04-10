@@ -18,6 +18,7 @@ const initChart = (dataMap, xAxisDates, chartId, filter, field, limit) => {
         )
       );
 
+  // sortData sorts items by field value
   const sortData = (dataMap, field) =>
     new Map(
       [...dataMap.entries()].sort(
@@ -26,13 +27,14 @@ const initChart = (dataMap, xAxisDates, chartId, filter, field, limit) => {
       )
     );
 
+  // limitData truncates items and then sorts by name
   const limitData = (dataMap, limit) =>
     (limit === 0) ?
       new Map([...dataMap.entries()].sort()) :
       new Map([...dataMap.entries()].slice(Math.max(dataMap.size - limit, 0)).sort());
 
   // dataMap should be filtered, sorted, and limited
-  const updateChart = (dataMap, field, limited) => {
+  const updateChart = (dataMap, field, unload) => {
     // convert to columns
     const columns = [
       ['x'].concat(Array.from(xAxisDates))
@@ -57,7 +59,7 @@ const initChart = (dataMap, xAxisDates, chartId, filter, field, limit) => {
     const loadedSet = new Set();
     c3Chart.data().forEach((row, _) => {
       loadedSet.add(row.id);
-      if (limited && !dataMap.has(row.id)) {
+      if (unload && !dataMap.has(row.id)) {
         toUnload.push(row.id);
       }
     });
@@ -70,7 +72,7 @@ const initChart = (dataMap, xAxisDates, chartId, filter, field, limit) => {
     let yMax = 0;
 
     columns.slice(1).forEach((column, _) => {
-      if (limited) {
+      if (unload) {
         // TODO: we force-unload all data when we're limiting the number of
         // rows. this is a workaround to ensure the legend stays sorted.
         // figure out how to avoid this
@@ -177,21 +179,33 @@ const initChart = (dataMap, xAxisDates, chartId, filter, field, limit) => {
     dataMapSorted: null,
     dataMapLimited: null,
 
+    // setFilter => setField => setLimit
+
     setFilter(filter) {
       this.dataMapFiltered = filterData(this.dataMap, filter);
-      this.setField(this.field);
+      this.setField(this.field, true);
     },
 
-    setField(field) {
+    setField(field, unload) {
       this.field = field;
       this.dataMapSorted = sortData(this.dataMapFiltered, this.field);
-      this.setLimit(this.limit);
+      this.setLimit(this.limit, unload);
     },
 
-    setLimit(limit) {
+    setLimit(limit, unload) {
+      // unload if:
+      // limit !== 0 OR
+      // limit is changing OR
+      // filter is changing
+      const forceUnload = (
+        limit !== 0 ||
+        limit !== this.limit ||
+        unload
+      )
+
       this.limit = limit;
       this.dataMapLimited = limitData(this.dataMapSorted, this.limit);
-      updateChart(this.dataMapLimited, this.field, this.limit !== 0);
+      updateChart(this.dataMapLimited, this.field, forceUnload);
     },
 
     setAxis(yAxis) {

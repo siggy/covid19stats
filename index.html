@@ -31,9 +31,10 @@
   <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
 
-  <link href="https://cdn.jsdelivr.net/npm/handsontable@7.4.2/dist/handsontable.full.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/c3@0.7.15/c3.min.css" rel="stylesheet">
-  <link href="covid19stats.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable@7.4.2/dist/handsontable.full.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/c3@0.7.15/c3.min.css">
+  <link rel="stylesheet" href="covid19stats.css">
 </head>
 <body>
   <header>
@@ -51,6 +52,18 @@
         <button class="state-field-tab" onclick="setField(event, 'state', 'newDeaths')">New Deaths</button>
         <button class="state-field-tab" onclick="setField(event, 'state', 'casesPer1M')">Cases/1M</button>
         <button class="state-field-tab" onclick="setField(event, 'state', 'deathsPer1M')">Deaths/1M</button>
+
+        <div class="dropdown">
+          <button id="state-dropdown-button" class="dropdown-button" onclick="dropDownToggle('state')">Show all
+            <i class="fa fa-caret-down"></i>
+          </button>
+          <div id="state-dropdown-content" class="dropdown-content">
+            <button onclick="showTop(event, 'state', '10')"  class="end">Top 10</button>
+            <button onclick="showTop(event, 'state', '30')"             >Top 30</button>
+            <button onclick="showTop(event, 'state', 'all')" class="end">Show all</button>
+          </div>
+        </div>
+
         <button class="state-axes-tab axes active" onclick="setAxis(event, 'state', 'log')">Log</button>
         <button class="state-axes-tab axes" onclick="setAxis(event, 'state', 'linear')">Linear</button>
       </div>
@@ -82,6 +95,20 @@
         <button class="county-field-tab" onclick="setField(event, 'county', 'newDeaths')">New Deaths</button>
         <button class="county-field-tab" onclick="setField(event, 'county', 'casesPer1M')">Cases/1M</button>
         <button class="county-field-tab" onclick="setField(event, 'county', 'deathsPer1M')">Deaths/1M</button>
+
+        <div class="dropdown">
+          <button id="county-dropdown-button" class="dropdown-button" onclick="dropDownToggle('county')">Top 30
+            <i class="fa fa-caret-down"></i>
+          </button>
+          <div id="county-dropdown-content" class="dropdown-content">
+            <button onclick="showTop(event, 'county', '10')"  class="end">Top 10</button>
+            <button onclick="showTop(event, 'county', '30')"             >Top 30</button>
+            <button onclick="showTop(event, 'county', '50')"             >Top 50</button>
+            <button onclick="showTop(event, 'county', '100')"            >Top 100</button>
+            <button onclick="showTop(event, 'county', 'all')" class="end">Show all</button>
+          </div>
+        </div>
+
         <button class="county-axes-tab axes active" onclick="setAxis(event, 'county', 'log')">Log</button>
         <button class="county-axes-tab axes" onclick="setAxis(event, 'county', 'linear')">Linear</button>
       </div>
@@ -110,6 +137,20 @@
         <button class="country-field-tab" onclick="setField(event, 'country', 'newDeaths')">New Deaths</button>
         <button class="country-field-tab" onclick="setField(event, 'country', 'casesPer1M')">Cases/1M</button>
         <button class="country-field-tab" onclick="setField(event, 'country', 'deathsPer1M')">Deaths/1M</button>
+
+        <div class="dropdown">
+          <button id="country-dropdown-button" class="dropdown-button" onclick="dropDownToggle('country')">Top 30
+            <i class="fa fa-caret-down"></i>
+          </button>
+          <div id="country-dropdown-content" class="dropdown-content">
+            <button onclick="showTop(event, 'country', '10')"  class="end">Top 10</button>
+            <button onclick="showTop(event, 'country', '30')"             >Top 30</button>
+            <button onclick="showTop(event, 'country', '50')"             >Top 50</button>
+            <button onclick="showTop(event, 'country', '100')"            >Top 100</button>
+            <button onclick="showTop(event, 'country', 'all')" class="end">Show all</button>
+          </div>
+        </div>
+
         <button class="country-axes-tab axes active" onclick="setAxis(event, 'country', 'log')">Log</button>
         <button class="country-axes-tab axes" onclick="setAxis(event, 'country', 'linear')">Linear</button>
       </div>

@@ -63,7 +63,8 @@ Object.entries(stateAbbreviations).sort((a, b) => {
 });
 
 // limit number of countries in chart
-const chartLimit = 50;
+// this must match the defaults set in the "dropdown-button" HTML elements
+const chartLimit = 30;
 
 // retrieve all remote data
 
@@ -446,33 +447,62 @@ Promise.all([
   // initialize charts
   //
 
+  // the limit parameters must match the defaults set in the "dropdown-button" HTML elements
   stateChart = initChart(statesToDates, allStateDates, 'state-chart', null, 'cases', 0);
   countyChart = initChart(countiesToDates, allCountyDates, 'county-chart', countyFilter, 'cases', chartLimit);
   countryChart = initChart(countriesToDates, allCountryDates, 'country-chart', null, 'cases', chartLimit);
 });
 
+//
+// tabs
+//
+
 const activateTab = (evt, className) => {
   const tabs = document.getElementsByClassName(className);
   for (let i = 0; i < tabs.length; i++) {
-    tabs[i].className = tabs[i].className.replace(" active", "");
+    tabs[i].classList.remove('active');
   }
-  evt.currentTarget.className += " active";
+  evt.currentTarget.classList.add('active');
 }
+
+//
+// dropdowns
+//
+
+// Based on: https://www.w3schools.com/howto/howto_css_dropdown_navbar.asp
+const dropDownToggle = chart => {
+  document.getElementById(chart+"-dropdown-content").classList.toggle("show");
+}
+
+window.onclick = e => {
+  if (!e.target.matches('.dropdown-button')) {
+    const dropDowns = document.getElementsByClassName("dropdown-content");
+    for (let i = 0; i < dropDowns.length; i++) {
+      dropDowns[i].classList.remove('show');
+    }
+  }
+}
+
+//
+// charts
+//
 
 // Based on: https://codepen.io/markcaron/pen/MvGRYV
 const setField = (evt, chart, field) => {
   activateTab(evt, chart+"-field-tab");
+
   if (chart === 'state') {
-    stateChart.setField(field, 0);
+    stateChart.setField(field, false);
   } else if (chart === 'county') {
-    countyChart.setField(field, chartLimit);
+    countyChart.setField(field, false);
   } else if (chart === 'country') {
-    countryChart.setField(field, chartLimit);
+    countryChart.setField(field, false);
   }
 }
 
 const setAxis = (evt, chart, yAxis) => {
   activateTab(evt, chart+"-axes-tab");
+
   if (chart === 'state') {
     stateChart.setAxis(yAxis);
   } else if (chart === 'county') {
@@ -482,21 +512,25 @@ const setAxis = (evt, chart, yAxis) => {
   }
 }
 
-const formatDate = date => {
-  const d = new Date(date);
-  let month = '' + (d.getMonth() + 1);
-  let day = '' + d.getDate();
-  const year = d.getFullYear();
+const showTop = (evt, chart, top) => {
+  document.getElementById(chart+"-dropdown-button").innerHTML =
+    evt.currentTarget.textContent + " <i class='fa fa-caret-down'></i>";
 
-  if (month.length < 2) {
-      month = '0' + month;
+  const topInt = (top !== 'all') ?
+    parseInt(top) :
+    0;
+  if (chart === 'state') {
+    stateChart.setLimit(topInt, true);
+  } else if (chart === 'county') {
+    countyChart.setLimit(topInt, true);
+  } else if (chart === 'country') {
+    countryChart.setLimit(topInt, true);
   }
-  if (day.length < 2) {
-      day = '0' + day;
-  }
-
-  return [year, month, day].join('-');
 }
+
+//
+// collapsibles
+//
 
 const initCollapsible = (id, table) => {
   const collapsible = document.getElementById(id);
@@ -515,4 +549,24 @@ const initCollapsible = (id, table) => {
       target.style.maxHeight = null;
     }
   }
+}
+
+//
+// misc
+//
+
+const formatDate = date => {
+  const d = new Date(date);
+  let month = '' + (d.getMonth() + 1);
+  let day = '' + d.getDate();
+  const year = d.getFullYear();
+
+  if (month.length < 2) {
+      month = '0' + month;
+  }
+  if (day.length < 2) {
+      day = '0' + day;
+  }
+
+  return [year, month, day].join('-');
 }
