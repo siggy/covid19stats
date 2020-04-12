@@ -32,7 +32,8 @@ Browse to: http://0.0.0.0:8000/
     echo '66,Guam,Guam,164229' &&
     echo '72,Puerto Rico,Puerto Rico,3195000' &&
     echo '78,Virgin Islands,Virgin Islands,107268' &&
-    echo '69,Northern Mariana Islands,Northern Mariana Islands,55144'
+    echo '69,Northern Mariana Islands,Northern Mariana Islands,55144' &&
+    echo '60,American Samoa,American Samoa,55465'
 ) > pops-us-states-counties.csv
 ```
 
@@ -121,10 +122,11 @@ Browse to: http://0.0.0.0:8000/
 
 ## TODO
 
+- large numbers at top
+- unified chart
 - fix clicking on dropdown caret
 - tests in state chart
 - fix political province names
-- large numbers at top
 - toggle states in chart by lockdown date / policy
 - toggle countries + states
 - limit country chart to `startDate`

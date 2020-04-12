@@ -195,7 +195,6 @@ Promise.all([
 
     if (!testsByFips.has(fips)) {
       console.warn('state fips not found in test data: ' + state);
-      return;
     }
     const tests = testsByFips.get(fips);
 
@@ -215,17 +214,20 @@ Promise.all([
       row.casesPer1M = Math.round(cases / popPer1M);
       row.deathsPer1M = Math.round(deaths / popPer1M);
 
-      const positiveTests = tests.positive;
-      const totalTests = tests.totalTestResults;
-      const pending = tests.pending;
+      if (tests !== undefined) {
+        const positiveTests = tests.positive;
+        const totalTests = tests.totalTestResults;
+        const pending = tests.pending;
 
-      row.tests = totalTests;
-      row.pending = pending;
-      row.positiveTestPercent = positiveTests / totalTests;
-      row.testsPer1M = Math.round(totalTests / popPer1M);
-      row.testsPerDeath = (deaths !== 0) ?
-        Math.round(totalTests / deaths) :
-        0;
+        row.tests = totalTests;
+        row.pending = pending;
+        row.positiveTestPercent = positiveTests / totalTests;
+        row.testsPer1M = Math.round(totalTests / popPer1M);
+
+        row.testsPerDeath = (deaths !== '0') ?
+          Math.round(totalTests / deaths) :
+          0;
+      }
     });
   });
 
