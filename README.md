@@ -40,7 +40,7 @@ Browse to: http://0.0.0.0:8000/
 ```bash
 (
   curl http://api.worldbank.org/v2/en/indicator/SP.POP.TOTL?downloadformat=csv |
-    bsdtar --to-stdout -xvf - API_SP.POP.TOTL_DS2_en_csv_v2_887275.csv |
+    bsdtar --to-stdout -xvf - API_SP.POP.TOTL_DS2_en_csv_v2_*.csv |
     tail -n +6 |
     grep -v "Not classified" |
     sed -e $'s/\r$//' |
@@ -70,7 +70,8 @@ Browse to: http://0.0.0.0:8000/
     sed -e 's/Curacao/Curacao, Netherlands/g' |
     sed -e 's/Sint Maarten (Dutch part)/Sint Maarten, Netherlands/g' |
     sed -e 's/St. Lucia/Saint Lucia/g' |
-    sed -e 's/Egypt, Arab Rep./Egypt/g' &&
+    sed -e 's/Egypt, Arab Rep./Egypt/g' |
+    sed -e 's/Yemen, Rep./Yemen/g' &&
   echo '"Guangdong, China",111690000' &&
   echo '"Shandong, China",100060000' &&
   echo '"Henan, China",95590000' &&
@@ -113,6 +114,19 @@ Browse to: http://0.0.0.0:8000/
   echo '"Northern Territory, Australia",247940' &&
   echo '"South Australia, Australia",1731000' &&
   echo '"Tasmania, Australia",522327' &&
+  echo '"French Guiana, France",290691' &&
+  echo '"Guadeloupe, France",395700' &&
+  echo '"Mayotte, France",270372' &&
+  echo '"Reunion, France",859959' &&
+  echo '"Saint Barthelemy, France",9793' &&
+  echo '"St Martin, France",77741' &&
+  echo '"Martinique, France",376480' &&
+  echo '"Holy See",618' &&
+  echo '"Montserrat, United Kingdom",4649' &&
+  echo '"Anguilla, United Kingdom",14731' &&
+  echo '"Falkland Islands (Malvinas), United Kingdom",2840' &&
+  echo '"Saint Pierre and Miquelon, France",5888' &&
+  echo '"Western Sahara",567402' &&
   curl https://www150.statcan.gc.ca/n1/en/tbl/csv/17100009-eng.zip?st=BvQiI4lH |
     bsdtar  --to-stdout -xvf - 17100009.csv |
     tail -n13 |
