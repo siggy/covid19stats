@@ -1,4 +1,4 @@
-// dataMap: Name => Date => {date,state,fips,cases,deaths}
+// dataMap: Name => Date => {date,name,fips,cases,deaths}
 const initChart = (dataMap, xAxisDates, chartId, filter, field, limit) => {
   let yAxisTickValues = [100, 1000, 10000];
 

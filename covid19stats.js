@@ -125,7 +125,7 @@ Promise.all([
     const split = pop.lastIndexOf('"');
     const name = pop.substring(1, split);
     const value = pop.substring(split+2, pop.length);
-    popsByCountry.set(name, value);
+    popsByCountry.set(name, parseInt(value));
   });
 
   // process and display data starting here
@@ -162,8 +162,8 @@ Promise.all([
       date: row[0],
       name: row[1],
       fips: row[2],
-      cases: row[3],
-      deaths: row[4],
+      cases: parseInt(row[3]),
+      deaths: parseInt(row[4]),
     };
 
     if (state.date < startDate) {
@@ -262,8 +262,8 @@ Promise.all([
       state: row[2],
       fullName: row[1] + ', ' + stateAbbreviations[row[2]],
       fips: row[3],
-      cases: row[4],
-      deaths: row[5],
+      cases: parseInt(row[4]),
+      deaths: parseInt(row[5]),
     };
 
     if (county.date < startDate) {
@@ -400,8 +400,8 @@ Promise.all([
         return;
       }
 
-      const cases = caseRow[j];
-      const deaths = deathRow[j];
+      const cases = parseInt(caseRow[j]);
+      const deaths = parseInt(deathRow[j]);
 
       const country = {
         date: formatDate(header),
@@ -434,6 +434,35 @@ Promise.all([
   });
 
   //
+  // big numbers
+  //
+
+  let globalCases = 0;
+  let globalNewCases = 0;
+  let globalDeaths = 0;
+  let globalNewDeaths = 0;
+  countriesLatestDay.forEach((country) => {
+    globalCases += country.cases;
+    globalNewCases += country.newCases;
+    globalDeaths += country.deaths;
+    globalNewDeaths += country.newDeaths;
+  })
+  const globalInnerMap = new Map();
+  globalInnerMap.set('fake-date', {
+    cases: globalCases,
+    newCases: globalNewCases,
+    deaths: globalDeaths,
+    newDeaths: globalNewDeaths,
+  })
+  const globalMap = new Map();
+  globalMap.set('global', globalInnerMap);
+
+  initBigNumbers(countiesToDates, 'San Francisco, CA', 'big-county');
+  initBigNumbers(statesToDates, 'California', 'big-state');
+  initBigNumbers(countriesToDates, 'US', 'big-country');
+  initBigNumbers(globalMap, 'global', 'big-global');
+
+  //
   // initialize tables
   //
 
@@ -454,6 +483,32 @@ Promise.all([
   countyChart = initChart(countiesToDates, allCountyDates, 'county-chart', countyFilter, 'cases', chartLimit);
   countryChart = initChart(countriesToDates, allCountryDates, 'country-chart', null, 'cases', chartLimit);
 });
+
+//
+// big numbers
+//
+
+const initBigNumbers = (statMap, location, id) => {
+  const stats = statMap.get(location);
+  const stat = Array.from(stats)[stats.size-1][1];
+
+  const elm = document.getElementById(id);
+
+  const cases = elm.getElementsByClassName("cases")[0];
+  cases.getElementsByClassName("total")[0].innerHTML = numberWithCommas(stat.cases);
+  cases.getElementsByClassName("new")[0].innerHTML = "New: +" + numberWithCommas(stat.newCases);
+  cases.getElementsByClassName("percent")[0].innerHTML = (100 * stat.newCases / (stat.cases - stat.newCases)).toFixed(1) + '%';
+
+  const deaths = elm.getElementsByClassName("deaths")[0];
+  deaths.getElementsByClassName("total")[0].innerHTML = numberWithCommas(stat.deaths);
+  deaths.getElementsByClassName("new")[0].innerHTML = "New: +" + numberWithCommas(stat.newDeaths);
+  deaths.getElementsByClassName("percent")[0].innerHTML = (100 * stat.newDeaths / (stat.deaths - stat.newDeaths)).toFixed(1) + '%';
+}
+
+// https://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
 //
 // tabs
@@ -516,7 +571,7 @@ const setAxis = (evt, chart, yAxis) => {
 
 const showTop = (evt, chart, top) => {
   document.getElementById(chart+"-dropdown-button").innerHTML =
-    evt.currentTarget.textContent + " <i class='fa fa-caret-down'></i>";
+    evt.currentTarget.textContent + " <span class='dropdown-chevron'>&#9660;</span>";
 
   const topInt = (top !== 'all') ?
     parseInt(top) :
