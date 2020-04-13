@@ -143,7 +143,6 @@ Browse to: http://0.0.0.0:8000/
   - animate increase
     - https://stackoverflow.com/questions/16994662/count-animation-from-number-a-to-b
 - unified chart
-- fix clicking on dropdown caret
 - fix tab wrapping on mobile
 - tests in state chart
 - fix political province names
