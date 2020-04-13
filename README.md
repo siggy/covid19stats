@@ -136,6 +136,7 @@ Browse to: http://0.0.0.0:8000/
 
 ## TODO
 
+- a11y
 - large numbers at top
   - autotoggles (unified?) charts?
   - with map?

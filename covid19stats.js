@@ -462,26 +462,45 @@ Promise.all([
   initBigNumbers(countriesToDates, 'US', 'big-country');
   initBigNumbers(globalMap, 'global', 'big-global');
 
-  //
-  // initialize tables
-  //
-
-  stateTable = makeStateTable(statesLatestDay, stateHeaders);
-  countyTable = makeCountyTable(countiesLatestDay, countyHeaders);
-  countryTable = makeCountryTable(countriesLatestDay);
-
-  initCollapsible('state-collapsible', stateTable);
-  initCollapsible('county-collapsible', countyTable);
-  initCollapsible('country-collapsible', countryTable);
+  // do all chart and table initialization asynchronously to ensure things get
+  // rendered asap
 
   //
   // initialize charts
   //
-
   // the limit parameters must match the defaults set in the "dropdown-button" HTML elements
-  stateChart = initChart(statesToDates, allStateDates, 'state-chart', null, 'cases', 0);
-  countyChart = initChart(countiesToDates, allCountyDates, 'county-chart', countyFilter, 'cases', chartLimit);
-  countryChart = initChart(countriesToDates, allCountryDates, 'country-chart', null, 'cases', chartLimit);
+  //
+
+  setTimeout(_ => {
+    stateChart = initChart(statesToDates, allStateDates, 'state-chart', null, 'cases', 0);
+
+    setTimeout(_ => {
+      countyChart = initChart(countiesToDates, allCountyDates, 'county-chart', countyFilter, 'cases', chartLimit);
+
+      setTimeout(_ => {
+        countryChart = initChart(countriesToDates, allCountryDates, 'country-chart', null, 'cases', chartLimit);
+
+        //
+        // initialize tables
+        //
+
+        setTimeout(_ => {
+          stateTable = makeStateTable(statesLatestDay, stateHeaders);
+          initCollapsible('state-collapsible', stateTable);
+
+          setTimeout(_ => {
+            countyTable = makeCountyTable(countiesLatestDay, countyHeaders);
+            initCollapsible('county-collapsible', countyTable);
+
+            setTimeout(_ => {
+              countryTable = makeCountryTable(countriesLatestDay);
+              initCollapsible('country-collapsible', countryTable);
+            }, 0);
+          }, 0);
+        }, 0);
+      }, 0);
+    }, 0);
+  }, 0);
 });
 
 //
