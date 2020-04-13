@@ -143,10 +143,10 @@ const initChart = (dataMap, xAxisDates, chartId, filter, field, limit) => {
       }
     },
     point: {
-      r: 2,
+      r: 1,
       focus: {
         expand: {
-          r: 4,
+          r: 3,
         }
       },
     },
