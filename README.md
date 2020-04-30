@@ -137,6 +137,7 @@ Browse to: http://0.0.0.0:8000/
 ## TODO
 
 - a11y
+- new case change week-over-week
 - large numbers at top
   - autotoggles (unified?) charts?
   - with map?
