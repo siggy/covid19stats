@@ -18,12 +18,20 @@ const initChart = (dataMap, xAxisDates, chartId, filter, field, limit) => {
         )
       );
 
-  // sortData sorts items by field value
+  // sortData sorts items by most recent field value, secondary sort by name
   const sortData = (dataMap, field) =>
     new Map(
       [...dataMap.entries()].sort(
-        (a, b) =>
-          Array.from(a[1])[a[1].size-1][1][field] - Array.from(b[1])[b[1].size-1][1][field]
+        (a, b) => {
+          const aLast = Array.from(a[1])[a[1].size-1][1];
+          const bLast = Array.from(b[1])[b[1].size-1][1];
+          const aVal = aLast[field];
+          const bVal = bLast[field];
+          if (aVal !== bVal) {
+            return aVal - bVal;
+          }
+          return aLast.name < bLast.name;
+        }
       )
     );
 
