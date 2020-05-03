@@ -136,7 +136,6 @@ Browse to: http://0.0.0.0:8000/
 
 ## TODO
 
-- newCasesPer1m / newDeathsPer1M in tables
 - fix multiple drop-downs being open at once
 - fix tab wrapping on mobile
 - make county selector on top

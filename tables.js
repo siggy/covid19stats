@@ -13,6 +13,8 @@ const makeStateTable = (statesLatestDay, stateHeaders) => {
       { numericFormat: {pattern: '0,000'}, data: 'population', type: 'numeric'},
       { numericFormat: {pattern: '0,000'}, data: 'casesPer1M', type: 'numeric'},
       { numericFormat: {pattern: '0,000'}, data: 'deathsPer1M', type: 'numeric'},
+      { numericFormat: {pattern: '0,000'}, data: 'newCasesPer1M', type: 'numeric'},
+      { numericFormat: {pattern: '0,000'}, data: 'newDeathsPer1M', type: 'numeric'},
       { numericFormat: {pattern: '0,000'}, data: 'tests', type: 'numeric'},
       { numericFormat: {pattern: '0,000'}, data: 'pending', type: 'numeric'},
       {
@@ -32,6 +34,7 @@ const makeStateTable = (statesLatestDay, stateHeaders) => {
         {label: 'new', colspan: 2},
         {label: '', colspan: 1},
         {label: '/1M', colspan: 2},
+        {label: 'new/1M', colspan: 2},
         {label: 'tests', colspan: 5},
       ],
       stateHeaders,
@@ -67,6 +70,8 @@ const makeCountyTable = (countiesLatestDay, countyHeaders) => {
       { numericFormat: {pattern: '0,000'}, data: 'population', type: 'numeric'},
       { numericFormat: {pattern: '0,000'}, data: 'casesPer1M', type: 'numeric'},
       { numericFormat: {pattern: '0,000'}, data: 'deathsPer1M', type: 'numeric'},
+      { numericFormat: {pattern: '0,000'}, data: 'newCasesPer1M', type: 'numeric'},
+      { numericFormat: {pattern: '0,000'}, data: 'newDeathsPer1M', type: 'numeric'},
     ],
     nestedHeaders: [
       [
@@ -75,6 +80,7 @@ const makeCountyTable = (countiesLatestDay, countyHeaders) => {
         {label: 'new', colspan: 2},
         {label: '', colspan: 1},
         {label: '/1M', colspan: 2},
+        {label: 'new/1M', colspan: 2},
       ],
       countyHeaders,
     ],
@@ -105,6 +111,8 @@ const makeCountryTable = (countriesLatestDay) => {
       { numericFormat: {pattern: '0,000'}, data: 'population', type: 'numeric'},
       { numericFormat: {pattern: '0,000'}, data: 'casesPer1M', type: 'numeric'},
       { numericFormat: {pattern: '0,000'}, data: 'deathsPer1M', type: 'numeric'},
+      { numericFormat: {pattern: '0,000'}, data: 'newCasesPer1M', type: 'numeric'},
+      { numericFormat: {pattern: '0,000'}, data: 'newDeathsPer1M', type: 'numeric'},
     ],
     nestedHeaders: [
       [
@@ -113,8 +121,9 @@ const makeCountryTable = (countriesLatestDay) => {
         {label: 'new', colspan: 2},
         {label: '', colspan: 1},
         {label: '/1M', colspan: 2},
+        {label: 'new/1M', colspan: 2},
       ],
-      ['province/country', 'cases', 'deaths', 'cases', 'deaths', 'population', 'cases', 'deaths'],
+      ['province/country', 'cases', 'deaths', 'cases', 'deaths', 'population', 'cases', 'deaths', 'cases', 'deaths'],
     ],
     columnSorting: {
       sortEmptyCells: true,

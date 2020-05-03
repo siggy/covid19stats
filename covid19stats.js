@@ -142,6 +142,8 @@ Promise.all([
   stateHeaders.push('population');
   stateHeaders.push('cases');      // cases/1M
   stateHeaders.push('deaths');     // deaths/1M
+  stateHeaders.push('cases');      // new cases/1M
+  stateHeaders.push('deaths');     // new deaths/1M
   stateHeaders.push('total');      // total tests
   stateHeaders.push('pending');    // pending tests
   stateHeaders.push('positive');   // positive test %
@@ -244,6 +246,8 @@ Promise.all([
   countyHeaders.push('population');
   countyHeaders.push('cases');      // cases/1M
   countyHeaders.push('deaths');     // deaths/1M
+  countyHeaders.push('cases');      // new cases/1M
+  countyHeaders.push('deaths');     // new deaths/1M
 
   // complete, unique set of dates
   const allCountyDates = new Set();
