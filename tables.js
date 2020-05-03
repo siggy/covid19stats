@@ -145,7 +145,7 @@ const makeTable = (options, name) => {
     dropdownMenu: true,
     filters: true,
     height: '90vh',
-    width: '90vw',
+    width: '95vw',
     stretchH: 'all',
     licenseKey: 'non-commercial-and-evaluation',
   }
