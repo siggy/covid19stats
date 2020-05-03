@@ -1,10 +1,8 @@
-let stateChart;
-let countyChart;
-let countryChart;
-
-let stateTable;
-let countyTable;
-let countryTable;
+const charts = {
+  'state': null,
+  'county': null,
+  'country': null,
+}
 
 const countyFilter = new Map(
   [
@@ -481,28 +479,28 @@ Promise.all([
   //
 
   setTimeout(_ => {
-    stateChart = initChart(statesToDates, allStateDates, 'state-chart', null, 'cases', 0);
+    charts['state'] = initChart(statesToDates, allStateDates, 'state-chart', null, 'cases', 0);
 
     setTimeout(_ => {
-      countyChart = initChart(countiesToDates, allCountyDates, 'county-chart', countyFilter, 'cases', chartLimit);
+      charts['county'] = initChart(countiesToDates, allCountyDates, 'county-chart', countyFilter, 'cases', chartLimit);
 
       setTimeout(_ => {
-        countryChart = initChart(countriesToDates, allCountryDates, 'country-chart', null, 'cases', chartLimit);
+        charts['country'] = initChart(countriesToDates, allCountryDates, 'country-chart', null, 'cases', chartLimit);
 
         //
         // initialize tables
         //
 
         setTimeout(_ => {
-          stateTable = makeStateTable(statesLatestDay, stateHeaders);
+          const stateTable = makeStateTable(statesLatestDay, stateHeaders);
           initCollapsible('state-collapsible', stateTable);
 
           setTimeout(_ => {
-            countyTable = makeCountyTable(countiesLatestDay, countyHeaders);
+            const countyTable = makeCountyTable(countiesLatestDay, countyHeaders);
             initCollapsible('county-collapsible', countyTable);
 
             setTimeout(_ => {
-              countryTable = makeCountryTable(countriesLatestDay);
+              const countryTable = makeCountryTable(countriesLatestDay);
               initCollapsible('country-collapsible', countryTable);
             }, 0);
           }, 0);
@@ -575,26 +573,12 @@ window.onclick = e => {
 // Based on: https://codepen.io/markcaron/pen/MvGRYV
 const setField = (evt, chart, field) => {
   activateTab(evt, chart+"-field-tab");
-
-  if (chart === 'state') {
-    stateChart.setField(field, false);
-  } else if (chart === 'county') {
-    countyChart.setField(field, false);
-  } else if (chart === 'country') {
-    countryChart.setField(field, false);
-  }
+  charts[chart].setField(field, false);
 }
 
 const setAxis = (evt, chart, yAxis) => {
   activateTab(evt, chart+"-axes-tab");
-
-  if (chart === 'state') {
-    stateChart.setAxis(yAxis);
-  } else if (chart === 'county') {
-    countyChart.setAxis(yAxis);
-  } else if (chart === 'country') {
-    countryChart.setAxis(yAxis);
-  }
+  charts[chart].setAxis(yAxis);
 }
 
 const showTop = (evt, chart, top) => {
@@ -604,26 +588,15 @@ const showTop = (evt, chart, top) => {
   const topInt = (top !== 'all') ?
     parseInt(top) :
     0;
-  if (chart === 'state') {
-    stateChart.setLimit(topInt, true);
-  } else if (chart === 'county') {
-    countyChart.setLimit(topInt, true);
-  } else if (chart === 'country') {
-    countryChart.setLimit(topInt, true);
-  }
+
+  charts[chart].setLimit(topInt, true);
 }
 
 const showNormalized = (evt, chart, normalized) => {
   document.getElementById(chart+"-normalized-dropdown-button").innerHTML =
     evt.currentTarget.textContent + " <span class='dropdown-chevron'>&#9660;</span>";
 
-  if (chart === 'state') {
-    stateChart.setNormalized(normalized, false);
-  } else if (chart === 'county') {
-    countyChart.setNormalized(normalized, false);
-  } else if (chart === 'country') {
-    countryChart.setNormalized(normalized, false);
-  }
+  charts[chart].setNormalized(normalized, false);
 }
 
 //

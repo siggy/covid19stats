@@ -136,8 +136,9 @@ Browse to: http://0.0.0.0:8000/
 
 ## TODO
 
-- parameterize `stateChart`/`countyChart`/`countryChart` lookup table
-- fix mutliple drop-downs being open at once
+- newCasesPer1m / newDeathsPer1M in tables
+- fix multiple drop-downs being open at once
+- fix tab wrapping on mobile
 - make county selector on top
 - tests in state chart
   - covidtracking historical tests
@@ -149,7 +150,6 @@ Browse to: http://0.0.0.0:8000/
   - animate increase
     - https://stackoverflow.com/questions/16994662/count-animation-from-number-a-to-b
 - unified chart
-- fix tab wrapping on mobile
 - fix political province names
 - toggle states in chart by lockdown date / policy
 - toggle countries + states
