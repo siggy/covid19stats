@@ -204,11 +204,14 @@ Promise.all([
       const cases = row.cases;
       const deaths = row.deaths;
 
-      row.newCases = cases - lastCaseCount;
-      lastCaseCount = cases;
+      row.newCases = Math.max(cases - lastCaseCount, 0);
+      row.newDeaths = Math.max(deaths - lastDeathCount, 0);
 
-      row.newDeaths = deaths - lastDeathCount;
+      lastCaseCount = cases;
       lastDeathCount = deaths;
+
+      row.newCasesPer1M =  Math.round(row.newCases / popPer1M);
+      row.newDeathsPer1M =  Math.round(row.newDeaths / popPer1M);
 
       row.population = pop;
       row.casesPer1M = Math.round(cases / popPer1M);
@@ -314,10 +317,13 @@ Promise.all([
       const cases = row.cases;
       const deaths = row.deaths;
 
-      row.newCases = cases - lastCaseCount;
-      lastCaseCount = cases;
+      row.newCases = Math.max(cases - lastCaseCount, 0);
+      row.newDeaths = Math.max(deaths - lastDeathCount, 0);
 
-      row.newDeaths = deaths - lastDeathCount;
+      row.newCasesPer1M = Math.round(row.newCases / popPer1M);
+      row.newDeathsPer1M = Math.round(row.newDeaths / popPer1M);
+
+      lastCaseCount = cases;
       lastDeathCount = deaths;
 
       row.population = pop;
@@ -408,12 +414,15 @@ Promise.all([
         name: name,
         cases: cases,
         deaths: deaths,
-        newCases: cases - lastCaseCount,
-        newDeaths: deaths - lastDeathCount,
+        newCases: Math.max(cases - lastCaseCount, 0),
+        newDeaths: Math.max(deaths - lastDeathCount, 0),
         population: pop !== undefined ? pop : "",
         casesPer1M: pop !== undefined ? Math.round(cases / popPer1M) : "",
         deathsPer1M: pop !== undefined ? Math.round(deaths / popPer1M) : "",
       };
+
+      country.newCasesPer1M  = pop !== undefined ? Math.round(country.newCases / popPer1M) : "";
+      country.newDeathsPer1M = pop !== undefined ? Math.round(country.newDeaths / popPer1M) : "";
 
       lastCaseCount = cases;
       lastDeathCount = deaths;
@@ -601,6 +610,19 @@ const showTop = (evt, chart, top) => {
     countyChart.setLimit(topInt, true);
   } else if (chart === 'country') {
     countryChart.setLimit(topInt, true);
+  }
+}
+
+const showNormalized = (evt, chart, normalized) => {
+  document.getElementById(chart+"-normalized-dropdown-button").innerHTML =
+    evt.currentTarget.textContent + " <span class='dropdown-chevron'>&#9660;</span>";
+
+  if (chart === 'state') {
+    stateChart.setNormalized(normalized, false);
+  } else if (chart === 'county') {
+    countyChart.setNormalized(normalized, false);
+  } else if (chart === 'country') {
+    countryChart.setNormalized(normalized, false);
   }
 }
 

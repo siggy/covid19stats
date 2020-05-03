@@ -172,6 +172,7 @@ const initChart = (dataMap, xAxisDates, chartId, filter, field, limit) => {
   });
 
   const chart = {
+    normalized: false,
     field: field,
     limit: limit,
     dataMap: dataMap,
@@ -179,16 +180,25 @@ const initChart = (dataMap, xAxisDates, chartId, filter, field, limit) => {
     dataMapSorted: null,
     dataMapLimited: null,
 
-    // setFilter => setField => setLimit
+    getNormalizedField() {
+      return this.normalized ? this.field + "Per1M" : this.field;
+    },
+
+    // setFilter => setNormalized => setField => setLimit
 
     setFilter(filter) {
       this.dataMapFiltered = filterData(this.dataMap, filter);
-      this.setField(this.field, true);
+      this.setNormalized(this.normalized, true);
+    },
+
+    setNormalized(normalized, unload) {
+      this.normalized = normalized;
+      this.setField(this.field, unload);
     },
 
     setField(field, unload) {
       this.field = field;
-      this.dataMapSorted = sortData(this.dataMapFiltered, this.field);
+      this.dataMapSorted = sortData(this.dataMapFiltered, this.getNormalizedField());
       this.setLimit(this.limit, unload);
     },
 
@@ -205,7 +215,7 @@ const initChart = (dataMap, xAxisDates, chartId, filter, field, limit) => {
 
       this.limit = limit;
       this.dataMapLimited = limitData(this.dataMapSorted, this.limit);
-      updateChart(this.dataMapLimited, this.field, forceUnload);
+      updateChart(this.dataMapLimited, this.getNormalizedField(), forceUnload);
     },
 
     setAxis(yAxis) {

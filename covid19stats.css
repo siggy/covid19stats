@@ -199,6 +199,16 @@ header h1 {
   display: block;
 }
 
+.dropdown.normalized {
+  float: right;
+}
+.dropdown.normalized .dropdown-button{
+  min-width: 68px;
+}
+.dropdown.normalized .dropdown-content{
+  min-width: 66px;
+}
+
 /*
  * Collapsibles
  */

@@ -131,12 +131,20 @@
           </div>
         </div>
 
+        <div class="dropdown normalized">
+          <button id="state-normalized-dropdown-button" class="dropdown-button" onclick="dropDownToggle('state-normalized')">
+            Total <span class="dropdown-chevron">&#9660;</span>
+          </button>
+          <div id="state-normalized-dropdown-content" class="dropdown-content">
+            <button onclick="showNormalized(event, 'state', false)" class="end">Total</button>
+            <button onclick="showNormalized(event, 'state', true)"  class="end">/1M</button>
+          </div>
+        </div>
+
         <button class="state-field-tab active" onclick="setField(event, 'state', 'cases')">Cases</button>
         <button class="state-field-tab" onclick="setField(event, 'state', 'deaths')">Deaths</button>
         <button class="state-field-tab" onclick="setField(event, 'state', 'newCases')">New Cases</button>
         <button class="state-field-tab" onclick="setField(event, 'state', 'newDeaths')">New Deaths</button>
-        <button class="state-field-tab" onclick="setField(event, 'state', 'casesPer1M')">Cases/1M</button>
-        <button class="state-field-tab" onclick="setField(event, 'state', 'deathsPer1M')">Deaths/1M</button>
 
         <button class="state-axes-tab axes active" onclick="setAxis(event, 'state', 'log')">Log</button>
         <button class="state-axes-tab axes" onclick="setAxis(event, 'state', 'linear')">Linear</button>
@@ -176,12 +184,20 @@
           </div>
         </div>
 
+        <div class="dropdown normalized">
+          <button id="county-normalized-dropdown-button" class="dropdown-button" onclick="dropDownToggle('county-normalized')">
+            Total <span class="dropdown-chevron">&#9660;</span>
+          </button>
+          <div id="county-normalized-dropdown-content" class="dropdown-content">
+            <button onclick="showNormalized(event, 'county', false)" class="end">Total</button>
+            <button onclick="showNormalized(event, 'county', true)"  class="end">/1M</button>
+          </div>
+        </div>
+
         <button class="county-field-tab active" onclick="setField(event, 'county', 'cases')">Cases</button>
         <button class="county-field-tab" onclick="setField(event, 'county', 'deaths')">Deaths</button>
         <button class="county-field-tab" onclick="setField(event, 'county', 'newCases')">New Cases</button>
         <button class="county-field-tab" onclick="setField(event, 'county', 'newDeaths')">New Deaths</button>
-        <button class="county-field-tab" onclick="setField(event, 'county', 'casesPer1M')">Cases/1M</button>
-        <button class="county-field-tab" onclick="setField(event, 'county', 'deathsPer1M')">Deaths/1M</button>
 
         <button class="county-axes-tab axes active" onclick="setAxis(event, 'county', 'log')">Log</button>
         <button class="county-axes-tab axes" onclick="setAxis(event, 'county', 'linear')">Linear</button>
@@ -218,12 +234,20 @@
           </div>
         </div>
 
+        <div class="dropdown normalized">
+          <button id="country-normalized-dropdown-button" class="dropdown-button" onclick="dropDownToggle('country-normalized')">
+            Total <span class="dropdown-chevron">&#9660;</span>
+          </button>
+          <div id="country-normalized-dropdown-content" class="dropdown-content">
+            <button onclick="showNormalized(event, 'country', false)" class="end">Total</button>
+            <button onclick="showNormalized(event, 'country', true)"  class="end">/1M</button>
+          </div>
+        </div>
+
         <button class="country-field-tab active" onclick="setField(event, 'country', 'cases')">Cases</button>
         <button class="country-field-tab" onclick="setField(event, 'country', 'deaths')">Deaths</button>
         <button class="country-field-tab" onclick="setField(event, 'country', 'newCases')">New Cases</button>
         <button class="country-field-tab" onclick="setField(event, 'country', 'newDeaths')">New Deaths</button>
-        <button class="country-field-tab" onclick="setField(event, 'country', 'casesPer1M')">Cases/1M</button>
-        <button class="country-field-tab" onclick="setField(event, 'country', 'deathsPer1M')">Deaths/1M</button>
 
         <button class="country-axes-tab axes active" onclick="setAxis(event, 'country', 'log')">Log</button>
         <button class="country-axes-tab axes" onclick="setAxis(event, 'country', 'linear')">Linear</button>
