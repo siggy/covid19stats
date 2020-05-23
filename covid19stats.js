@@ -56,7 +56,7 @@ Object.entries(stateAbbreviations).sort((a, b) => {
     } else {
       countyFilter.get('state').delete(s[0]);
     }
-    countyChart.setFilter(countyFilter);
+    charts['county'].setFilter(countyFilter);
   }
 });
 
