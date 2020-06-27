@@ -136,6 +136,7 @@ Browse to: http://0.0.0.0:8000/
 
 ## TODO
 
+- make `setField` dropdown fixed width
 - fix MO in county chart
 - pos test %
 - fix multiple drop-downs being open at once

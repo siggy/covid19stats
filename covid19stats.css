@@ -149,14 +149,8 @@ header h1 {
   padding: 10px 16px;
   transition: 0.3s;
 }
-.tab button.axes {
-  float: right;
-}
 .tab button:hover {
   background-color: #ddd;
-}
-.tab button.active {
-  background-color: #ccc;
 }
 
 /*
@@ -197,16 +191,6 @@ header h1 {
 }
 .show {
   display: block;
-}
-
-.dropdown.normalized {
-  float: right;
-}
-.dropdown.normalized .dropdown-button{
-  min-width: 68px;
-}
-.dropdown.normalized .dropdown-content{
-  min-width: 66px;
 }
 
 /*

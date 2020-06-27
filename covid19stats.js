@@ -596,18 +596,6 @@ function numberWithCommas(x) {
 }
 
 //
-// tabs
-//
-
-const activateTab = (evt, className) => {
-  const tabs = document.getElementsByClassName(className);
-  for (let i = 0; i < tabs.length; i++) {
-    tabs[i].classList.remove('active');
-  }
-  evt.currentTarget.classList.add('active');
-}
-
-//
 // dropdowns
 //
 
@@ -636,12 +624,16 @@ window.onclick = e => {
 
 // Based on: https://codepen.io/markcaron/pen/MvGRYV
 const setField = (evt, chart, field) => {
-  activateTab(evt, chart+"-field-tab");
+  evt.currentTarget.closest(".dropdown").firstElementChild.innerHTML =
+    evt.currentTarget.textContent + " <span class='dropdown-chevron'>&#9660;</span>";
+
   charts[chart].setField(field, false);
 }
 
 const setAxis = (evt, chart, yAxis) => {
-  activateTab(evt, chart+"-axes-tab");
+  evt.currentTarget.closest(".dropdown").firstElementChild.innerHTML =
+    evt.currentTarget.textContent + " <span class='dropdown-chevron'>&#9660;</span>";
+
   charts[chart].setAxis(yAxis);
 }
 
