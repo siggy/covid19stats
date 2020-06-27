@@ -136,6 +136,7 @@ Browse to: http://0.0.0.0:8000/
 
 ## TODO
 
+- bigger text on charts
 - make `setField` dropdown fixed width
 - pos test %
 - fix multiple drop-downs being open at once
