@@ -41,7 +41,7 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable@7.4.2/dist/handsontable.full.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/c3@0.7.15/c3.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/c3@0.7.18/c3.min.css">
   <link rel="stylesheet" href="covid19stats.css">
 </head>
 <body>
@@ -121,10 +121,10 @@
     <div class="data">
       <div class="tab">
         <div class="dropdown">
-          <button id="state-dropdown-button" class="dropdown-button" onclick="dropDownToggle('state')">
-            Show all <span class="dropdown-chevron">&#9660;</span>
+          <button class="dropdown-button" onclick="dropDownToggle(event)">
+            Top 10 <span class="dropdown-chevron">&#9660;</span>
           </button>
-          <div id="state-dropdown-content" class="dropdown-content">
+          <div class="dropdown-content">
             <button onclick="showTop(event, 'state', '10')"  class="end">Top 10</button>
             <button onclick="showTop(event, 'state', '30')"             >Top 30</button>
             <button onclick="showTop(event, 'state', 'all')" class="end">Show all</button>
@@ -132,10 +132,10 @@
         </div>
 
         <div class="dropdown normalized">
-          <button id="state-normalized-dropdown-button" class="dropdown-button" onclick="dropDownToggle('state-normalized')">
+          <button class="dropdown-button" onclick="dropDownToggle(event)">
             Total <span class="dropdown-chevron">&#9660;</span>
           </button>
-          <div id="state-normalized-dropdown-content" class="dropdown-content">
+          <div class="dropdown-content">
             <button onclick="showNormalized(event, 'state', false)" class="end">Total</button>
             <button onclick="showNormalized(event, 'state', true)"  class="end">/1M</button>
           </div>
@@ -174,10 +174,10 @@
     <div class="data">
       <div class="tab">
         <div class="dropdown">
-          <button id="county-dropdown-button" class="dropdown-button" onclick="dropDownToggle('county')">
-            Top 30 <span class="dropdown-chevron">&#9660;</span>
+          <button class="dropdown-button" onclick="dropDownToggle(event)">
+            Top 10 <span class="dropdown-chevron">&#9660;</span>
           </button>
-          <div id="county-dropdown-content" class="dropdown-content">
+          <div class="dropdown-content"></div>
             <button onclick="showTop(event, 'county', '10')"  class="end">Top 10</button>
             <button onclick="showTop(event, 'county', '30')"             >Top 30</button>
             <button onclick="showTop(event, 'county', '50')"             >Top 50</button>
@@ -187,10 +187,10 @@
         </div>
 
         <div class="dropdown normalized">
-          <button id="county-normalized-dropdown-button" class="dropdown-button" onclick="dropDownToggle('county-normalized')">
+          <button class="dropdown-button" onclick="dropDownToggle(event)">
             Total <span class="dropdown-chevron">&#9660;</span>
           </button>
-          <div id="county-normalized-dropdown-content" class="dropdown-content">
+          <div class="dropdown-content">
             <button onclick="showNormalized(event, 'county', false)" class="end">Total</button>
             <button onclick="showNormalized(event, 'county', true)"  class="end">/1M</button>
           </div>
@@ -226,10 +226,10 @@
     <div class="data">
       <div class="tab">
         <div class="dropdown">
-          <button id="country-dropdown-button" class="dropdown-button" onclick="dropDownToggle('country')">
-            Top 30 <span class="dropdown-chevron">&#9660;</span>
+          <button class="dropdown-button" onclick="dropDownToggle(event)">
+            Top 10 <span class="dropdown-chevron">&#9660;</span>
           </button>
-          <div id="country-dropdown-content" class="dropdown-content">
+          <div class="dropdown-content">
             <button onclick="showTop(event, 'country', '10')"  class="end">Top 10</button>
             <button onclick="showTop(event, 'country', '30')"             >Top 30</button>
             <button onclick="showTop(event, 'country', '50')"             >Top 50</button>
@@ -239,10 +239,10 @@
         </div>
 
         <div class="dropdown normalized">
-          <button id="country-normalized-dropdown-button" class="dropdown-button" onclick="dropDownToggle('country-normalized')">
+          <button class="dropdown-button" onclick="dropDownToggle(event)">
             Total <span class="dropdown-chevron">&#9660;</span>
           </button>
-          <div id="country-normalized-dropdown-content" class="dropdown-content">
+          <div class="dropdown-content">
             <button onclick="showNormalized(event, 'country', false)" class="end">Total</button>
             <button onclick="showNormalized(event, 'country', true)"  class="end">/1M</button>
           </div>

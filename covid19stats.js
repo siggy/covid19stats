@@ -62,7 +62,7 @@ Object.entries(stateAbbreviations).sort((a, b) => {
 
 // limit number of countries in chart
 // this must match the defaults set in the "dropdown-button" HTML elements
-const chartLimit = 30;
+const chartLimit = 10;
 
 // retrieve all remote data
 
@@ -537,7 +537,7 @@ Promise.all([
   //
 
   setTimeout(_ => {
-    charts['state'] = initChart(statesToDates, allStateDates, 'state-chart', null, 'cases', 0);
+    charts['state'] = initChart(statesToDates, allStateDates, 'state-chart', null, 'cases', chartLimit);
 
     setTimeout(_ => {
       charts['county'] = initChart(countiesToDates, allCountyDates, 'county-chart', countyFilter, 'cases', chartLimit);
@@ -563,6 +563,7 @@ Promise.all([
             }, 0);
           }, 0);
         }, 0);
+
       }, 0);
     }, 0);
   }, 0);
@@ -611,8 +612,13 @@ const activateTab = (evt, className) => {
 //
 
 // Based on: https://www.w3schools.com/howto/howto_css_dropdown_navbar.asp
-const dropDownToggle = chart => {
-  document.getElementById(chart+"-dropdown-content").classList.toggle("show");
+const dropDownToggle = evt => {
+  evt
+    .currentTarget
+    .closest(".dropdown")
+    .getElementsByClassName("dropdown-content")[0]
+    .classList
+    .toggle("show");
 }
 
 window.onclick = e => {
@@ -640,7 +646,7 @@ const setAxis = (evt, chart, yAxis) => {
 }
 
 const showTop = (evt, chart, top) => {
-  document.getElementById(chart+"-dropdown-button").innerHTML =
+  evt.currentTarget.closest(".dropdown").firstElementChild.innerHTML =
     evt.currentTarget.textContent + " <span class='dropdown-chevron'>&#9660;</span>";
 
   const topInt = (top !== 'all') ?
@@ -651,7 +657,7 @@ const showTop = (evt, chart, top) => {
 }
 
 const showNormalized = (evt, chart, normalized) => {
-  document.getElementById(chart+"-normalized-dropdown-button").innerHTML =
+  evt.currentTarget.closest(".dropdown").firstElementChild.innerHTML =
     evt.currentTarget.textContent + " <span class='dropdown-chevron'>&#9660;</span>";
 
   charts[chart].setNormalized(normalized, false);
