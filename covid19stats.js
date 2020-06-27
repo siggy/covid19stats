@@ -79,6 +79,7 @@ Promise.all([
     .then(response =>
       response.ok ? response.text() : Promise.reject(response.status)
     ),
+    // fetch('https://covidtracking.com/api/v1/states/daily.json')
   fetch('https://covidtracking.com/api/v1/states/current.json')
     .then(response =>
       response.ok ? response.json() : Promise.reject(response.status)
@@ -139,11 +140,15 @@ Promise.all([
   // TODO: must match nestedHeaders in tables.js
   stateHeaders.push('cases');      // new cases
   stateHeaders.push('deaths');     // new deaths
+  stateHeaders.push('cases');      // avg new cases
+  stateHeaders.push('deaths');     // avg new deaths
   stateHeaders.push('population');
   stateHeaders.push('cases');      // cases/1M
   stateHeaders.push('deaths');     // deaths/1M
   stateHeaders.push('cases');      // new cases/1M
   stateHeaders.push('deaths');     // new deaths/1M
+  stateHeaders.push('cases');      // avg new cases/1M
+  stateHeaders.push('deaths');     // avg new deaths/1M
   stateHeaders.push('total');      // total tests
   stateHeaders.push('pending');    // pending tests
   stateHeaders.push('positive');   // positive test %
@@ -200,6 +205,11 @@ Promise.all([
 
     let lastCaseCount = 0;
     let lastDeathCount = 0;
+
+    const movingAverageDays = 7;
+    const prevCases = new Array(movingAverageDays);
+    const prevDeaths = new Array(movingAverageDays);
+
     dateMap.forEach((row, _) => {
       const cases = row.cases;
       const deaths = row.deaths;
@@ -210,8 +220,18 @@ Promise.all([
       lastCaseCount = cases;
       lastDeathCount = deaths;
 
-      row.newCasesPer1M =  Math.round(row.newCases / popPer1M);
-      row.newDeathsPer1M =  Math.round(row.newDeaths / popPer1M);
+      prevCases.push(row.newCases);
+      prevDeaths.push(row.newDeaths);
+      prevCases.shift();
+      prevDeaths.shift();
+      row.avgNewCases = avg(prevCases);
+      row.avgNewDeaths = avg(prevDeaths);
+
+      row.newCasesPer1M = Math.round(row.newCases / popPer1M);
+      row.newDeathsPer1M = Math.round(row.newDeaths / popPer1M);
+
+      row.avgNewCasesPer1M =  Math.round(row.avgNewCases / popPer1M);
+      row.avgNewDeathsPer1M =  Math.round(row.avgNewDeaths / popPer1M);
 
       row.population = pop;
       row.casesPer1M = Math.round(cases / popPer1M);
@@ -243,11 +263,15 @@ Promise.all([
   // TODO: must match nestedHeaders in tables.js
   countyHeaders.push('cases');      // new cases
   countyHeaders.push('deaths');     // new deaths
+  countyHeaders.push('cases');      // avg new cases
+  countyHeaders.push('deaths');     // avg new deaths
   countyHeaders.push('population');
   countyHeaders.push('cases');      // cases/1M
   countyHeaders.push('deaths');     // deaths/1M
   countyHeaders.push('cases');      // new cases/1M
   countyHeaders.push('deaths');     // new deaths/1M
+  countyHeaders.push('cases');      // avg new cases/1M
+  countyHeaders.push('deaths');     // avg new deaths/1M
 
   // complete, unique set of dates
   const allCountyDates = new Set();
@@ -315,6 +339,11 @@ Promise.all([
 
     let lastCaseCount = 0;
     let lastDeathCount = 0;
+
+    const movingAverageDays = 7;
+    const prevCases = new Array(movingAverageDays);
+    const prevDeaths = new Array(movingAverageDays);
+
     dateMap.forEach((row, _) => {
       const cases = row.cases;
       const deaths = row.deaths;
@@ -322,11 +351,21 @@ Promise.all([
       row.newCases = Math.max(cases - lastCaseCount, 0);
       row.newDeaths = Math.max(deaths - lastDeathCount, 0);
 
+      lastCaseCount = cases;
+      lastDeathCount = deaths;
+
+      prevCases.push(row.newCases);
+      prevDeaths.push(row.newDeaths);
+      prevCases.shift();
+      prevDeaths.shift();
+      row.avgNewCases = avg(prevCases);
+      row.avgNewDeaths = avg(prevDeaths);
+
       row.newCasesPer1M = Math.round(row.newCases / popPer1M);
       row.newDeathsPer1M = Math.round(row.newDeaths / popPer1M);
 
-      lastCaseCount = cases;
-      lastDeathCount = deaths;
+      row.avgNewCasesPer1M =  Math.round(row.avgNewCases / popPer1M);
+      row.avgNewDeathsPer1M =  Math.round(row.avgNewDeaths / popPer1M);
 
       row.population = pop;
       row.casesPer1M = Math.round(cases / popPer1M);
@@ -402,6 +441,11 @@ Promise.all([
 
     let lastCaseCount = 0;
     let lastDeathCount = 0;
+
+    const movingAverageDays = 7;
+    const prevCases = new Array(movingAverageDays);
+    const prevDeaths = new Array(movingAverageDays);
+
     countryHeaders.forEach((header, j) => {
       if (j < 4) {
         // first 4 columns are: province/state, country/region, lat, long
@@ -428,6 +472,16 @@ Promise.all([
 
       lastCaseCount = cases;
       lastDeathCount = deaths;
+
+      prevCases.push(country.newCases);
+      prevDeaths.push(country.newDeaths);
+      prevCases.shift();
+      prevDeaths.shift();
+      country.avgNewCases = avg(prevCases);
+      country.avgNewDeaths = avg(prevDeaths);
+
+      country.avgNewCasesPer1M  = pop !== undefined ? Math.round(country.avgNewCases / popPer1M) : "";
+      country.avgNewDeathsPer1M = pop !== undefined ? Math.round(country.avgNewDeaths / popPer1M) : "";
 
       allCountryDates.add(country.date);
 
@@ -645,3 +699,10 @@ const formatDate = date => {
 
   return [year, month, day].join('-');
 }
+
+const avg = arr =>
+  Math.round(
+    arr.reduce(function(a, b){
+      return a + b;
+    }, 0) / arr.length
+  );

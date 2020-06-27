@@ -136,6 +136,8 @@ Browse to: http://0.0.0.0:8000/
 
 ## TODO
 
+- fix MO in county chart
+- pos test %
 - fix multiple drop-downs being open at once
 - fix tab wrapping on mobile
 - make county selector on top
