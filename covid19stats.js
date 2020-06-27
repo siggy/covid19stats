@@ -330,11 +330,13 @@ Promise.all([
     } else if (latestDay.name === 'Kansas City') {
       // https://github.com/nytimes/covid-19-data#geographic-exceptions
       pop = 488943;
+    } else if (latestDay.name === 'Joplin') {
+      // https://github.com/nytimes/covid-19-data#geographic-exceptions
+      pop = 50150;
     } else {
       console.warn('county fips not found: ' + JSON.stringify(latestDay));
       return;
     }
-
     const popPer1M = pop / 1000000;
 
     let lastCaseCount = 0;
