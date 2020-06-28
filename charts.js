@@ -1,5 +1,14 @@
 // dataMap: Name => Date => {date,name,fips,cases,deaths}
-const initChart = (dataMap, xAxisDates, chartId, filter, field, limit) => {
+const initChart = (options) => {
+  const dataMap    = options.dataMap;
+  const xAxisDates = options.xAxisDates;
+  const chartId    = options.chartId;
+  const filter     = options.filter;
+  const field      = options.field;
+  const limit      = options.limit;
+  const normalized = options.normalized;
+  const yAxis      = options.yAxis;
+
   let yAxisTickValues = [100, 1000, 10000];
 
   // side effecting
@@ -128,7 +137,7 @@ const initChart = (dataMap, xAxisDates, chartId, filter, field, limit) => {
       },
       y: {
         inner: true,
-        type: 'log',
+        type: yAxis,
         padding: 0,
         tick: {
           format: d3.format(",d"),
@@ -180,7 +189,7 @@ const initChart = (dataMap, xAxisDates, chartId, filter, field, limit) => {
   });
 
   const chart = {
-    normalized: false,
+    normalized: normalized,
     field: field,
     limit: limit,
     dataMap: dataMap,

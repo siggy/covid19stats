@@ -539,13 +539,41 @@ Promise.all([
   //
 
   setTimeout(_ => {
-    charts['state'] = initChart(statesToDates, allStateDates, 'state-chart', null, 'cases', chartLimit);
+    // must match defaults in index.html dropdowns
+    charts['state'] = initChart({
+      dataMap: statesToDates,
+      xAxisDates: allStateDates,
+      chartId: 'state-chart',
+      filter: null,
+      field: 'avgNewCases',
+      limit: chartLimit,
+      normalized: true,
+      yAxis: 'linear',
+    });
 
     setTimeout(_ => {
-      charts['county'] = initChart(countiesToDates, allCountyDates, 'county-chart', countyFilter, 'cases', chartLimit);
+      charts['county'] = initChart({
+        dataMap: countiesToDates,
+        xAxisDates: allCountyDates,
+        chartId: 'county-chart',
+        filter: countyFilter,
+        field: 'avgNewCases',
+        limit: chartLimit,
+        normalized: false,
+        yAxis: 'log',
+      });
 
       setTimeout(_ => {
-        charts['country'] = initChart(countriesToDates, allCountryDates, 'country-chart', null, 'cases', chartLimit);
+        charts['country'] = initChart({
+          dataMap: countriesToDates,
+          xAxisDates: allCountryDates,
+          chartId: 'country-chart',
+          filter: null,
+          field: 'avgNewCases',
+          limit: chartLimit,
+          normalized: false,
+          yAxis: 'log',
+        });
 
         //
         // initialize tables
