@@ -117,206 +117,214 @@
       </div>
     </div>
 
-    <h2>US States</h2>
-    <div class="data">
-      <div class="dropdown-row">
-        <div class="dropdown">
-          <button class="dropdown-button" onclick="dropDownToggle(event)">
-            Top 10 <span class="dropdown-chevron">&#9660;</span>
-          </button>
-          <div class="dropdown-content">
-            <button onclick="showTop(event, 'state', '10')"  class="end">Top 10</button>
-            <button onclick="showTop(event, 'state', '30')"             >Top 30</button>
-            <button onclick="showTop(event, 'state', 'all')" class="end">Show all</button>
-          </div>
-        </div>
+    <div class="tab">
+      <button class="tablink active" onclick="openTab(event, 'states')">US States</button>
+      <button class="tablink" onclick="openTab(event, 'counties')">US Counties</button>
+      <button class="tablink" onclick="openTab(event, 'countries')">Provinces/Countries</button>
+    </div>
 
-        <div class="dropdown">
-          <button class="dropdown-button" onclick="dropDownToggle(event)">
-            New Cases (7d avg) <span class="dropdown-chevron">&#9660;</span>
-          </button>
-          <div class="dropdown-content">
-            <button onclick="setField(event, 'state', 'cases')"        class="end">Cases</button>
-            <button onclick="setField(event, 'state', 'deaths')"                  >Deaths</button>
-            <button onclick="setField(event, 'state', 'newCases')"                >New Cases</button>
-            <button onclick="setField(event, 'state', 'newDeaths')"               >New Deaths</button>
-            <button onclick="setField(event, 'state', 'avgNewCases')"             >New Cases (7d avg)</button>
-            <button onclick="setField(event, 'state', 'avgNewDeaths')" class="end">New Deaths (7d avg)</button>
+    <div id="states" class="tabcontent active">
+      <div class="data">
+        <div class="dropdown-row">
+          <div class="dropdown">
+            <button class="dropdown-button" onclick="dropDownToggle(event)">
+              Top 10 <span class="dropdown-chevron">&#9660;</span>
+            </button>
+            <div class="dropdown-content">
+              <button onclick="showTop(event, 'state', '10')"  class="end">Top 10</button>
+              <button onclick="showTop(event, 'state', '30')"             >Top 30</button>
+              <button onclick="showTop(event, 'state', 'all')" class="end">Show all</button>
+            </div>
           </div>
-        </div>
 
-        <div class="dropdown">
-          <button class="dropdown-button" onclick="dropDownToggle(event)">
-            /1M <span class="dropdown-chevron">&#9660;</span>
-          </button>
-          <div class="dropdown-content">
-            <button onclick="showNormalized(event, 'state', false)" class="end">Total</button>
-            <button onclick="showNormalized(event, 'state', true)"  class="end">/1M</button>
+          <div class="dropdown">
+            <button class="dropdown-button" onclick="dropDownToggle(event)">
+              New Cases (7d avg) <span class="dropdown-chevron">&#9660;</span>
+            </button>
+            <div class="dropdown-content">
+              <button onclick="setField(event, 'state', 'cases')"        class="end">Cases</button>
+              <button onclick="setField(event, 'state', 'deaths')"                  >Deaths</button>
+              <button onclick="setField(event, 'state', 'newCases')"                >New Cases</button>
+              <button onclick="setField(event, 'state', 'newDeaths')"               >New Deaths</button>
+              <button onclick="setField(event, 'state', 'avgNewCases')"             >New Cases (7d avg)</button>
+              <button onclick="setField(event, 'state', 'avgNewDeaths')" class="end">New Deaths (7d avg)</button>
+            </div>
           </div>
-        </div>
 
-        <div class="dropdown">
-          <button class="dropdown-button" onclick="dropDownToggle(event)">
-            Linear <span class="dropdown-chevron">&#9660;</span>
-          </button>
-          <div class="dropdown-content">
-            <button onclick="setAxis(event, 'state', 'log')"     class="end">Log</button>
-            <button onclick="setAxis(event, 'state', 'linear')"  class="end">Linear</button>
+          <div class="dropdown">
+            <button class="dropdown-button" onclick="dropDownToggle(event)">
+              /1M <span class="dropdown-chevron">&#9660;</span>
+            </button>
+            <div class="dropdown-content">
+              <button onclick="showNormalized(event, 'state', false)" class="end">Total</button>
+              <button onclick="showNormalized(event, 'state', true)"  class="end">/1M</button>
+            </div>
           </div>
-        </div>
 
-      </div>
-      <div id="state-chart" class="chart"></div>
-      <h3 id="state-collapsible" class="collapsible">
-        <button aria-expanded="false">
-          <svg aria-hidden="true" focusable="false" viewBox="0 0 10 10">
-            <rect class="vert" height="8" width="2" y="1" x="4"/>
-            <rect height="2" width="8" y="4" x="1"/>
-          </svg>
-          Show table
-        </button>
-      </h3>
-      <div hidden class="collapsible-content">
-        <div id="state-table" class="table"></div>
-        <button id="state-export" class="export-btn">Download State CSV</button>
+          <div class="dropdown">
+            <button class="dropdown-button" onclick="dropDownToggle(event)">
+              Linear <span class="dropdown-chevron">&#9660;</span>
+            </button>
+            <div class="dropdown-content">
+              <button onclick="setAxis(event, 'state', 'log')"     class="end">Log</button>
+              <button onclick="setAxis(event, 'state', 'linear')"  class="end">Linear</button>
+            </div>
+          </div>
+
+        </div>
+        <div id="state-chart" class="chart"></div>
+        <h3 id="state-collapsible" class="collapsible">
+          <button aria-expanded="false">
+            <svg aria-hidden="true" focusable="false" viewBox="0 0 10 10">
+              <rect class="vert" height="8" width="2" y="1" x="4"/>
+              <rect height="2" width="8" y="4" x="1"/>
+            </svg>
+            Show table
+          </button>
+        </h3>
+        <div hidden class="collapsible-content">
+          <div id="state-table" class="table"></div>
+          <button id="state-export" class="export-btn">Download State CSV</button>
+        </div>
       </div>
     </div>
 
-    <h2>US Counties</h2>
-
-    <ul id="county-state-checks" class="checkbox"></ul>
-
-    <div class="data">
-      <div class="dropdown-row">
-        <div class="dropdown">
-          <button class="dropdown-button" onclick="dropDownToggle(event)">
-            Top 10 <span class="dropdown-chevron">&#9660;</span>
-          </button>
-          <div class="dropdown-content">
-            <button onclick="showTop(event, 'county', '10')"  class="end">Top 10</button>
-            <button onclick="showTop(event, 'county', '30')"             >Top 30</button>
-            <button onclick="showTop(event, 'county', '50')"             >Top 50</button>
-            <button onclick="showTop(event, 'county', '100')"            >Top 100</button>
-            <button onclick="showTop(event, 'county', 'all')" class="end">Show all</button>
+    <div id="counties" class="tabcontent">
+      <div class="data">
+        <div class="dropdown-row">
+          <div class="dropdown">
+            <button class="dropdown-button" onclick="dropDownToggle(event)">
+              Top 10 <span class="dropdown-chevron">&#9660;</span>
+            </button>
+            <div class="dropdown-content">
+              <button onclick="showTop(event, 'county', '10')"  class="end">Top 10</button>
+              <button onclick="showTop(event, 'county', '30')"             >Top 30</button>
+              <button onclick="showTop(event, 'county', '50')"             >Top 50</button>
+              <button onclick="showTop(event, 'county', '100')"            >Top 100</button>
+              <button onclick="showTop(event, 'county', 'all')" class="end">Show all</button>
+            </div>
           </div>
-        </div>
 
-        <div class="dropdown">
-          <button class="dropdown-button" onclick="dropDownToggle(event)">
-            New Cases (7d avg) <span class="dropdown-chevron">&#9660;</span>
-          </button>
-          <div class="dropdown-content">
-            <button onclick="setField(event, 'county', 'cases')"        class="end">Cases</button>
-            <button onclick="setField(event, 'county', 'deaths')"                  >Deaths</button>
-            <button onclick="setField(event, 'county', 'newCases')"                >New Cases</button>
-            <button onclick="setField(event, 'county', 'newDeaths')"               >New Deaths</button>
-            <button onclick="setField(event, 'county', 'avgNewCases')"             >New Cases (7d avg)</button>
-            <button onclick="setField(event, 'county', 'avgNewDeaths')" class="end">New Deaths (7d avg)</button>
+          <div class="dropdown">
+            <button class="dropdown-button" onclick="dropDownToggle(event)">
+              New Cases (7d avg) <span class="dropdown-chevron">&#9660;</span>
+            </button>
+            <div class="dropdown-content">
+              <button onclick="setField(event, 'county', 'cases')"        class="end">Cases</button>
+              <button onclick="setField(event, 'county', 'deaths')"                  >Deaths</button>
+              <button onclick="setField(event, 'county', 'newCases')"                >New Cases</button>
+              <button onclick="setField(event, 'county', 'newDeaths')"               >New Deaths</button>
+              <button onclick="setField(event, 'county', 'avgNewCases')"             >New Cases (7d avg)</button>
+              <button onclick="setField(event, 'county', 'avgNewDeaths')" class="end">New Deaths (7d avg)</button>
+            </div>
           </div>
-        </div>
 
-        <div class="dropdown">
-          <button class="dropdown-button" onclick="dropDownToggle(event)">
-            Total <span class="dropdown-chevron">&#9660;</span>
-          </button>
-          <div class="dropdown-content">
-            <button onclick="showNormalized(event, 'county', false)" class="end">Total</button>
-            <button onclick="showNormalized(event, 'county', true)"  class="end">/1M</button>
+          <div class="dropdown">
+            <button class="dropdown-button" onclick="dropDownToggle(event)">
+              Total <span class="dropdown-chevron">&#9660;</span>
+            </button>
+            <div class="dropdown-content">
+              <button onclick="showNormalized(event, 'county', false)" class="end">Total</button>
+              <button onclick="showNormalized(event, 'county', true)"  class="end">/1M</button>
+            </div>
           </div>
-        </div>
 
-        <div class="dropdown">
-          <button class="dropdown-button" onclick="dropDownToggle(event)">
-            Log <span class="dropdown-chevron">&#9660;</span>
-          </button>
-          <div class="dropdown-content">
-            <button onclick="setAxis(event, 'county', 'log')"     class="end">Log</button>
-            <button onclick="setAxis(event, 'county', 'linear')"  class="end">Linear</button>
+          <div class="dropdown">
+            <button class="dropdown-button" onclick="dropDownToggle(event)">
+              Log <span class="dropdown-chevron">&#9660;</span>
+            </button>
+            <div class="dropdown-content">
+              <button onclick="setAxis(event, 'county', 'log')"     class="end">Log</button>
+              <button onclick="setAxis(event, 'county', 'linear')"  class="end">Linear</button>
+            </div>
           </div>
-        </div>
 
+        </div>
+        <div id="county-chart" class="chart"></div>
+        <h3 id="county-collapsible" class="collapsible">
+          <button aria-expanded="false">
+            <svg aria-hidden="true" focusable="false" viewBox="0 0 10 10">
+              <rect class="vert" height="8" width="2" y="1" x="4"/>
+              <rect height="2" width="8" y="4" x="1"/>
+            </svg>
+            Show table
+          </button>
+        </h3>
+        <div hidden class="collapsible-content">
+          <div id="county-table" class="table"></div>
+          <button id="county-export" class="export-btn">Download County CSV</button>
+        </div>
       </div>
-      <div id="county-chart" class="chart"></div>
-      <h3 id="county-collapsible" class="collapsible">
-        <button aria-expanded="false">
-          <svg aria-hidden="true" focusable="false" viewBox="0 0 10 10">
-            <rect class="vert" height="8" width="2" y="1" x="4"/>
-            <rect height="2" width="8" y="4" x="1"/>
-          </svg>
-          Show table
-        </button>
-      </h3>
-      <div hidden class="collapsible-content">
-        <div id="county-table" class="table"></div>
-        <button id="county-export" class="export-btn">Download County CSV</button>
-      </div>
+
+      <ul id="county-state-checks" class="checkbox"></ul>
     </div>
 
-    <h2>Provinces/Countries</h2>
-    <div class="data">
-      <div class="dropdown-row">
-        <div class="dropdown">
-          <button class="dropdown-button" onclick="dropDownToggle(event)">
-            Top 10 <span class="dropdown-chevron">&#9660;</span>
-          </button>
-          <div class="dropdown-content">
-            <button onclick="showTop(event, 'country', '10')"  class="end">Top 10</button>
-            <button onclick="showTop(event, 'country', '30')"             >Top 30</button>
-            <button onclick="showTop(event, 'country', '50')"             >Top 50</button>
-            <button onclick="showTop(event, 'country', '100')"            >Top 100</button>
-            <button onclick="showTop(event, 'country', 'all')" class="end">Show all</button>
+    <div id="countries" class="tabcontent">
+      <div class="data">
+        <div class="dropdown-row">
+          <div class="dropdown">
+            <button class="dropdown-button" onclick="dropDownToggle(event)">
+              Top 10 <span class="dropdown-chevron">&#9660;</span>
+            </button>
+            <div class="dropdown-content">
+              <button onclick="showTop(event, 'country', '10')"  class="end">Top 10</button>
+              <button onclick="showTop(event, 'country', '30')"             >Top 30</button>
+              <button onclick="showTop(event, 'country', '50')"             >Top 50</button>
+              <button onclick="showTop(event, 'country', '100')"            >Top 100</button>
+              <button onclick="showTop(event, 'country', 'all')" class="end">Show all</button>
+            </div>
           </div>
-        </div>
 
-        <div class="dropdown">
-          <button class="dropdown-button" onclick="dropDownToggle(event)">
-            New Cases (7d avg) <span class="dropdown-chevron">&#9660;</span>
-          </button>
-          <div class="dropdown-content">
-            <button onclick="setField(event, 'country', 'cases')"        class="end">Cases</button>
-            <button onclick="setField(event, 'country', 'deaths')"                  >Deaths</button>
-            <button onclick="setField(event, 'country', 'newCases')"                >New Cases</button>
-            <button onclick="setField(event, 'country', 'newDeaths')"               >New Deaths</button>
-            <button onclick="setField(event, 'country', 'avgNewCases')"             >New Cases (7d avg)</button>
-            <button onclick="setField(event, 'country', 'avgNewDeaths')" class="end">New Deaths (7d avg)</button>
+          <div class="dropdown">
+            <button class="dropdown-button" onclick="dropDownToggle(event)">
+              New Cases (7d avg) <span class="dropdown-chevron">&#9660;</span>
+            </button>
+            <div class="dropdown-content">
+              <button onclick="setField(event, 'country', 'cases')"        class="end">Cases</button>
+              <button onclick="setField(event, 'country', 'deaths')"                  >Deaths</button>
+              <button onclick="setField(event, 'country', 'newCases')"                >New Cases</button>
+              <button onclick="setField(event, 'country', 'newDeaths')"               >New Deaths</button>
+              <button onclick="setField(event, 'country', 'avgNewCases')"             >New Cases (7d avg)</button>
+              <button onclick="setField(event, 'country', 'avgNewDeaths')" class="end">New Deaths (7d avg)</button>
+            </div>
           </div>
-        </div>
 
 
-        <div class="dropdown">
-          <button class="dropdown-button" onclick="dropDownToggle(event)">
-            Total <span class="dropdown-chevron">&#9660;</span>
-          </button>
-          <div class="dropdown-content">
-            <button onclick="showNormalized(event, 'country', false)" class="end">Total</button>
-            <button onclick="showNormalized(event, 'country', true)"  class="end">/1M</button>
+          <div class="dropdown">
+            <button class="dropdown-button" onclick="dropDownToggle(event)">
+              Total <span class="dropdown-chevron">&#9660;</span>
+            </button>
+            <div class="dropdown-content">
+              <button onclick="showNormalized(event, 'country', false)" class="end">Total</button>
+              <button onclick="showNormalized(event, 'country', true)"  class="end">/1M</button>
+            </div>
           </div>
-        </div>
 
-        <div class="dropdown">
-          <button class="dropdown-button" onclick="dropDownToggle(event)">
-            Log <span class="dropdown-chevron">&#9660;</span>
-          </button>
-          <div class="dropdown-content">
-            <button onclick="setAxis(event, 'country', 'log')"     class="end">Log</button>
-            <button onclick="setAxis(event, 'country', 'linear')"  class="end">Linear</button>
+          <div class="dropdown">
+            <button class="dropdown-button" onclick="dropDownToggle(event)">
+              Log <span class="dropdown-chevron">&#9660;</span>
+            </button>
+            <div class="dropdown-content">
+              <button onclick="setAxis(event, 'country', 'log')"     class="end">Log</button>
+              <button onclick="setAxis(event, 'country', 'linear')"  class="end">Linear</button>
+            </div>
           </div>
-        </div>
 
-      </div>
-      <div id="country-chart" class="chart"></div>
-      <h3 id="country-collapsible" class="collapsible">
-        <button aria-expanded="false">
-          <svg aria-hidden="true" focusable="false" viewBox="0 0 10 10">
-            <rect class="vert" height="8" width="2" y="1" x="4"/>
-            <rect height="2" width="8" y="4" x="1"/>
-          </svg>
-          Show table
-        </button>
-      </h3>
-      <div hidden class="collapsible-content">
-        <div id="country-table" class="table"></div>
-        <button id="country-export" class="export-btn">Download Country CSV</button>
+        </div>
+        <div id="country-chart" class="chart"></div>
+        <h3 id="country-collapsible" class="collapsible">
+          <button aria-expanded="false">
+            <svg aria-hidden="true" focusable="false" viewBox="0 0 10 10">
+              <rect class="vert" height="8" width="2" y="1" x="4"/>
+              <rect height="2" width="8" y="4" x="1"/>
+            </svg>
+            Show table
+          </button>
+        </h3>
+        <div hidden class="collapsible-content">
+          <div id="country-table" class="table"></div>
+          <button id="country-export" class="export-btn">Download Country CSV</button>
+        </div>
       </div>
     </div>
   </main>

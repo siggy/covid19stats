@@ -136,6 +136,7 @@ Browse to: http://0.0.0.0:8000/
 
 ## TODO
 
+- limit country chart to `startDate`
 - bigger text on charts
 - make `setField` dropdown fixed width
 - pos test %
@@ -155,7 +156,6 @@ Browse to: http://0.0.0.0:8000/
 - fix political province names
 - toggle states in chart by lockdown date / policy
 - toggle countries + states
-- limit country chart to `startDate`
 - user-editable start date
 - vary start date by 10th/100th case+death
 - better handling scrolling over chart without stealing focus and zooming

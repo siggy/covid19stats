@@ -3,8 +3,8 @@ body {
   margin: 0;
 }
 
-main {
-  margin: 8px;
+footer {
+  margin: 20px;
 }
 
 .github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}
@@ -38,6 +38,7 @@ header h1 {
  */
 
 .big-numbers {
+  margin: 8px;
   display: grid;
   grid-gap: 8px;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -106,13 +107,52 @@ header h1 {
 }
 
 /*
+ * Tabs
+ */
+
+.tab {
+  overflow: hidden;
+}
+
+.tab button {
+  background-color: #f1f1f1;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  font-size: 17px;
+  width: 33.33333%;
+  transition: 0.3s;
+}
+
+.tab button:hover {
+  background-color: #ddd;
+}
+
+.tab button.active {
+  background-color: #bbb;
+  border-bottom: 0;
+}
+
+.tabcontent {
+  display: none;
+  padding: 10px;
+}
+
+.tabcontent.active {
+  display: block;
+  background-color: #bbb;
+}
+
+/*
  * Charts
  */
 
 .data {
+  background-color: white;
   border: 2px solid rgb(111,189,220);
   border-radius: 4px;
-  margin: 4px;
  }
 
 .chart {
@@ -242,4 +282,12 @@ header h1 {
 .dropdown-chevron {
   font-size: 8px;
   pointer-events: none;
+}
+
+/*
+ * county state checks
+ */
+
+#county-state-checks {
+  margin: 16px 0 0 0;
 }
