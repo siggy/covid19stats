@@ -132,15 +132,15 @@ header h1 {
 }
 
 /*
- * Tabs
+ * Dropdown
  */
 
-.tab {
+.dropdown-row {
   overflow: hidden;
   border: 1px solid #ccc;
   background-color: #f1f1f1;
 }
-.tab button {
+.dropdown-row button {
   background-color: inherit;
   float: left;
   border: none;
@@ -149,13 +149,9 @@ header h1 {
   padding: 10px 16px;
   transition: 0.3s;
 }
-.tab button:hover {
+.dropdown-row button:hover {
   background-color: #ddd;
 }
-
-/*
- * Dropdown
- */
 
 .dropdown {
   float: left;
@@ -198,14 +194,14 @@ header h1 {
  */
 
 .collapsible {
-  /* copied from tab */
+  /* copied from dropdown-group */
   overflow: hidden;
   border: 1px solid #ccc;
   background-color: #f1f1f1;
   margin: 0;
 }
 .collapsible:hover {
-  /* copied from .tab:hover */
+  /* copied from .dropdown-group:hover */
   background-color: #ddd;
 }
 .collapsible button {
@@ -214,7 +210,7 @@ header h1 {
   font-size: 16px;
   padding: 0.5em 0;
 
-  /* copied from .tab button */
+  /* copied from .dropdown-group button */
   background-color: inherit;
   border: none;
   cursor: pointer;
