@@ -142,16 +142,21 @@
               New Cases (7d avg) <span class="dropdown-chevron">&#9660;</span>
             </button>
             <div class="dropdown-content">
-              <button onclick="setField(event, 'state', 'cases')"        class="end">Cases</button>
-              <button onclick="setField(event, 'state', 'deaths')"                  >Deaths</button>
-              <button onclick="setField(event, 'state', 'newCases')"                >New Cases</button>
-              <button onclick="setField(event, 'state', 'newDeaths')"               >New Deaths</button>
-              <button onclick="setField(event, 'state', 'avgNewCases')"             >New Cases (7d avg)</button>
-              <button onclick="setField(event, 'state', 'avgNewDeaths')" class="end">New Deaths (7d avg)</button>
+              <button onclick="setField(event, 'state', 'cases')"                                  class="end">Cases</button>
+              <button onclick="setField(event, 'state', 'deaths')"                                            >Deaths</button>
+              <button onclick="setField(event, 'state', 'newCases')"                                          >New Cases</button>
+              <button onclick="setField(event, 'state', 'newDeaths')"                                         >New Deaths</button>
+              <button onclick="setField(event, 'state', 'avgNewCases')"                                       >New Cases (7d avg)</button>
+              <button onclick="setField(event, 'state', 'avgNewDeaths')"                                      >New Deaths (7d avg)</button>
+
+              <button onclick="setField(event, 'state', 'tests')"                                             >Tests</button>
+              <button onclick="setNonNormalizedField(event, 'state', 'positiveTestPercent')"                  >Test Pos %</button>
+              <button onclick="setField(event, 'state', 'avgNewTests')"                                       >New Tests (7d avg)</button>
+              <button onclick="setNonNormalizedField(event, 'state', 'avgNewPositiveTestPercent')" class="end">New Test Pos % (7d avg)</button>
             </div>
           </div>
 
-          <div class="dropdown">
+          <div class="dropdown normalized">
             <button class="dropdown-button" onclick="dropDownToggle(event)">
               /1M <span class="dropdown-chevron">&#9660;</span>
             </button>

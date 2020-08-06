@@ -138,9 +138,11 @@ Browse to: http://0.0.0.0:8000/
 
 - show spinner when initing charts/tables
 - limit country chart to `startDate`
+- hospitalized
+- get case+death data via covidtracking.com
+- fix `county fips not found: {"date":"2020-07-18","name":"Adjuntas","state":"Puerto Rico","fullName":"Adjuntas, PR","fips":"72001","cases":68,"deaths":0}`
 - bigger text on charts
 - make `setField` dropdown fixed width
-- pos test %
 - fix multiple drop-downs being open at once
 - fix tab wrapping on mobile
 - make county selector on top

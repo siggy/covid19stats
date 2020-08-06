@@ -97,8 +97,7 @@ Promise.all([
     .then(response =>
       response.ok ? response.text() : Promise.reject(response.status)
     ),
-    // fetch('https://covidtracking.com/api/v1/states/daily.json')
-  fetch('https://covidtracking.com/api/v1/states/current.json')
+  fetch('https://covidtracking.com/api/v1/states/daily.json')
     .then(response =>
       response.ok ? response.json() : Promise.reject(response.status)
     ),
@@ -116,12 +115,19 @@ Promise.all([
     ),
 ])
 .then(responses => {
+  // https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv
   const countyCasesResponse = responses[0].split('\n');
+  // https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv
   const stateCasesResponse = responses[1].split('\n');
+  // pops-us-states-counties.csv
   const usPopsResponse = responses[2].split('\n');
+  // https://covidtracking.com/api/v1/states/daily.json
   const testsResponse = responses[3];
+  // https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv
   const jhuGlobalCasesResponse = responses[4].split('\n');
+  // https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv
   const jhuGlobalDeathsResponse = responses[5].split('\n');
+  // pops-countries.csv
   const globalPopsResponse = responses[6].split('\n');
 
   usPopsResponse.shift();
@@ -132,9 +138,12 @@ Promise.all([
     popsByFips.set(p[0], parseInt(p[3]));
   });
 
-  const testsByFips = new Map();
+  const statesTestsToDates = new Map();
   testsResponse.forEach(test => {
-    testsByFips.set(test.fips, test);
+    if (!statesTestsToDates.has(test.fips)) {
+      statesTestsToDates.set(test.fips, new Map());
+    }
+    statesTestsToDates.get(test.fips).set(test.date, test);
   });
 
   const popsByCountry = new Map();
@@ -187,6 +196,29 @@ Promise.all([
       fips: row[2],
       cases: parseInt(row[3]),
       deaths: parseInt(row[4]),
+
+      // placeholders
+      avgNewCases: 0,
+      avgNewCasesPer1M: 0,
+      avgNewDeaths: 0,
+      avgNewDeathsPer1M: 0,
+      avgNewPositiveTestPercent: 0,
+      avgNewTests: 0,
+      avgNewTestsPer1M: 0,
+      casesPer1M: 0,
+      deathsPer1M: 0,
+      newCases: 0,
+      newCasesPer1M: 0,
+      newDeaths: 0,
+      newDeathsPer1M: 0,
+      newPositiveTestPercent: 0,
+      newTests: 0,
+      pending: 0,
+      population: 0,
+      positiveTestPercent: 0,
+      tests: 0,
+      testsPer1M: 0,
+      testsPerDeath: 0,
     };
 
     if (state.date < startDate) {
@@ -216,17 +248,14 @@ Promise.all([
     const pop = popsByFips.get(fips);
     const popPer1M = pop / 1000000;
 
-    if (!testsByFips.has(fips)) {
-      console.warn('state fips not found in test data: ' + state);
-    }
-    const tests = testsByFips.get(fips);
-
     let lastCaseCount = 0;
     let lastDeathCount = 0;
 
     const movingAverageDays = 7;
     const prevCases = new Array(movingAverageDays);
     const prevDeaths = new Array(movingAverageDays);
+    const prevTests = new Array(movingAverageDays);
+    const prevPositiveTestPercent = new Array(movingAverageDays);
 
     dateMap.forEach((row, _) => {
       const cases = row.cases;
@@ -255,19 +284,39 @@ Promise.all([
       row.casesPer1M = Math.round(cases / popPer1M);
       row.deathsPer1M = Math.round(deaths / popPer1M);
 
-      if (tests !== undefined) {
+      const dateForTests = parseInt(row.date.replace(/-/g, ''));
+      if (statesTestsToDates.has(fips) && statesTestsToDates.get(fips).has(dateForTests)) {
+        const tests = statesTestsToDates.get(fips).get(dateForTests);
+
         const positiveTests = tests.positive;
-        const totalTests = tests.totalTestResults;
+        const totalTests = tests.positive + tests.negative;
+        const newTotalTests = Math.max(tests.positiveIncrease, 0) + Math.max(tests.negativeIncrease, 0);
         const pending = tests.pending;
+        const newPositiveTestPercent = Math.min(100 * Math.max(tests.positiveIncrease, 0) / newTotalTests, 100);
 
         row.tests = totalTests;
+        row.positiveTestPercent = Math.min(100 * positiveTests / totalTests, 100);
         row.pending = pending;
-        row.positiveTestPercent = positiveTests / totalTests;
-        row.testsPer1M = Math.round(totalTests / popPer1M);
+
+        row.testsPer1M = Math.round(row.tests / popPer1M);
+
+        prevTests.push(newTotalTests);
+        prevPositiveTestPercent.push(newPositiveTestPercent);
+        prevTests.shift();
+        prevPositiveTestPercent.shift();
+
+        row.avgNewTests = avg(prevTests);
+        row.avgNewPositiveTestPercent = avg(prevPositiveTestPercent);
+        row.avgNewTestsPer1M = Math.round(row.avgNewTests / popPer1M);
 
         row.testsPerDeath = (deaths !== '0') ?
           Math.round(totalTests / deaths) :
           0;
+      } else {
+        prevTests.push(0);
+        prevPositiveTestPercent.push(0);
+        prevTests.shift();
+        prevPositiveTestPercent.shift();
       }
     });
   });
@@ -714,35 +763,51 @@ window.onclick = e => {
 //
 
 // Based on: https://codepen.io/markcaron/pen/MvGRYV
-const setField = (evt, chart, field) => {
+
+const dropDownSelect = evt => {
   evt.currentTarget.closest(".dropdown").firstElementChild.innerHTML =
     evt.currentTarget.textContent + " <span class='dropdown-chevron'>&#9660;</span>";
+}
 
+const setField = (evt, chart, field) => {
+  // re-enabled "normalized" drop-down in case it was disabled
+  const normalized = evt.currentTarget.closest(".dropdown-row")
+    .getElementsByClassName('normalized');
+  if (normalized.length > 0) {
+    normalized[0].firstElementChild.disabled = false;
+  }
+
+  dropDownSelect(evt);
   charts[chart].setField(field, false);
 }
 
-const setAxis = (evt, chart, yAxis) => {
-  evt.currentTarget.closest(".dropdown").firstElementChild.innerHTML =
-    evt.currentTarget.textContent + " <span class='dropdown-chevron'>&#9660;</span>";
+const setNonNormalizedField = (evt, chart, field) => {
+  // "/1M" not supported for this field, force "Total"
+  const normalizedDropdown = evt.currentTarget.closest(".dropdown-row")
+    .getElementsByClassName('normalized')[0].firstElementChild;
 
+  normalizedDropdown.disabled = true;
+  normalizedDropdown.innerHTML = "Total <span class='dropdown-chevron'>&#9660;</span>";
+
+  dropDownSelect(evt);
+  charts[chart].setNonNormalizedField(field);
+}
+
+const setAxis = (evt, chart, yAxis) => {
+  dropDownSelect(evt);
   charts[chart].setAxis(yAxis);
 }
 
 const showTop = (evt, chart, top) => {
-  evt.currentTarget.closest(".dropdown").firstElementChild.innerHTML =
-    evt.currentTarget.textContent + " <span class='dropdown-chevron'>&#9660;</span>";
-
+  dropDownSelect(evt);
   const topInt = (top !== 'all') ?
     parseInt(top) :
     0;
-
   charts[chart].setLimit(topInt, true);
 }
 
 const showNormalized = (evt, chart, normalized) => {
-  evt.currentTarget.closest(".dropdown").firstElementChild.innerHTML =
-    evt.currentTarget.textContent + " <span class='dropdown-chevron'>&#9660;</span>";
-
+  dropDownSelect(evt);
   charts[chart].setNormalized(normalized, false);
 }
 

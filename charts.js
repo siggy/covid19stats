@@ -213,6 +213,11 @@ const initChart = (options) => {
       this.setField(this.field, unload);
     },
 
+    setNonNormalizedField(field) {
+      this.normalized = false;
+      this.setField(field, false);
+    },
+
     setField(field, unload) {
       this.field = field;
       this.dataMapSorted = sortData(this.dataMapFiltered, this.getNormalizedField());
