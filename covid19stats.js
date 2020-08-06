@@ -211,8 +211,6 @@ Promise.all([
       newCasesPer1M: 0,
       newDeaths: 0,
       newDeathsPer1M: 0,
-      newPositiveTestPercent: 0,
-      newTests: 0,
       pending: 0,
       population: 0,
       positiveTestPercent: 0,
@@ -254,8 +252,8 @@ Promise.all([
     const movingAverageDays = 7;
     const prevCases = new Array(movingAverageDays);
     const prevDeaths = new Array(movingAverageDays);
-    const prevTests = new Array(movingAverageDays);
-    const prevPositiveTestPercent = new Array(movingAverageDays);
+    const prevTestsIncrease = new Array(movingAverageDays);
+    const prevTestsPositiveIncrease = new Array(movingAverageDays);
 
     dateMap.forEach((row, _) => {
       const cases = row.cases;
@@ -288,35 +286,38 @@ Promise.all([
       if (statesTestsToDates.has(fips) && statesTestsToDates.get(fips).has(dateForTests)) {
         const tests = statesTestsToDates.get(fips).get(dateForTests);
 
-        const positiveTests = tests.positive;
         const totalTests = tests.positive + tests.negative;
-        const newTotalTests = Math.max(tests.positiveIncrease, 0) + Math.max(tests.negativeIncrease, 0);
-        const pending = tests.pending;
-        const newPositiveTestPercent = Math.min(100 * Math.max(tests.positiveIncrease, 0) / newTotalTests, 100);
 
         row.tests = totalTests;
-        row.positiveTestPercent = Math.min(100 * positiveTests / totalTests, 100);
-        row.pending = pending;
+        row.positiveTestPercent = Math.min(100 * tests.positive / totalTests, 100);
+        row.pending = tests.pending;
 
         row.testsPer1M = Math.round(row.tests / popPer1M);
 
-        prevTests.push(newTotalTests);
-        prevPositiveTestPercent.push(newPositiveTestPercent);
-        prevTests.shift();
-        prevPositiveTestPercent.shift();
+        prevTestsIncrease.push(Math.max(tests.positiveIncrease, 0) + Math.max(tests.negativeIncrease, 0));
+        prevTestsPositiveIncrease.push(Math.max(tests.positiveIncrease, 0));
 
-        row.avgNewTests = avg(prevTests);
-        row.avgNewPositiveTestPercent = avg(prevPositiveTestPercent);
+        prevTestsIncrease.shift();
+        prevTestsPositiveIncrease.shift();
+
+        const sumPrevTestsIncrease = sum(prevTestsIncrease);
+        const sumPrevTestsPositiveIncrease = sum(prevTestsPositiveIncrease);
+
+        row.avgNewTests = avg(prevTestsIncrease);
+        row.avgNewPositiveTestPercent = (sumPrevTestsIncrease !== sumPrevTestsPositiveIncrease) ?
+          100 * sumPrevTestsPositiveIncrease / sumPrevTestsIncrease :
+          0;
         row.avgNewTestsPer1M = Math.round(row.avgNewTests / popPer1M);
 
         row.testsPerDeath = (deaths !== '0') ?
           Math.round(totalTests / deaths) :
           0;
       } else {
-        prevTests.push(0);
-        prevPositiveTestPercent.push(0);
-        prevTests.shift();
-        prevPositiveTestPercent.shift();
+        prevTestsIncrease.push(0);
+        prevTestsPositiveIncrease.push(0);
+
+        prevTestsIncrease.shift();
+        prevTestsPositiveIncrease.shift();
       }
     });
   });
@@ -857,9 +858,12 @@ const formatDate = date => {
   return [year, month, day].join('-');
 }
 
+const sum = arr =>
+  arr.reduce(function(a, b){
+    return a + b;
+  }, 0);
+
 const avg = arr =>
   Math.round(
-    arr.reduce(function(a, b){
-      return a + b;
-    }, 0) / arr.length
+    sum(arr) / arr.length
   );

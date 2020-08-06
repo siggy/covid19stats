@@ -134,6 +134,12 @@ Browse to: http://0.0.0.0:8000/
 ) > pops-countries.csv
 ```
 
+### Parse testing data
+
+```bash
+curl https://covidtracking.com/api/v1/states/daily.json | jq '.[]  | select(.state == "PR")' > pr.json
+```
+
 ## TODO
 
 - show spinner when initing charts/tables
