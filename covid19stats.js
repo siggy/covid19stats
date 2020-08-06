@@ -669,8 +669,6 @@ function numberWithCommas(x) {
 //
 
 function openTab(evt, tab) {
-  chartInits[tab]();
-
   var i, tabcontent, tablinks;
   tabcontent = document.getElementsByClassName("tabcontent");
   for (i = 0; i < tabcontent.length; i++) {
@@ -684,6 +682,8 @@ function openTab(evt, tab) {
 
   evt.currentTarget.className += " active";
   document.getElementById(tab).className += " active";
+
+  chartInits[tab]();
 }
 
 //
