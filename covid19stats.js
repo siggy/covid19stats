@@ -10,6 +10,18 @@ const chartInits = {
   'country': null,
 }
 
+const tables = {
+  'state': null,
+  'county': null,
+  'country': null,
+}
+
+const tableInits = {
+  'state': null,
+  'county': null,
+  'country': null,
+}
+
 const countyFilter = new Map(
   [
     [
@@ -560,10 +572,14 @@ Promise.all([
       yAxis: 'linear',
     });
 
-    setTimeout(_ => {
-      const stateTable = makeStateTable(statesLatestDay, stateHeaders);
-      initCollapsible('state-collapsible', stateTable);
-    }, 0);
+    tableInits['state'] = () => {
+      if (tables['state'] !== null) {
+        return tables['state'];
+      }
+      tables['state'] = makeStateTable(statesLatestDay, stateHeaders);
+      return tables['state'];
+    }
+    initCollapsible('state');
   }
 
   chartInits['county'] = () => {
@@ -582,10 +598,14 @@ Promise.all([
       yAxis: 'log',
     });
 
-    setTimeout(_ => {
-      const countyTable = makeCountyTable(countiesLatestDay, countyHeaders);
-      initCollapsible('county-collapsible', countyTable);
-    }, 0);
+    tableInits['county'] = () => {
+      if (tables['county'] !== null) {
+        return tables['county'];
+      }
+      tables['county'] = makeCountyTable(countiesLatestDay, countyHeaders);
+      return tables['county'];
+    }
+    initCollapsible('county');
   }
 
   chartInits['country'] = () => {
@@ -604,10 +624,14 @@ Promise.all([
       yAxis: 'log',
     });
 
-    setTimeout(_ => {
-      const countryTable = makeCountryTable(countriesLatestDay);
-      initCollapsible('country-collapsible', countryTable);
-    }, 0);
+    tableInits['country'] = () => {
+      if (tables['country'] !== null) {
+        return tables['country'];
+      }
+      tables['country'] = makeCountryTable(countriesLatestDay);
+      return tables['country'];
+    }
+    initCollapsible('country');
   }
 
   // open default tab
@@ -726,12 +750,15 @@ const showNormalized = (evt, chart, normalized) => {
 // collapsibles
 //
 
-const initCollapsible = (id, table) => {
+const initCollapsible = tab => {
+  const id  = tab + "-collapsible";
   const collapsible = document.getElementById(id);
   const btn = collapsible.querySelector('button');
   const target = collapsible.nextElementSibling;
 
   btn.onclick = _ => {
+    const table = tableInits[tab]();
+
     const expanded = btn.getAttribute('aria-expanded') === 'true';
     btn.setAttribute('aria-expanded', !expanded);
     target.hidden = expanded;
