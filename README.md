@@ -136,6 +136,8 @@ Browse to: http://0.0.0.0:8000/
 
 ## TODO
 
+- init tables only when opened
+- show spinner when initing charts/tables
 - limit country chart to `startDate`
 - bigger text on charts
 - make `setField` dropdown fixed width

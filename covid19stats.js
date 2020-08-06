@@ -4,6 +4,12 @@ const charts = {
   'country': null,
 }
 
+const chartInits = {
+  'state': null,
+  'county': null,
+  'country': null,
+}
+
 const countyFilter = new Map(
   [
     [
@@ -538,8 +544,11 @@ Promise.all([
   // the limit parameters must match the defaults set in the "dropdown-button" HTML elements
   //
 
-  setTimeout(_ => {
-    // must match defaults in index.html dropdowns
+  chartInits['state'] = () => {
+    if (charts['state'] !== null) {
+      return;
+    }
+
     charts['state'] = initChart({
       dataMap: statesToDates,
       xAxisDates: allStateDates,
@@ -552,51 +561,57 @@ Promise.all([
     });
 
     setTimeout(_ => {
-      charts['county'] = initChart({
-        dataMap: countiesToDates,
-        xAxisDates: allCountyDates,
-        chartId: 'county-chart',
-        filter: countyFilter,
-        field: 'avgNewCases',
-        limit: chartLimit,
-        normalized: false,
-        yAxis: 'log',
-      });
-
-      setTimeout(_ => {
-        charts['country'] = initChart({
-          dataMap: countriesToDates,
-          xAxisDates: allCountryDates,
-          chartId: 'country-chart',
-          filter: null,
-          field: 'avgNewCases',
-          limit: chartLimit,
-          normalized: false,
-          yAxis: 'log',
-        });
-
-        //
-        // initialize tables
-        //
-
-        setTimeout(_ => {
-          const stateTable = makeStateTable(statesLatestDay, stateHeaders);
-          initCollapsible('state-collapsible', stateTable);
-
-          setTimeout(_ => {
-            const countyTable = makeCountyTable(countiesLatestDay, countyHeaders);
-            initCollapsible('county-collapsible', countyTable);
-
-            setTimeout(_ => {
-              const countryTable = makeCountryTable(countriesLatestDay);
-              initCollapsible('country-collapsible', countryTable);
-            }, 0);
-          }, 0);
-        }, 0);
-
-      }, 0);
+      const stateTable = makeStateTable(statesLatestDay, stateHeaders);
+      initCollapsible('state-collapsible', stateTable);
     }, 0);
-  }, 0);
+  }
+
+  chartInits['county'] = () => {
+    if (charts['county'] !== null) {
+      return;
+    }
+
+    charts['county'] = initChart({
+      dataMap: countiesToDates,
+      xAxisDates: allCountyDates,
+      chartId: 'county-chart',
+      filter: countyFilter,
+      field: 'avgNewCases',
+      limit: chartLimit,
+      normalized: false,
+      yAxis: 'log',
+    });
+
+    setTimeout(_ => {
+      const countyTable = makeCountyTable(countiesLatestDay, countyHeaders);
+      initCollapsible('county-collapsible', countyTable);
+    }, 0);
+  }
+
+  chartInits['country'] = () => {
+    if (charts['country'] !== null) {
+      return;
+    }
+
+    charts['country'] = initChart({
+      dataMap: countriesToDates,
+      xAxisDates: allCountryDates,
+      chartId: 'country-chart',
+      filter: null,
+      field: 'avgNewCases',
+      limit: chartLimit,
+      normalized: false,
+      yAxis: 'log',
+    });
+
+    setTimeout(_ => {
+      const countryTable = makeCountryTable(countriesLatestDay);
+      initCollapsible('country-collapsible', countryTable);
+    }, 0);
+  }
+
+  // open default tab
+  document.getElementsByClassName("tablink")[0].click();
 });
 
 //
@@ -630,6 +645,8 @@ function numberWithCommas(x) {
 //
 
 function openTab(evt, tab) {
+  chartInits[tab]();
+
   var i, tabcontent, tablinks;
   tabcontent = document.getElementsByClassName("tabcontent");
   for (i = 0; i < tabcontent.length; i++) {
