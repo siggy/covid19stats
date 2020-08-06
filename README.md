@@ -137,7 +137,6 @@ Browse to: http://0.0.0.0:8000/
 ## TODO
 
 - show spinner when initing charts/tables
-- consider per 100k rather than per 1M
 - limit country chart to `startDate`
 - bigger text on charts
 - make `setField` dropdown fixed width
