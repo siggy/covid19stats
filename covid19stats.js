@@ -97,7 +97,7 @@ Promise.all([
     .then(response =>
       response.ok ? response.text() : Promise.reject(response.status)
     ),
-  fetch('https://covidtracking.com/api/v1/states/daily.json')
+  fetch('https://api.covidtracking.com/v1/states/daily.json')
     .then(response =>
       response.ok ? response.json() : Promise.reject(response.status)
     ),
