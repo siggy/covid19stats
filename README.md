@@ -142,7 +142,7 @@ curl https://covidtracking.com/api/v1/states/daily.json | jq '.[]  | select(.sta
 
 ## TODO
 
-- show spinner when initing charts/tables
+- make highlight easier/better (dropdown?, show name in bold?)
 - limit country chart to `startDate`
 - hospitalized
 - get case+death data via covidtracking.com
