@@ -121,7 +121,7 @@ Promise.all([
   const stateCasesResponse = responses[1].split('\n');
   // pops-us-states-counties.csv
   const usPopsResponse = responses[2].split('\n');
-  // https://covidtracking.com/api/v1/states/daily.json
+  // https://api.covidtracking.com/v1/states/daily.json
   const testsResponse = responses[3];
   // https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv
   const jhuGlobalCasesResponse = responses[4].split('\n');
@@ -686,6 +686,9 @@ Promise.all([
 
   // open default tab
   document.getElementsByClassName("tablink")[0].click();
+
+  // loading done, hide loader
+  document.getElementsByClassName("load-container")[0].style.visibility = 'hidden';
 });
 
 //
