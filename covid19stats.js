@@ -563,32 +563,47 @@ Promise.all([
   });
 
   const countriesLatestDay = [];
+  const countriesLastWeek = [];
   countriesToDates.forEach((dateMap, _) => {
     const latestDay = Array.from(dateMap)[dateMap.size-1][1];
     countriesLatestDay.push(latestDay);
+
+    const daysAgo = Math.min(7, dateMap.size-1);
+    const lastWeek = Array.from(dateMap)[dateMap.size-1-daysAgo][1];
+    countriesLastWeek.push(lastWeek);
   });
 
   //
   // big numbers
   //
 
-  let globalCases = 0;
-  let globalNewCases = 0;
-  let globalDeaths = 0;
-  let globalNewDeaths = 0;
+  lastWeek = {
+    avgNewCases: 0,
+    avgNewDeaths: 0,
+  };
+  countriesLastWeek.forEach((country) => {
+    lastWeek.avgNewCases += country.avgNewCases;
+    lastWeek.avgNewDeaths += country.avgNewDeaths;
+  });
+  latestDay = {
+    cases: 0,
+    newCases: 0,
+    deaths: 0,
+    newDeaths: 0,
+    avgNewCases: 0,
+    avgNewDeaths: 0,
+  };
   countriesLatestDay.forEach((country) => {
-    globalCases += country.cases;
-    globalNewCases += country.newCases;
-    globalDeaths += country.deaths;
-    globalNewDeaths += country.newDeaths;
-  })
+    latestDay.cases += country.cases;
+    latestDay.newCases += country.newCases;
+    latestDay.deaths += country.deaths;
+    latestDay.newDeaths += country.newDeaths;
+    latestDay.avgNewCases += country.avgNewCases;
+    latestDay.avgNewDeaths += country.avgNewDeaths;
+  });
   const globalInnerMap = new Map();
-  globalInnerMap.set('fake-date', {
-    cases: globalCases,
-    newCases: globalNewCases,
-    deaths: globalDeaths,
-    newDeaths: globalNewDeaths,
-  })
+  globalInnerMap.set('fake-date-last-week', lastWeek);
+  globalInnerMap.set('fake-date-latest-day', latestDay);
   const globalMap = new Map();
   globalMap.set('global', globalInnerMap);
 
@@ -699,17 +714,20 @@ const initBigNumbers = (statMap, location, id) => {
   const stats = statMap.get(location);
   const stat = Array.from(stats)[stats.size-1][1];
 
+  const daysAgo = Math.min(7, stats.size-1)
+  const statLastWeek = Array.from(stats)[stats.size-1-daysAgo][1];
+
   const elm = document.getElementById(id);
 
   const cases = elm.getElementsByClassName("cases")[0];
   cases.getElementsByClassName("total")[0].innerHTML = numberWithCommas(stat.cases);
   cases.getElementsByClassName("new")[0].innerHTML = "New: +" + numberWithCommas(stat.newCases);
-  cases.getElementsByClassName("percent")[0].innerHTML = (100 * stat.newCases / (stat.cases - stat.newCases)).toFixed(1) + '%';
+  cases.getElementsByClassName("percent")[0].innerHTML = (100 * (stat.avgNewCases - statLastWeek.avgNewCases) / statLastWeek.avgNewCases).toFixed(1) + '%';
 
   const deaths = elm.getElementsByClassName("deaths")[0];
   deaths.getElementsByClassName("total")[0].innerHTML = numberWithCommas(stat.deaths);
   deaths.getElementsByClassName("new")[0].innerHTML = "New: +" + numberWithCommas(stat.newDeaths);
-  deaths.getElementsByClassName("percent")[0].innerHTML = (100 * stat.newDeaths / (stat.deaths - stat.newDeaths)).toFixed(1) + '%';
+  deaths.getElementsByClassName("percent")[0].innerHTML = (100 * (stat.avgNewDeaths - statLastWeek.avgNewDeaths) / statLastWeek.avgNewDeaths).toFixed(1) + '%';
 }
 
 // https://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript

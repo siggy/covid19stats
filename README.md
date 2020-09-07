@@ -142,7 +142,6 @@ curl https://covidtracking.com/api/v1/states/daily.json | jq '.[]  | select(.sta
 
 ## TODO
 
-- big numbers: new case change week-over-week
 - limit country chart to `startDate`
 - hospitalized
 - get case+death data via covidtracking.com
