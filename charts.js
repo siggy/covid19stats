@@ -9,6 +9,28 @@ const initChart = (options) => {
   const normalized = options.normalized;
   const yAxis      = options.yAxis;
 
+  // cycle through 3 states on legend click:
+  // 1) focused
+  // 2) hidden
+  // 3) default
+  let focusedIds = new Set();
+  let hiddenIds = new Set();
+  let mousedOverId = '';
+
+  // side effecting
+  const updateFocus = _ => {
+    const tmpFocusedIds = new Set(focusedIds);
+    if (mousedOverId !== '') {
+      tmpFocusedIds.add(mousedOverId);
+    }
+    const focusedArr = Array.from(tmpFocusedIds);
+    if (focusedArr.length === 0) {
+      c3Chart.revert();
+    } else {
+      c3Chart.focus(focusedArr);
+    }
+  }
+
   let yAxisTickValues = [100, 1000, 10000];
 
   // side effecting
@@ -180,9 +202,40 @@ const initChart = (options) => {
     legend: {
       item: {
         onclick: id => {
-          c3Chart.toggle(id);
-          updateYAxisLabels(getYMax(c3Chart), c3Chart.axis.types().y);
-          c3Chart.flush();
+          // focus => hide => show => focus
+          if (focusedIds.has(id)) {
+            // focus => hide
+            focusedIds.delete(id);
+            hiddenIds.add(id);
+            c3Chart.revert(id);
+            c3Chart.toggle(id);
+
+            updateYAxisLabels(getYMax(c3Chart), c3Chart.axis.types().y);
+            c3Chart.flush();
+          } else if (hiddenIds.has(id)) {
+            // hide => show
+            hiddenIds.delete(id);
+            c3Chart.toggle(id);
+
+            updateYAxisLabels(getYMax(c3Chart), c3Chart.axis.types().y);
+            c3Chart.flush();
+          } else {
+            // show => focus
+            focusedIds.add(id);
+          }
+
+          updateFocus();
+          return false;
+        },
+        onmouseover: id => {
+          mousedOverId = id;
+          updateFocus();
+          return false;
+        },
+        onmouseout: _ => {
+          mousedOverId = '';
+          updateFocus();
+          return false;
         }
       }
     },

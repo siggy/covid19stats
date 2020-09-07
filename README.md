@@ -142,6 +142,7 @@ curl https://covidtracking.com/api/v1/states/daily.json | jq '.[]  | select(.sta
 
 ## TODO
 
+- big numbers: new case change week-over-week
 - make highlight easier/better (dropdown?, show name in bold?)
 - limit country chart to `startDate`
 - hospitalized
@@ -155,7 +156,6 @@ curl https://covidtracking.com/api/v1/states/daily.json | jq '.[]  | select(.sta
 - tests in state chart
   - covidtracking historical tests
 - a11y
-- new case change week-over-week
 - large numbers at top
   - autotoggles (unified?) charts?
   - with map?
