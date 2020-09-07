@@ -14,7 +14,6 @@ const initChart = (options) => {
   // 2) hidden
   // 3) default
   let focusedIds = new Set();
-  let hiddenIds = new Set(); // TODO: use c3Chart.internal.hiddenTargetIds.indexOf(column[0]) ?
   let mousedOverId = '';
 
   // side effecting
@@ -229,15 +228,13 @@ const initChart = (options) => {
           if (focusedIds.has(id)) {
             // focus => hide
             focusedIds.delete(id);
-            hiddenIds.add(id);
             c3Chart.revert(id);
             c3Chart.toggle(id);
             updateYAxisLabels(getYMax(c3Chart), c3Chart.axis.types().y);
 
             updateFocusedLabels();
-          } else if (hiddenIds.has(id)) {
+          } else if (c3Chart.internal.hiddenTargetIds.indexOf(id) !== -1) {
             // hide => show
-            hiddenIds.delete(id);
             c3Chart.toggle(id);
             updateYAxisLabels(getYMax(c3Chart), c3Chart.axis.types().y);
           } else {
