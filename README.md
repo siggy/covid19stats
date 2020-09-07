@@ -142,6 +142,7 @@ curl https://covidtracking.com/api/v1/states/daily.json | jq '.[]  | select(.sta
 
 ## TODO
 
+- fix focus labels persisting across chart changes
 - limit country chart to `startDate`
 - hospitalized
 - get case+death data via covidtracking.com
@@ -151,8 +152,6 @@ curl https://covidtracking.com/api/v1/states/daily.json | jq '.[]  | select(.sta
 - fix multiple drop-downs being open at once
 - fix tab wrapping on mobile
 - make county selector on top
-- tests in state chart
-  - covidtracking historical tests
 - a11y
 - large numbers at top
   - autotoggles (unified?) charts?

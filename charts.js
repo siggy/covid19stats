@@ -14,7 +14,7 @@ const initChart = (options) => {
   // 2) hidden
   // 3) default
   let focusedIds = new Set();
-  let hiddenIds = new Set();
+  let hiddenIds = new Set(); // TODO: use c3Chart.internal.hiddenTargetIds.indexOf(column[0]) ?
   let mousedOverId = '';
 
   // side effecting
@@ -36,6 +36,28 @@ const initChart = (options) => {
   // side effecting
   const updateYAxisLabels = (yMax, yAxis) => {
     yAxisTickValues = calculateYAxisLabels(yMax, yAxis);
+  }
+
+  const focusLabel = (_, id, i, j) => {
+    if (j === undefined || j.length-1 !== i) {
+      return;
+    }
+    return id.padEnd(id.length*3, '\u00A0');
+  }
+
+  // side effecting
+  const updateFocusedLabels = _ => {
+    if (focusedIds.length === 0) {
+      c3Chart.internal.config.data_labels = undefined;
+      return;
+    }
+
+    const focusedLabels = {format: {}};
+    focusedIds.forEach((focusedId) => {
+      focusedLabels.format[focusedId] = focusLabel;
+    });
+
+    c3Chart.internal.config.data_labels = focusedLabels;
   }
 
   const filterData = (dataMap, filter) =>
@@ -175,15 +197,7 @@ const initChart = (options) => {
       columns: [
         ['x'],
       ],
-      labels: {
-        format: function (v, id, i, j) {
-          if (!focusedIds.has(id) || j === undefined || j.length-1 !== i) {
-            return;
-          }
-
-          return id.padEnd(id.length*3, '\u00A0');
-        },
-      },
+      labels: undefined, // dynamically populate in updateFocusedLabels()
     },
     grid: {
       y: {
@@ -218,17 +232,18 @@ const initChart = (options) => {
             hiddenIds.add(id);
             c3Chart.revert(id);
             c3Chart.toggle(id);
-
             updateYAxisLabels(getYMax(c3Chart), c3Chart.axis.types().y);
+
+            updateFocusedLabels();
           } else if (hiddenIds.has(id)) {
             // hide => show
             hiddenIds.delete(id);
             c3Chart.toggle(id);
-
             updateYAxisLabels(getYMax(c3Chart), c3Chart.axis.types().y);
           } else {
             // show => focus
             focusedIds.add(id);
+            updateFocusedLabels();
           }
           updateFocus();
           c3Chart.flush();
