@@ -175,6 +175,15 @@ const initChart = (options) => {
       columns: [
         ['x'],
       ],
+      labels: {
+        format: function (v, id, i, j) {
+          if (!focusedIds.has(id) || j === undefined || j.length-1 !== i) {
+            return;
+          }
+
+          return id.padEnd(id.length*3, '\u00A0');
+        },
+      },
     },
     grid: {
       y: {
@@ -211,20 +220,18 @@ const initChart = (options) => {
             c3Chart.toggle(id);
 
             updateYAxisLabels(getYMax(c3Chart), c3Chart.axis.types().y);
-            c3Chart.flush();
           } else if (hiddenIds.has(id)) {
             // hide => show
             hiddenIds.delete(id);
             c3Chart.toggle(id);
 
             updateYAxisLabels(getYMax(c3Chart), c3Chart.axis.types().y);
-            c3Chart.flush();
           } else {
             // show => focus
             focusedIds.add(id);
           }
-
           updateFocus();
+          c3Chart.flush();
           return false;
         },
         onmouseover: id => {
