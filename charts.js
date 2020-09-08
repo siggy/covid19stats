@@ -13,8 +13,41 @@ const initChart = (options) => {
   // 1) focused
   // 2) hidden
   // 3) default
-  let focusedIds = new Set();
+  let focusedIds = new Set(); // TODO: use c3Chart.internal.focusedTargetIds.indexOf()?
   let mousedOverId = '';
+
+  const onclick = id => {
+    // focus => hide => show => focus
+    if (focusedIds.has(id)) {
+      // focus => hide
+      focusedIds.delete(id);
+      c3Chart.revert(id);
+      c3Chart.toggle(id);
+      updateYAxisLabels(getYMax(c3Chart), c3Chart.axis.types().y);
+      updateFocusedLabels();
+    } else if (c3Chart.internal.hiddenTargetIds.indexOf(id) !== -1) {
+      // hide => show
+      c3Chart.toggle(id);
+      updateYAxisLabels(getYMax(c3Chart), c3Chart.axis.types().y);
+    } else {
+      // show => focus
+      focusedIds.add(id);
+      updateFocusedLabels();
+    }
+    updateFocus();
+    c3Chart.flush();
+    return false;
+  }
+  const onmouseover = id => {
+    mousedOverId = id;
+    updateFocus();
+    return false;
+  }
+  const onmouseout = _ => {
+    mousedOverId = '';
+    updateFocus();
+    return false;
+  }
 
   // side effecting
   const updateFocus = _ => {
@@ -30,20 +63,6 @@ const initChart = (options) => {
     }
   }
 
-  let yAxisTickValues = [100, 1000, 10000];
-
-  // side effecting
-  const updateYAxisLabels = (yMax, yAxis) => {
-    yAxisTickValues = calculateYAxisLabels(yMax, yAxis);
-  }
-
-  const focusLabel = (_, id, i, j) => {
-    if (j === undefined || j.length-1 !== i) {
-      return;
-    }
-    return id.padEnd(id.length*3, '\u00A0');
-  }
-
   // side effecting
   const updateFocusedLabels = _ => {
     if (focusedIds.length === 0) {
@@ -57,6 +76,20 @@ const initChart = (options) => {
     });
 
     c3Chart.internal.config.data_labels = focusedLabels;
+  }
+
+  let yAxisTickValues = [100, 1000, 10000];
+
+  // side effecting
+  const updateYAxisLabels = (yMax, yAxis) => {
+    yAxisTickValues = calculateYAxisLabels(yMax, yAxis);
+  }
+
+  const focusLabel = (_, id, i, j) => {
+    if (j === undefined || j.length-1 !== i) {
+      return;
+    }
+    return id.padEnd(id.length*3, '\u00A0');
   }
 
   const filterData = (dataMap, filter) =>
@@ -197,6 +230,15 @@ const initChart = (options) => {
         ['x'],
       ],
       labels: undefined, // dynamically populate in updateFocusedLabels()
+      onclick: d => {
+        return onclick(d.id);
+      },
+      onmouseover: d => {
+        return onmouseover(d.id);
+      },
+      onmouseout: _ => {
+        return onmouseout();
+      },
     },
     grid: {
       y: {
@@ -224,38 +266,14 @@ const initChart = (options) => {
     legend: {
       item: {
         onclick: id => {
-          // focus => hide => show => focus
-          if (focusedIds.has(id)) {
-            // focus => hide
-            focusedIds.delete(id);
-            c3Chart.revert(id);
-            c3Chart.toggle(id);
-            updateYAxisLabels(getYMax(c3Chart), c3Chart.axis.types().y);
-
-            updateFocusedLabels();
-          } else if (c3Chart.internal.hiddenTargetIds.indexOf(id) !== -1) {
-            // hide => show
-            c3Chart.toggle(id);
-            updateYAxisLabels(getYMax(c3Chart), c3Chart.axis.types().y);
-          } else {
-            // show => focus
-            focusedIds.add(id);
-            updateFocusedLabels();
-          }
-          updateFocus();
-          c3Chart.flush();
-          return false;
+          return onclick(id);
         },
         onmouseover: id => {
-          mousedOverId = id;
-          updateFocus();
-          return false;
+          return onmouseover(id);
         },
         onmouseout: _ => {
-          mousedOverId = '';
-          updateFocus();
-          return false;
-        }
+          return onmouseout();
+        },
       }
     },
   });
