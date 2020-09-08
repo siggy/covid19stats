@@ -249,9 +249,13 @@ const initChart = (options) => {
       r: 1,
       focus: {
         expand: {
-          r: 3,
+          enabled: false,
+          r: 1,
         }
       },
+      select: {
+        r: 1,
+      }
     },
     tooltip: {
       grouped: false,

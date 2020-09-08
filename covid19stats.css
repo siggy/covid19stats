@@ -370,3 +370,12 @@ header h1 {
     height: 5em;
   }
 }
+
+/*
+ * c3 label customizations
+ */
+
+.c3-chart-text.c3-target.c3-focused {
+  font-weight: bold;
+  font-size: 14px;
+}
