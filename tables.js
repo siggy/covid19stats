@@ -82,10 +82,14 @@ const makeCountyTable = (countiesLatestDay, countyHeaders) => {
       { numericFormat: {pattern: '0,000'}, data: 'newDeathsPer1M', type: 'numeric'},
       { numericFormat: {pattern: '0,000'}, data: 'avgNewCasesPer1M', type: 'numeric'},
       { numericFormat: {pattern: '0,000'}, data: 'avgNewDeathsPer1M', type: 'numeric'},
+      { data: 'election', type: 'text'},
     ],
     nestedHeaders: [
       [
-        {label: '', colspan: 4},
+        {label: '', colspan: 1},
+        {label: '', colspan: 1},
+        {label: '', colspan: 1},
+        {label: '', colspan: 1},
         {label: 'total', colspan: 2},
         {label: 'new', colspan: 2},
         {label: 'new (7d avg)', colspan: 2},
@@ -93,12 +97,14 @@ const makeCountyTable = (countiesLatestDay, countyHeaders) => {
         {label: '/1M', colspan: 2},
         {label: 'new/1M', colspan: 2},
         {label: 'new/1M (7d avg)', colspan: 2},
+        {label: '', colspan: 1},
       ],
       countyHeaders,
     ],
     hiddenColumns: {
       columns: [0, 3], // date, fips
     },
+    fixedColumnsLeft: 4,
     columnSorting: {
       sortEmptyCells: true,
       initialConfig: {
@@ -180,7 +186,7 @@ const makeTable = (options, name) => {
 
   const hot = new Handsontable(
     document.getElementById(name+'-table'),
-    {...options, ...defaultTableOptions}
+    {...defaultTableOptions, ...options}
   );
 
   const exportBtn = document.getElementById(name+'-export');

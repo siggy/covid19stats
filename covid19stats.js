@@ -113,6 +113,10 @@ Promise.all([
     .then(response =>
       response.ok ? response.text() : Promise.reject(response.status)
     ),
+  fetch('county-election-results.csv')
+    .then(response =>
+      response.ok ? response.text() : Promise.reject(response.status)
+    ),
 ])
 .then(responses => {
   // https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv
@@ -129,6 +133,8 @@ Promise.all([
   const jhuGlobalDeathsResponse = responses[5].split('\n');
   // pops-countries.csv
   const globalPopsResponse = responses[6].split('\n');
+  // county-election-results.csv
+  const countyElectionResults = responses[7].split('\n');
 
   usPopsResponse.shift();
 
@@ -152,6 +158,17 @@ Promise.all([
     const name = pop.substring(1, split);
     const value = pop.substring(split+2, pop.length);
     popsByCountry.set(name, parseInt(value));
+  });
+
+  countyElectionResults.shift();
+  const electionByCountyFips = new Map();
+  countyElectionResults.forEach(countyResult => {
+    const c = countyResult.split(',');
+    const fips = c[1];
+    const votesGOP = parseInt(c[3]);
+    const votesDem = parseInt(c[4]);
+    const result = votesGOP > votesDem ? 'gop' : 'dem';
+    electionByCountyFips.set(fips, result);
   });
 
   // process and display data starting here
@@ -340,6 +357,7 @@ Promise.all([
   countyHeaders.push('deaths');     // new deaths/1M
   countyHeaders.push('cases');      // avg new cases/1M
   countyHeaders.push('deaths');     // avg new deaths/1M
+  countyHeaders.push('election');
 
   // complete, unique set of dates
   const allCountyDates = new Set();
@@ -405,6 +423,11 @@ Promise.all([
       console.warn('county fips not found: ' + JSON.stringify(latestDay));
       return;
     }
+
+    if (fips !== '' && electionByCountyFips.has(fips)) {
+      electionResult = electionByCountyFips.get(fips);
+    }
+
     const popPer1M = pop / 1000000;
 
     let lastCaseCount = 0;
@@ -440,6 +463,8 @@ Promise.all([
       row.population = pop;
       row.casesPer1M = Math.round(cases / popPer1M);
       row.deathsPer1M = Math.round(deaths / popPer1M);
+
+      row.election = electionResult;
     });
   });
 
@@ -611,6 +636,35 @@ Promise.all([
   initBigNumbers(statesToDates, 'California', 'big-state');
   initBigNumbers(countriesToDates, 'US', 'big-country');
   initBigNumbers(globalMap, 'global', 'big-global');
+
+  //
+  // election
+  //
+
+  console.log(countiesLatestDay);
+
+  // TODO: use countiesToDates ?
+  let demDeaths = 0;
+  let demPop = 0;
+  let gopDeaths = 0;
+  let gopPop = 0;
+  countiesLatestDay.forEach((county) => {
+    if (county.election === 'dem') {
+      demDeaths += county.deaths;
+      demPop += county.population;
+    } else if (county.election === 'gop') {
+      gopDeaths += county.deaths;
+      gopPop += county.population;
+    }
+  });
+
+  console.log(demDeaths);
+  console.log(demPop);
+  console.log(gopDeaths);
+  console.log(gopPop);
+
+  console.log(demDeaths / (demPop/1000000));
+  console.log(gopDeaths / (gopPop/1000000));
 
   // do all chart and table initialization asynchronously to ensure things get
   // rendered asap

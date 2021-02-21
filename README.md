@@ -10,6 +10,7 @@ Data courtesy of:
 - https://data.worldbank.org
 - https://open.canada.ca
 - http://www.population.net.au/states
+- https://github.com/tonmcg/US_County_Level_Election_Results_08-20
 
 ## Local dev
 
@@ -132,6 +133,10 @@ Browse to: http://0.0.0.0:8000/
     tail -n13 |
     sed -e 's/"[^"]*","\([^"]*\).*"\(.*[0-9]\)","","","","0"/"\1, Canada",\2/' \
 ) > pops-countries.csv
+```
+
+```bash
+curl https://raw.githubusercontent.com/tonmcg/US_County_Level_Election_Results_08-20/master/2020_US_County_Level_Presidential_Results.csv > ./county-election-results.csv
 ```
 
 ### Parse testing data
