@@ -85,7 +85,10 @@ const makeCountyTable = (countiesLatestDay, countyHeaders) => {
     ],
     nestedHeaders: [
       [
-        {label: '', colspan: 4},
+        {label: '', colspan: 1},
+        {label: '', colspan: 1},
+        {label: '', colspan: 1},
+        {label: '', colspan: 1},
         {label: 'total', colspan: 2},
         {label: 'new', colspan: 2},
         {label: 'new (7d avg)', colspan: 2},
@@ -99,6 +102,7 @@ const makeCountyTable = (countiesLatestDay, countyHeaders) => {
     hiddenColumns: {
       columns: [0, 3], // date, fips
     },
+    fixedColumnsLeft: 4,
     columnSorting: {
       sortEmptyCells: true,
       initialConfig: {
@@ -180,7 +184,7 @@ const makeTable = (options, name) => {
 
   const hot = new Handsontable(
     document.getElementById(name+'-table'),
-    {...options, ...defaultTableOptions}
+    {...defaultTableOptions, ...options},
   );
 
   const exportBtn = document.getElementById(name+'-export');
