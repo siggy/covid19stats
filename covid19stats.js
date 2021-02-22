@@ -612,6 +612,19 @@ Promise.all([
   initBigNumbers(countriesToDates, 'US', 'big-country');
   initBigNumbers(globalMap, 'global', 'big-global');
 
+  //
+  // US at SF rates
+  //
+  const statsSF = countiesToDates.get('San Francisco, CA');
+  const statSF = Array.from(statsSF)[statsSF.size-1][1];
+
+  const statsUS = countriesToDates.get('US');
+  const statUS = Array.from(statsUS)[statsUS.size-1][1];
+
+  const usDeathsAtSFRate = Math.round(statSF.deathsPer1M * statUS.population / 1000000);
+  const elm = document.getElementById('us-at-sf-rates');
+  elm.innerHTML = 'Lives saved if the US had SF\'s death rate: '+numberWithCommas(statUS.deaths - usDeathsAtSFRate);
+
   // do all chart and table initialization asynchronously to ensure things get
   // rendered asap
 

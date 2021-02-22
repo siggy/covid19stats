@@ -111,6 +111,15 @@ header h1 {
 }
 
 /*
+ * US at SF rates
+ */
+
+.us-at-sf-rates {
+  margin: 6px;
+  text-align: center;
+}
+
+/*
  * Tabs
  */
 
