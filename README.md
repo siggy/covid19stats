@@ -17,7 +17,7 @@ Data courtesy of:
 python3 -m http.server
 ```
 
-Browse to: http://0.0.0.0:8000/
+Browse to: http://localhost:8000/
 
 ### Pull Population data
 

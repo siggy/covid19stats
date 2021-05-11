@@ -97,10 +97,6 @@ Promise.all([
     .then(response =>
       response.ok ? response.text() : Promise.reject(response.status)
     ),
-  fetch('https://api.covidtracking.com/v1/states/daily.json')
-    .then(response =>
-      response.ok ? response.json() : Promise.reject(response.status)
-    ),
   fetch('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv')
     .then(response =>
       response.ok ? response.text() : Promise.reject(response.status)
@@ -121,14 +117,12 @@ Promise.all([
   const stateCasesResponse = responses[1].split('\n');
   // pops-us-states-counties.csv
   const usPopsResponse = responses[2].split('\n');
-  // https://api.covidtracking.com/v1/states/daily.json
-  const testsResponse = responses[3];
   // https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv
-  const jhuGlobalCasesResponse = responses[4].split('\n');
+  const jhuGlobalCasesResponse = responses[3].split('\n');
   // https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv
-  const jhuGlobalDeathsResponse = responses[5].split('\n');
+  const jhuGlobalDeathsResponse = responses[4].split('\n');
   // pops-countries.csv
-  const globalPopsResponse = responses[6].split('\n');
+  const globalPopsResponse = responses[5].split('\n');
 
   usPopsResponse.shift();
 
@@ -136,14 +130,6 @@ Promise.all([
   usPopsResponse.forEach(pop => {
     const p = pop.split(',');
     popsByFips.set(p[0], parseInt(p[3]));
-  });
-
-  const statesTestsToDates = new Map();
-  testsResponse.forEach(test => {
-    if (!statesTestsToDates.has(test.fips)) {
-      statesTestsToDates.set(test.fips, new Map());
-    }
-    statesTestsToDates.get(test.fips).set(test.date, test);
   });
 
   const popsByCountry = new Map();
@@ -176,11 +162,6 @@ Promise.all([
   stateHeaders.push('deaths');     // new deaths/1M
   stateHeaders.push('cases');      // avg new cases/1M
   stateHeaders.push('deaths');     // avg new deaths/1M
-  stateHeaders.push('total');      // total tests
-  stateHeaders.push('pending');    // pending tests
-  stateHeaders.push('positive');   // positive test %
-  stateHeaders.push('/1M');        // tests/1M
-  stateHeaders.push('/death');     // tests/death
 
   // complete, unique set of dates
   const allStateDates = new Set();
@@ -202,21 +183,13 @@ Promise.all([
       avgNewCasesPer1M: 0,
       avgNewDeaths: 0,
       avgNewDeathsPer1M: 0,
-      avgNewPositiveTestPercent: 0,
-      avgNewTests: 0,
-      avgNewTestsPer1M: 0,
       casesPer1M: 0,
       deathsPer1M: 0,
       newCases: 0,
       newCasesPer1M: 0,
       newDeaths: 0,
       newDeathsPer1M: 0,
-      pending: 0,
       population: 0,
-      positiveTestPercent: 0,
-      tests: 0,
-      testsPer1M: 0,
-      testsPerDeath: 0,
     };
 
     if (state.date < startDate) {
@@ -252,8 +225,6 @@ Promise.all([
     const movingAverageDays = 7;
     const prevCases = new Array(movingAverageDays);
     const prevDeaths = new Array(movingAverageDays);
-    const prevTestsIncrease = new Array(movingAverageDays);
-    const prevTestsPositiveIncrease = new Array(movingAverageDays);
 
     dateMap.forEach((row, _) => {
       const cases = row.cases;
@@ -281,44 +252,6 @@ Promise.all([
       row.population = pop;
       row.casesPer1M = Math.round(cases / popPer1M);
       row.deathsPer1M = Math.round(deaths / popPer1M);
-
-      const dateForTests = parseInt(row.date.replace(/-/g, ''));
-      if (statesTestsToDates.has(fips) && statesTestsToDates.get(fips).has(dateForTests)) {
-        const tests = statesTestsToDates.get(fips).get(dateForTests);
-
-        const totalTests = tests.positive + tests.negative;
-
-        row.tests = totalTests;
-        row.positiveTestPercent = Math.min(100 * tests.positive / totalTests, 100);
-        row.pending = tests.pending;
-
-        row.testsPer1M = Math.round(row.tests / popPer1M);
-
-        prevTestsIncrease.push(Math.max(tests.positiveIncrease, 0) + Math.max(tests.negativeIncrease, 0));
-        prevTestsPositiveIncrease.push(Math.max(tests.positiveIncrease, 0));
-
-        prevTestsIncrease.shift();
-        prevTestsPositiveIncrease.shift();
-
-        const sumPrevTestsIncrease = sum(prevTestsIncrease);
-        const sumPrevTestsPositiveIncrease = sum(prevTestsPositiveIncrease);
-
-        row.avgNewTests = avg(prevTestsIncrease);
-        row.avgNewPositiveTestPercent = (sumPrevTestsIncrease !== sumPrevTestsPositiveIncrease) ?
-          100 * sumPrevTestsPositiveIncrease / sumPrevTestsIncrease :
-          0;
-        row.avgNewTestsPer1M = Math.round(row.avgNewTests / popPer1M);
-
-        row.testsPerDeath = (deaths !== '0') ?
-          Math.round(totalTests / deaths) :
-          0;
-      } else {
-        prevTestsIncrease.push(0);
-        prevTestsPositiveIncrease.push(0);
-
-        prevTestsIncrease.shift();
-        prevTestsPositiveIncrease.shift();
-      }
     });
   });
 

@@ -19,17 +19,6 @@ const makeStateTable = (statesLatestDay, stateHeaders) => {
       { numericFormat: {pattern: '0,000'}, data: 'newDeathsPer1M', type: 'numeric'},
       { numericFormat: {pattern: '0,000'}, data: 'avgNewCasesPer1M', type: 'numeric'},
       { numericFormat: {pattern: '0,000'}, data: 'avgNewDeathsPer1M', type: 'numeric'},
-      { numericFormat: {pattern: '0,000'}, data: 'tests', type: 'numeric'},
-      { numericFormat: {pattern: '0,000'}, data: 'pending', type: 'numeric'},
-      {
-        data: 'positiveTestPercent',
-        type: 'numeric',
-        numericFormat: {
-          pattern: '0.00%'
-        }
-      },
-      { numericFormat: {pattern: '0,000'}, data: 'testsPer1M', type: 'numeric'},
-      { numericFormat: {pattern: '0,000'}, data: 'testsPerDeath', type: 'numeric'},
     ],
     nestedHeaders: [
       [
@@ -41,7 +30,6 @@ const makeStateTable = (statesLatestDay, stateHeaders) => {
         {label: '/1M', colspan: 2},
         {label: 'new/1M', colspan: 2},
         {label: 'new/1M (7d avg)', colspan: 2},
-        {label: 'tests', colspan: 5},
       ],
       stateHeaders,
     ],
