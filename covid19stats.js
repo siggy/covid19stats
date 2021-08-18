@@ -141,7 +141,7 @@ Promise.all([
   });
 
   // process and display data starting here
-  const startDate = '2020-03-01';
+  const startDate = '2021-03-14';
 
   //
   // process states
@@ -171,6 +171,11 @@ Promise.all([
 
   stateCasesResponse.forEach(line => {
     const row = line.split(',');
+
+    if (row[1] !== 'California' && row[1] !== 'Florida') {
+      return;
+    }
+
     const state = {
       date: row[0],
       name: row[1],
@@ -219,7 +224,7 @@ Promise.all([
     const pop = popsByFips.get(fips);
     const popPer1M = pop / 1000000;
 
-    let lastCaseCount = 0;
+    let lastCaseCount = Array.from(dateMap)[0][1].cases;
     let lastDeathCount = 0;
 
     const movingAverageDays = 7;
