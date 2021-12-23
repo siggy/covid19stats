@@ -142,6 +142,8 @@ curl https://covidtracking.com/api/v1/states/daily.json | jq '.[]  | select(.sta
 
 ## TODO
 
+- expand county start date back to march 2010 rather than 1 year
+  - only render a subset of counties at a time?
 - fix focus labels persisting across chart changes
 - limit country chart to `startDate`
 - hospitalized

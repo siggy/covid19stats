@@ -82,6 +82,8 @@ Object.entries(stateAbbreviations).sort((a, b) => {
 // this must match the defaults set in the "dropdown-button" HTML elements
 const chartLimit = 10;
 
+const movingAverageDays = 7;
+
 // retrieve all remote data
 
 Promise.all([
@@ -142,6 +144,14 @@ Promise.all([
 
   // process and display data starting here
   const startDate = '2020-03-01';
+
+  const now = new Date();
+  const countyStartDate = new Date(
+    new Date(now).setDate(now.getDate()-365)
+  ).toISOString().slice(0, 10);
+  const countyAvgStartDate = new Date(
+    new Date(now).setDate(now.getDate()-365-movingAverageDays)
+  ).toISOString().slice(0, 10);
 
   //
   // process states
@@ -222,7 +232,6 @@ Promise.all([
     let lastCaseCount = 0;
     let lastDeathCount = 0;
 
-    const movingAverageDays = 7;
     const prevCases = new Array(movingAverageDays);
     const prevDeaths = new Array(movingAverageDays);
 
@@ -296,10 +305,15 @@ Promise.all([
       deaths: parseInt(row[5]),
     };
 
-    if (county.date < startDate) {
+    if (county.date < countyAvgStartDate) {
+      // only process 1 year of county data (plus 7 days for 7d avg)
       return;
     }
-    allCountyDates.add(county.date);
+
+    if (county.date >= countyStartDate) {
+      // county xAxis should only be 1 year
+      allCountyDates.add(county.date);
+    }
 
     if (!countiesToDates.has(county.fullName)) {
       countiesToDates.set(county.fullName, new Map());
@@ -343,7 +357,6 @@ Promise.all([
     let lastCaseCount = 0;
     let lastDeathCount = 0;
 
-    const movingAverageDays = 7;
     const prevCases = new Array(movingAverageDays);
     const prevDeaths = new Array(movingAverageDays);
 
@@ -357,10 +370,15 @@ Promise.all([
       lastCaseCount = cases;
       lastDeathCount = deaths;
 
+      if (row.date <= countyAvgStartDate) {
+        return;
+      }
+
       prevCases.push(row.newCases);
       prevDeaths.push(row.newDeaths);
       prevCases.shift();
       prevDeaths.shift();
+
       row.avgNewCases = avg(prevCases);
       row.avgNewDeaths = avg(prevDeaths);
 
@@ -445,7 +463,6 @@ Promise.all([
     let lastCaseCount = 0;
     let lastDeathCount = 0;
 
-    const movingAverageDays = 7;
     const prevCases = new Array(movingAverageDays);
     const prevDeaths = new Array(movingAverageDays);
 
